@@ -1,0 +1,39 @@
+{%extends 'base.html'%}
+
+{%block content%}
+
+<div class="card ">
+
+<form method="POST">
+    <div class="card-body">
+    {% csrf_token %}
+   Invitation Contract form
+<h4>To: {{request.user.username}}</h4>
+<h4>{{invitation.title}}</h4>
+<br>
+   <p> This is to inform you {{request.user}} that the examination council</p>
+   <p> of zambia wishes to express their interest in assigning you the task/role of seasonal examination marker </p>
+   grade ECZ-3A acort
+   <p>Acording to the laws of zambia, It is a mandate that the marking prcess be done.
+   Please confirm availability by aggreeing to our terms of conditions.</p>
+   <p>Thank you</p> 
+ 
+
+   {% if invitation.StatusConfirm == 0 %}
+   <a href="{% url 'invite-approve' inv_id=invitation.id %}" class="btn btn-success">Approve</a>
+   <a href="{% url 'invite-reject' inv_id=invitation.id %}" class="btn btn-danger">Reject</a>
+   
+   {% elif invitation.StatusConfirm == 1 %}
+    <button class="btn btn-warning" disabled="disabled">Approved</button>
+    {% else %}
+   <button class="btn btn-danger" disabled="disabled">Rejected</button>
+
+    {% endif %}
+
+    <a href="{% url 'notifications-list' %}">Notifications</a>
+</div>
+</form>
+</div>
+
+
+{%endblock%} 

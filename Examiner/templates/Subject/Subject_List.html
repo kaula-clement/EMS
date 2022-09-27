@@ -1,0 +1,30 @@
+{% extends 'base.html'%}
+
+{%block content%}
+<h3>List of subjects</h3>
+<div class="container">
+    <table class="table table-sm">
+        <caption>List of examiners</caption>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Code</th>
+        </tr>
+       {%for subject in subjects%}
+        <tr>
+            <td>{{subject.id}}</td>
+            <td>{{subject.subjectName}}</td>
+            <td>{{subject.subjectCode}}</td>
+       
+            <td><a href="{%url 'subject-update' subject.id%}">Details</a></td>
+            <td><a href="{%url 'subject-delete' subject.id%}">Delete</a></td>
+
+        </tr>
+        {%empty%}
+        <h3>No Subjects to display</h3>
+        {%endfor%}
+    </table>
+    <a href="{%url 'add-subject'%}">add</a>
+    </div>
+
+{%endblock%}

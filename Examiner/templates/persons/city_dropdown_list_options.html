@@ -1,0 +1,10 @@
+
+<option value="">Select City</option>
+{% for city in cities %}
+<option value="{{ city.pk }}">{{ city.name }}</option>
+{% endfor %}
+
+<option value="">select district</option>
+{% for city in districts %}
+<option value="{{ city.pk }}">{{ city.name }}</option>
+{% endfor %}

@@ -1,0 +1,105 @@
+{%load static%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Examination Council of Zambia</title>
+    <link  href="{%static '/css/bootstrap4.min.css'%}" rel="stylesheet">
+</head>
+<body>
+
+<!--style="background-color: rgb(28, 144, 74);  "-->
+<body class="hold-transition login-page" style="background-color: rgb(164, 232, 164);" >
+
+<!-- /.login-box -->
+
+<div class="container" >
+ <!-- <div class="img"  style="background-image:url('/static/img/ECZ-Logo.jpg')" > -->
+
+<div class="row align-items-center ">
+<div  class="card" style="width: 18rem;" >
+  <img class="card-img-top"  src="{%static '/img/ECZ-Logo2.jpg'%}" alt="">
+  <div class="card-body">
+    <h3 class="card-title">Examinations</h3>
+    <p class="card-text">Council of Zambia</p>
+  </div>
+</div>
+  </div>
+
+    <div class="row align-items-center "><!--vh-100-->
+     
+        <div class="col-6 mx-auto">
+            <div class="card" id="login">
+                <div class="card-body d-flex flex-column align-items-center">
+                    <p>Sign in to Examinations Council of Zambia</p>
+                    
+                        <form  method="POST">
+                            {% csrf_token %}
+                              <div class="input-group mb-3">
+                                <input type="username" class="form-control" placeholder="username" name="username">
+                                <div class="input-group-append">
+                                  <div class="input-group-text">
+                                    <span class="fas fa-envelope"></span>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="input-group mb-3">
+                                <input type="password" class="form-control" placeholder="Password" name="password">
+                                <div class="input-group-append">
+                                  <div class="input-group-text">
+                                    <span class="fas fa-lock"></span>
+                                  </div>
+                                </div>
+                              </div>
+                      
+                                <div class="col-12">
+                                  <button type="submit" class="btn btn-success btn-block">Sign In</button>
+                                </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+      </div>
+   <!-- </div> -->
+  
+</div>
+<style>
+  
+  .card{
+
+flex-direction: row;
+background-color: transparent;
+  }
+  .card img{
+    width: 30%;
+  }
+  #login{
+   background-color: transparent;
+   border-color:transparent;
+  }
+  img{
+    display: inline;
+    margin-left: auto;
+    margin-right: auto;
+    max-width:100%;
+    height: auto;
+  }
+.text{
+color: rgb(25, 91, 29);
+display: inline-block;
+}
+.imglog{
+  margin-left: auto;
+    margin-right: auto;
+  display:flex;
+  justify-content: center;
+ 
+}
+
+
+</style>
+</body>
+
+

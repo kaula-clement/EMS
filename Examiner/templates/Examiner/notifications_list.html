@@ -1,0 +1,46 @@
+{%extends 'base.html'%}
+
+{%block content%}
+<h3>Notifications</h3>
+<table class="table table-hover text-nowrap">
+
+    <tr>
+      <!--  <th>id</th> -->
+        <th>ID</th>
+        <th>Time Sent</th>
+        <th>Title</th>
+        <th>Status</th>
+        <th></th>
+        <th></th>
+    </tr>
+    {%for item in invitations %} 
+<tr>
+   <!-- <td>{{item.id}}</td> -->
+    <td>{{item.id}}</td>
+    <td>{{item.datecreated}}</td>
+    <td>{{item.title}}</td>
+    <td>
+        {% if item.StatusConfirm == 0 %}
+        <a href="{% url 'invite-approve' inv_id=item.id %}" class="btn btn-success">Approve</a>
+        <a href="{% url 'invite-reject' inv_id=item.id %}" class="btn btn-danger">Reject</a>
+        
+        {% elif item.StatusConfirm == 1 %}
+         <button class="btn btn-warning" disabled="disabled">Approved</button>
+        {% else %}
+        <button class="btn btn-danger" disabled="disabled">Rejected</button>
+     
+         {% endif %}
+
+    </td>
+    <td></td>
+    <td><a href="{% url 'invite-response' item.id %}">view details</a></td>
+
+</tr>
+{%empty%}
+<h4>no Invitations in list</h4>
+    {%endfor%}
+</table>
+
+<a href="">Create New</a>
+
+{%endblock%}

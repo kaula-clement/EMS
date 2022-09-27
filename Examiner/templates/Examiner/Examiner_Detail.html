@@ -1,0 +1,94 @@
+{%extends 'index.html' %}
+
+
+{%block content%}
+<h3>{{Examiner.name}}</h3> <a href="{%url '2pdf'%}">PDF</a>
+<div class="table-responsive">
+<table class="table-bordered">
+    <thead>
+        <tr>
+            <th colspan="2 " >
+                Personal information
+            </th>
+        </tr>
+    </thead>
+    <tr>
+        <th>Examiner Number:</th><td>{{Examiner.ExaminerCode}}</td>
+    </tr>
+    <tr>
+        <th>Examiner Name:</th><td>{{Examiner.name}}</td>
+    </tr>
+    <tr>
+        <th>Examiner Subject:</th><td>{{Examiner.subject}}</td>
+    </tr>
+    <tr>
+        <th>Examiner NRC:</th><td>{{Examiner.NRC}}</td>
+    </tr>
+    <tr>
+        <th>Position:</th><td>{{Examiner.position.name}}</td>
+    </tr>
+    <tr>
+        <th>Examiner District:</th><td>{{Examiner.District}}</td>
+    </tr>
+    <thead>
+        <tr>
+            <th colspan="2 " >
+                Address information
+            </th>
+        </tr>
+    </thead>
+    <tr>
+        <th>Examiner Name:</th><td>{{Examiner.name}}</td>
+    </tr>
+    <tr>
+        <th>Examiner Subject:</th><td>{{Examiner.subject}}</td>
+    </tr>
+    <tr>
+        <th>Examiner NRC:</th><td>{{Examiner.NRC}}</td>
+    </tr>
+    <tr>
+        <th>Position:</th><td>{{Examiner.position.name}}</td>
+    </tr>
+    <tr>
+        <th>Examiner District:</th><td>{{Examiner.District}}</td>
+    </tr>
+    <thead>
+        <tr>
+            <th colspan="2 " >
+                Bank information
+            </th>
+        </tr>
+    </thead>
+    <tr>
+        <th>Examiner Name:</th><td>{{Examiner.name}}</td>
+    </tr>
+    <tr>
+        <th>Examiner Subject:</th><td>{{Examiner.subject}}</td>
+    </tr>
+    <tr>
+        <th>Examiner NRC:</th><td>{{Examiner.NRC}}</td>
+    </tr>
+    <tr>
+        <th>Position:</th><td>{{Examiner.position.name}}</td>
+    </tr>
+    <tr>
+        <th>Examiner District:</th><td>{{Examiner.District}}</td>
+    </tr>
+
+</table>
+
+</div>
+<style>
+    table{
+        width:70%;
+        background-color: whitesmoke;
+    }
+    thead{
+        text-align: center;
+        font-size: large;
+    }
+    th,td{
+        padding: 15px;
+    }
+</style>
+{%endblock content%}

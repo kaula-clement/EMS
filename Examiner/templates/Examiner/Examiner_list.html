@@ -1,0 +1,37 @@
+{%extends 'index.html' %}
+
+
+{%block content%}
+<hr>
+<h3>Examiner list </h3>
+
+<table class="table table-hover text-nowrap">
+
+    <tr>
+      <!--  <th>id</th> -->
+        <th>Examiner Number</th>
+        <th>Name</th>
+        <th>position</th>
+        <th>Subject</th>
+     
+        <th></th>
+        <th></th>
+    </tr>
+    {%for item in examiners %} 
+<tr>
+   <!-- <td>{{item.id}}</td> -->
+    <td>{{item.ExaminerCode}}</td>
+    <td>{{item.name}}</td>
+    <td>{{item.position.name}}</td>
+    <td>{{item.subject.subjectName}}</td>
+    <td><a href="{% url 'examiner-details' item.id %}">view</a></td>
+    <td><a href="{% url 'examiner-edit' item.id %}">edit</a></td>
+    <td><a href="{% url 'examiner-delete' item.id %}">delete</a></td>
+</tr>
+{%empty%}
+<h4>no Examiners in list</h4>
+    {%endfor%}
+</table>
+<a href="{%url 'add-examiner'%}">ADD New</a>
+
+{%endblock content%}
