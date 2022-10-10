@@ -1,0 +1,50 @@
+{%extends 'index.html' %}
+
+
+{%block content%}
+<hr>
+<h3>Examiner list </h3>
+
+
+<div class="table-responsive">
+    <table class="table" >
+        <tr>
+        <!--  <th>id</th> -->
+            <th>Examiner Number</th>
+            <th>Name</th>
+            <th>position</th>
+            <th>Subject</th>
+            <th>Province</th>
+            <th>District</th>
+            <th>Bank</th>        
+            <th>Branch</th>
+            <th>Sort Code</th>
+            <th>Account Number</th>
+            <th></th>
+        </tr>
+        {%for item in examiners %} 
+        <tr>
+        <!-- <td>{{item.id}}</td> -->
+            <td>{{item.ExaminerCode}}</td>
+            <td>{{item.name}}</td>
+            <td>{{item.position.name}}</td>
+            <td>{{item.subject.subjectName}}</td>
+            <td>{{item.province}}</td>
+            <td>{{item.district}}</td>
+            <td>{{item.bank}}</td>
+            <td>{{item.branch}}</td>
+            <td>{{item.branch.sortcode}}</td>
+            <td>{{item.AccountDetails}}</td>
+
+                
+            <td><a href="{% url 'examiner-details' item.id %}">view</a></td>
+
+        </tr>
+    {%empty%}
+    <h4>no Examiners in list</h4>
+        {%endfor%}
+    </table>
+</div>
+<a href="{%url 'add-examiner'%}">ADD New</a>
+
+{%endblock content%}

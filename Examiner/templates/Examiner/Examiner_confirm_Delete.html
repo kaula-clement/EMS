@@ -1,6 +1,6 @@
 <form method="POST" action="">
-{%csrf_token%}
-<p>Are you sure you want to delete {{Examiner}}?</p>
-<a href="{% url 'examiner-list'%}">Cancel</a> <input type="submit" value="Delete">
-
-</form>
+    {%csrf_token%}
+    <p>Are you sure you want to delete {{obj}}?</p>
+    <a href="{% url 'subject-list'%}">Cancel</a> <input type="submit" value="Delete">
+    
+    </form>

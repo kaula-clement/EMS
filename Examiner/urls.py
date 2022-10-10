@@ -1,30 +1,58 @@
 
 from django.urls import path
-from . import views
-from .views import ExaminerList,ExaminerDetail,ExaminerCreate,ExaminerUpdate,ExaminerDelete,CustomLoginView,Home,invitationResponse,NotificationList,GeneratePDF
+from . import views,EADViews,ExaminerViews,StaffViews
+from .views import Home,BankListView
 from django.contrib.auth.views import LogoutView
-from . EADViews import SubjectCreateView,SubjectListView,SubjectUpdateView,SubjectDeleteView,EADCreateView,EADListView,EADDeleteView,EADUpdateView,InviteView
+from . EADViews import NotificationList,SubjectCreateView,SubjectListView,SubjectUpdateView,SubjectDeleteView,EADCreateView,EADListView,EADDeleteView,EADUpdateView,InviteView,ExaminerCreate,ExaminerList,ExaminerDetail,ExaminerUpdate,ExaminerDelete,EADUpdate
+from . AuthView import CustomGroupList,CustomUserList,CustomUserUpdate,CustomLoginView
+from .StaffViews import StaffExaminerList
 
-
+#app_name='Examiner'
 
 urlpatterns = [
+   
+   path('',views.Home,name='home'), #Home / Landing page
+   
+   #AUTH and Registration urls
    path('login/',CustomLoginView.as_view(),name='login'),
-   path('logout/',LogoutView.as_view(next_page='login'),name='logout'),
-  # path('',Home.as_view(),name='home'),
-   path('',views.Home,name='home'),
-   path('create/',views.ExaminerCreate,name='add-examiner'),
-   path('list/',ExaminerList.as_view(),name='examiner-list'),
+   path('logout/',LogoutView.as_view(next_page='login'),name='logout'), 
+   path('update-user/<int:pk>/',CustomUserUpdate.as_view(),name='update-user'),
+   path('group-list',CustomGroupList.as_view(),name='group-list'),
+   
+   
+   
+   #====================================EAD Menu
+   path('ead-home/',EADViews.EADHome,name='ead-home'),
    path('examiner/<int:pk>',ExaminerDetail.as_view(),name='examiner-details'),
    path('examiner-edit/<int:pk>',ExaminerUpdate.as_view(),name='examiner-edit'),
    path('examiner-delete/<int:pk>',ExaminerDelete.as_view(),name='examiner-delete'),
-   path('pdf/',GeneratePDF.as_view(),name='2pdf'),
-   
-   #=====================================
+   path('create/',ExaminerCreate.as_view(),name='add-examiner'),
+   path('list/',ExaminerList.as_view(),name='examiner-list'),
    path('invite-examiner/',InviteView.as_view(),name='invite'),
-   path('invite-response/<int:pk>',views.invitationResponse.as_view(),name='invite-response'),
-   path('invite-approve/<inv_id>',views.invitation_approve,name='invite-approve'),
-   path('invite-reject/<inv_id>',views.invitation_reject,name='invite-reject'),
-   path('notifications/',views.invitationlist,name='notifications-list'),
+   path('add-ead/',EADCreateView.as_view(),name='ead-create'),
+   path('ead-list/',EADListView.as_view(),name='ead-list'),
+   path('ead/<int:pk>',EADListView.as_view(),name='ead-details'),
+   path('ead-delete/<int:pk>',EADDeleteView.as_view(),name='ead-delete'),
+   path('ead/<int:pk>/',EADUpdateView.as_view(),name='update-ead'),
+   
+   path('update-profile/',EADViews.updateprofile,name='profile'),
+   path('updated-profile/',EADViews.updateprofilesave,name='profile-save'),
+   path('updateprofile/<int:pk>',EADUpdate.as_view(),name='updateprofile'),
+   #======================================Staff Menu
+   path('Staff-home/',StaffViews.StaffHome,name='staff-home'),
+   path('staff/examiners/',StaffExaminerList.as_view(),name='staff-examiner-list'),   
+   
+   
+   
+   
+      
+   #=====================================Examiner menu
+   path('Examiner-home/',ExaminerViews.ExaminerHome,name='Examiner-home'),
+   path('invite-response/<int:pk>',ExaminerViews.invitationResponse.as_view(),name='invite-response'),
+   path('invite-approve/<inv_id>',ExaminerViews.invitation_approve,name='invite-approve'),
+   path('invite-reject/<inv_id>',ExaminerViews.invitation_reject,name='invite-reject'),
+   path('notifications/',NotificationList.as_view(),name='notifications-list'),
+   
 
    #=================================
    path('add-subject/',SubjectCreateView.as_view(),name='add-subject'),
@@ -33,27 +61,40 @@ urlpatterns = [
    path('subject-delete/<int:pk>',SubjectDeleteView.as_view(),name='subject-delete'),
 
    #===================================
-   path('add-ead/',EADCreateView.as_view(),name='ead-create'),
-   path('ead-list/',EADListView.as_view(),name='ead-list'),
-   path('ead/<int:pk>',EADListView.as_view(),name='ead-details'),
-   path('ead-delete/<int:pk>',EADDeleteView.as_view(),name='ead-delete'),
-   path('ead/<int:pk>/',EADUpdateView.as_view(),name='update-ead'),
+   
    path('ajax/load-district/',views.load_district,name='load_districts'),
 
    #=========================================
 
-    path('add/', views.person_create_view, name='person_add'),
-    path('<int:pk>/', views.person_update_view, name='person_change'),
 
 
-    path('ajax/load-cities/', views.load_cities, name='ajax_load_cities'), # AJAX
+   #=========================================
+
+    path('ajax/load-districts/', views.get_districts_ajax, name='load-districts'), # AJAX
+    path('ajax/load-bank-branches/', views.get_bankbranch_ajax, name='load-bank-branches'), # AJAX
+
+
+    #path('upload-subjects/',views.uploadSubject,name='uploadSubject'),
+    path('upload/csv/', views.upload_csv, name='upload_csv'),
+    
+    path('users/',CustomUserList.as_view(),name='userlist'),
+
+
+    path('get-topics-ajax/', views.get_topics_ajax, name="get_topics_ajax"),
+    
+    
+    
+    #====================banks================
+    path('banks/linst/',BankListView.as_view(),name='bank-list'),
+    
+    path('emails/',views.sendmail,name='send-email'),
 
 
    ] 
 
 
 """
-       path('', views.loginPage, name="login"),
+      # path('', views.loginPage, name="login"),
     # path('accounts/', include('django.contrib.auth.urls')),
     path('doLogin/', views.doLogin, name="doLogin"),
     path('get_user_details/', views.get_user_details, name="get_user_details"),

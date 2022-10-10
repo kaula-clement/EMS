@@ -1,6 +1,6 @@
 {% extends 'base.html'%}
 {%block content%}
-
+<p><a href="{%url 'upload_csv'%}">Upload csv</a> </p>
 <form method="POST">
     {%csrf_token%}
     {{form.as_p}}

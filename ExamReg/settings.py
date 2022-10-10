@@ -33,7 +33,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
    
-    'templates',
+    'template',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -53,7 +53,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
-    # 'Examiner.LoginCheckMiddleWare.LoginCheckMiddleWare',
+   #  'Examiner.LoginCheckMiddleWare.LoginCheckMiddleWare',
 
 ]
 
@@ -142,3 +142,11 @@ AUTH_USER_MODEL = "Examiner.CustomUser"
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+#Email (Gmail) Configurations
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'kaulaclementb@gmail.com'
+EMAIL_HOST_PASSWORD = 'Bussiness@123'
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL= False

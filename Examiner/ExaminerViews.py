@@ -35,21 +35,12 @@ class Home(LoginRequiredMixin,ListView):
  
 """
 @login_required()
-def Home(request):
+def ExaminerHome(request):
     #examiner_obj=Examiner.objects.get(ExaminerCode=request.user.user_id)
     notifications=Invitation.objects.filter(toAddress=request.user.id)
     T_nots=notifications.count()
     context={'notifications':notifications,'T_nots':T_nots}
-    return render(request, 'index.html',context)
-'''    
-def sendInvitation(request,UserID):
-    fromUser=request.user
-    toUser=User.objects.get(id=UserID)
-'''
-
-class ExaminerList(LoginRequiredMixin,ListView):
-    model=Examiner
-    context_object_name='examiners'
+    return render(request, 'Examiner/Examiner_home.html',context)
 
 
 class NotificationList(LoginRequiredMixin,ListView):
@@ -63,22 +54,10 @@ class ExaminerDetail(LoginRequiredMixin,DetailView):
     model=Examiner
     context_object_name='Examiner'
 
-class ExaminerCreate(LoginRequiredMixin,CreateView):
-    model=Examiner
-    #fields='__all__'
-    fields=['subject','position','name','Address','District','Province',
-                'AccountDetails','NRC','TPIN','cell_Number','email']
-    success_url=reverse_lazy('examiner-list')
  
-
 class ExaminerUpdate(LoginRequiredMixin,UpdateView):
     model=Examiner
     fields='__all__'
-    success_url=reverse_lazy('examiner-list')
-
-class ExaminerDelete(LoginRequiredMixin,DeleteView):
-    model=Examiner
-    context_object_name='Examiner'
     success_url=reverse_lazy('examiner-list')
 
 class invitationResponse(LoginRequiredMixin,UpdateView):

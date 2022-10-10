@@ -1,83 +1,43 @@
-from django.shortcuts import render,redirect
-from django.http import HttpResponse
-from .models import Examiner,Invitation,Province,District
+from dataclasses import fields
+from .models import Person, City,BankBranch,Bank
+from django.shortcuts import render, redirect
+from django.http import HttpResponse, HttpResponseRedirect
+from .models import Examiner, Invitation, Province, District,districtcsv
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import CreateView,UpdateView,DeleteView
-from django.urls import reverse_lazy
-from .forms import ExaminerForm
-#======================================
-from django.contrib.auth.views import LoginView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.urls import reverse_lazy, reverse
+from . decorators import unauthenticated_user
+# ======================================
+
 from django.contrib.auth.models import User
+from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from .forms import BankBranchForm
+# ======================================pdf
+import csv
+from django.contrib import messages
+import logging
+from django.core.mail import send_mail
 
-#======================================pdf
-from io import BytesIO
-from django.http import FileResponse
-from django.template.loader import get_template,render_to_string
-from django.views import View
-from xhtml2pdf import pisa
-#from reportlab.pdfgen import canvas
 
-#===================================
 
-class CustomLoginView(LoginView):
-    template_name='registration/login.html'
-    fields='__all__'
-    redirect_authenticated_user=True
 
-    def get_success_url(self):
-        return reverse_lazy('home')
-        #return reverse_lazy('examiner-list')
-
-"""
-class Home(LoginRequiredMixin,ListView):
-    template_name='index.html'
-    model=Examiner
-    context_object_name='examiner'
-
-    #to view only the examiner whose the user is loged 
-    def get_context_data(self,**kwargs):
-        context = super().get_context_data(**kwargs)
-        context['examiner',]= context['examiner'].filter(user=self.request.user)
-        return context
- 
-"""
 @login_required()
 def Home(request):
-    #examiner_obj=Examiner.objects.get(ExaminerCode=request.user.user_id)
-    notifications=Invitation.objects.filter(toAddress=request.user.id)
-    T_nots=notifications.count()
-    context={'notifications':notifications,'T_nots':T_nots}
-    return render(request, 'index.html',context)
-'''    
-def sendInvitation(request,UserID):
-    fromUser=request.user
-    toUser=User.objects.get(id=UserID)
-'''
-
-class ExaminerList(LoginRequiredMixin,ListView):
-    model=Examiner
-    context_object_name='examiners'
-
-
-class ExaminerDetail(LoginRequiredMixin,DetailView):
-    model=Examiner
-    context_object_name='Examiner'
-
-def ExaminerCreate(request):
-    form=ExaminerForm()
-    if request.method == 'POST':
-
-        form = ExaminerForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('examiner-list')
-    return render(request, 'Examiner/Examiner_form.html', {'form': form})
-
-
-
+    # examiner_obj=Examiner.objects.get(ExaminerCode=request.user.user_id)
+    notifications = Invitation.objects.filter(toAddress=request.user.id)
+    T_nots = notifications.count()
+    context = {
+    }
+    print("Im in the wrong view +++++++++++++++++++")
+    if request.user.user_type == 1:
+        return render(request, 'EAD/EAD_home.html', context)
+    elif request.user.user_type == 3:
+        return render(request, 'Examiner/Examiner_home.html', context)
+    else:
+        return HttpResponse("not valid user")
 
 
 def load_district(request):
@@ -86,57 +46,7 @@ def load_district(request):
     print("==================================================")
     return render(request, 'registration/district_dropdown.html', {'districts': districts})
 
-
-class ExaminerUpdate(LoginRequiredMixin,UpdateView):
-    model=Examiner
-    form_class=ExaminerForm
-    success_url=reverse_lazy('examiner-list')
-
-class ExaminerDelete(LoginRequiredMixin,DeleteView):
-    model=Examiner
-    context_object_name='Examiner'
-    success_url=reverse_lazy('examiner-list')
-#===========================================================
-
-class NotificationList(LoginRequiredMixin,ListView):
-    model=Invitation
-    context_object_name='invitations'
-    template_name='Examiner/notifications_list.html'
-
-def invitationlist(request):
-    toAddress=request.user.id
-    invitations=Invitation.objects.filter(toAddress=toAddress).all()
-    count=invitations.count()
-    context={'invitations':invitations,
-            'count':count}
-    
-    for item in invitations:
-        print(item.id)
-    return render(request, 'Examiner/notifications_list.html',context)
-
-
-class invitationResponse(LoginRequiredMixin,UpdateView):
-    model=Invitation
-    template_name='confirm_Invitation.html'
-    fields='__all__'
-    context_object_name='invitation'
-    success_url=reverse_lazy('home')
-
-@login_required()
-def invitation_approve(request, inv_id):
-    invitation = Invitation.objects.get(id=inv_id)
-    invitation.StatusConfirm = 1
-    invitation.save()
-    return redirect('home')
-
-@login_required()
-def invitation_reject(request, inv_id):
-    invitation = Invitation.objects.get(id=inv_id)
-    invitation.StatusConfirm = 2
-    invitation.save()
-    return redirect('home')
-   
-#===============================================================
+"""
 def render_to_pdf(template_source,context_dict={}):
     template=get_template(template_source)
     html=template.render(context_dict)
@@ -156,41 +66,122 @@ class GeneratePDF(View):
 
         return HttpResponse(pdf,content_type='application/pdf')
 
-
-#================================================================
-from .forms import PersonCreationForm
-from .models import Person, City
-
-
-def person_create_view(request):
-    form = PersonCreationForm()
-    if request.method == 'POST':
-        form = PersonCreationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('person_add')
-    return render(request, 'persons/home.html', {'form': form})
-
-
-def person_update_view(request, pk):
-    person = get_object_or_404(Person, pk=pk)
-    form = PersonCreationForm(instance=person)
-    if request.method == 'POST':
-        form = PersonCreationForm(request.POST, instance=person)
-        if form.is_valid():
-            form.save()
-            return redirect('person_change', pk=pk)
-    return render(request, 'persons/home.html', {'form': form})
-
+"""
 
 # AJAX
-def load_cities(request):
-    country_id = request.GET.get('country_id')
-    province_id = request.GET.get('province_id')
+def get_districts_ajax(request):
+    if request.method == "POST":
+        province_id = request.POST['province_id']
+        try:
+            province = Province.objects.filter(id = province_id).first()
+            print("Province with ID: ",province)
+            districts = District.objects.filter(province = province)
+        except Exception:
+            pass
+           # data['error_message'] = 'error'
+           # return JsonResponse(data)
+        return JsonResponse(list(districts.values('id', 'name')), safe = False) 
+    
+def get_bankbranch_ajax(request):
+    if request.method == "POST":
+        bank_id = request.POST['bank_id']
+        try:
+            bank = Bank.objects.filter(id = bank_id).first()
+            print("Bank with ID: ",bank)
+            branches = BankBranch.objects.filter(bank = bank)
+        except Exception:
+            pass
+           # data['error_message'] = 'error'
+           # return JsonResponse(data)
+        return JsonResponse(list(branches.values('id', 'name')), safe = False)
 
-    cities = City.objects.filter(country_id=country_id).all()
-    districts= District.objects.filter(province_id=province_id).all()
+# ===================================
 
-    return render(request, 'persons/city_dropdown_list_options.html', {'cities': cities,'districts':districts})
-    # return JsonResponse(list(cities.values('id', 'name')), safe=False)
 
+def upload_csv(request):
+    data = {}
+    if "GET" == request.method:
+        return render(request, "Examiner/upload_csv.html", data)
+    # if not GET, then proceed
+    try:
+        csv_file = request.FILES["csv_file"]
+        if not csv_file.name.endswith('.csv'):
+            messages.error(request, 'File is not CSV type')
+            return HttpResponseRedirect(reverse("upload_csv"))
+    # if file is too large, return
+        if csv_file.multiple_chunks():
+            messages.error(request, "Uploaded file is too big (%.2f MB)." % (
+                csv_file.size/(1000*1000),))
+            return HttpResponseRedirect(reverse("upload_csv"))
+
+        file_data = csv_file.read().decode("utf-8")
+        lines = file_data.split("\n")
+        # loop over the lines and save them in db. If error , store as string and then display
+        data=districtcsv.objects.all()
+        print(data)
+        for line in lines:
+            print("=======Line: ",line)
+            fields = line.split(",")
+            data_dict = {}
+            data_dict["bank"] =2  # field=uploaded file column
+            data_dict["name"] = fields[0]
+            data_dict["sortcode"] = fields[6]
+            try:
+                form = BankBranchForm(data_dict)
+                print("data_dict:",data_dict)
+                if form.is_valid():
+                    form.save()
+                else:
+
+                    logging.getLogger("error_logger").error(
+                        form.errors.as_json())
+
+            except Exception as e:
+                logging.getLogger("error_logger").error(repr(e))
+                pass
+
+    except Exception as e:
+        logging.getLogger("error_logger").error(
+            "Unable to upload file. "+repr(e))
+        messages.error(request, "Unable to upload file. "+repr(e))
+
+    return HttpResponseRedirect(reverse("upload_csv"))
+
+
+from . models import Country, City, Person
+from django.http import JsonResponse
+
+def get_topics_ajax(request):
+    if request.method == "POST":
+        country_id = request.POST['country_id']
+        try:
+            country = Country.objects.filter(id = country_id).first()
+            print("country with ID: ",country)
+            cities = City.objects.filter(country = country)
+        except Exception:
+            pass
+           # data['error_message'] = 'error'
+           # return JsonResponse(data)
+        return JsonResponse(list(cities.values('id', 'name')), safe = False)
+    
+
+    
+class BankListView(ListView):
+    model=BankBranch
+    context_object_name='branches'
+    template_name='registration/banks.html'
+
+class BankCreateView(CreateView):
+    model= BankBranch
+    fields='__all__'
+    context_object_name='branches'
+    template_name='registration/banks.html'
+    
+    
+def sendmail(request):
+    send_mail('Testing mail',
+              'JHellow user,This is a testing email',
+              'kaulaclementb@gmail.com',
+              ['rariyoj844@migonom.com'],
+              fail_silently=False)
+    return render(request,'registration/email_temp.html')

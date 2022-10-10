@@ -1,24 +1,14 @@
+from dataclasses import field, fields
 from django import forms
-from .models import Examiner,EAD,District,Province,Person,City,Invitation
+from django.contrib.auth. forms import UserCreationForm
+from .models import Examiner,EAD,District,Province,Person,City,Invitation ,districtcsv,Subject,Bank,BankBranch,Staff
 
 class ExaminerForm(forms.ModelForm):
     class Meta:
         model=Examiner 
-        fields=('country','city','name','subject','position','Address','province','district',
-                'AccountDetails','NRC','TPIN','cell_Number','email')
-
-        def __init__(self, *args, **kwargs):
-            super().__init__(*args, **kwargs)
-            self.fields['city'].queryset = City.objects.none()
-
-            if 'country' in self.data:
-                try:
-                    country_id = int(self.data.get('country'))
-                    self.fields['city'].queryset = City.objects.filter(country_id=country_id).order_by('name')
-                except (ValueError, TypeError):
-                    pass  # invalid input from the client; ignore and fallback to empty City queryset
-            elif self.instance.pk:
-                self.fields['city'].queryset = self.instance.country.city_set.order_by('name')
+        #fields='__all__'
+        fields=('name','subject','position','Address','province','district',
+                'AccountDetails','NRC','TPIN','cell_Number','email','availability','bank','branch')
        
         widgets = {
             'name': forms.TextInput(attrs={'class':'form-control','placeholder':'name'}),
@@ -31,13 +21,8 @@ class ExaminerForm(forms.ModelForm):
             'NRC': forms.TextInput(attrs={'class':'form-control','placeholder':'NRC Number'}),
             'TPIN': forms.TextInput(attrs={'class':'form-control','placeholder':'T Pin'}),
             'cell_Number': forms.TextInput(attrs={'class':'form-control','placeholder':'cell phone number'}),
-            'email': forms.EmailInput(attrs={'class':'form-control','placeholder':'email@..com'}),
+            'email': forms.EmailInput(attrs={'class':'form-control','placeholder':'email@abc.abc'}),
         }
-
-      #province id_province
-      #district id_districts
-      #
-
 
 
 
@@ -81,3 +66,24 @@ class InvitationForm(forms.ModelForm):
             'title': forms.TextInput(attrs={'class':'form-control','placeholder':'UserName'}),
             
         }
+
+
+class DistForm(forms.ModelForm):
+    class Meta:
+        model=districtcsv
+        fields=('code','name')
+
+class SubjectForm(forms.ModelForm):
+    class Meta:
+        model=Subject
+        fields=('subjectCode','subjectName','subjectDescription')
+        
+class BankBranchForm(forms.ModelForm):
+    class Meta:
+        model=BankBranch
+        fields=('bank','name','sortcode')
+        
+class StaffForm(forms.ModelForm):
+    class Meta:
+        model=Staff
+        fields=('name',)

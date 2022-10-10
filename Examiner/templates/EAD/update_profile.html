@@ -1,0 +1,91 @@
+{%extends 'base.html'%}
+{%block content%}
+<h3>Profile update</h3>
+<div class="container">
+    <div class="card">
+        <div class="card-body">
+            <form method="POST" action="" id="profile-form" >
+                {% csrf_token %}
+                <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="inputText">UserName</label>
+                    <input type="text" class="form-control" id="UserName" value="{{request.user.username}}" placeholder="UserName" disabled>
+                </div>
+                
+                </div>
+
+                <div class="row">
+                    <div class="form-group col-md-6">
+                      <label for="inputAddress">First Name</label>
+                      <input type="text" class="form-control" id="inputAddress" value="{{request.user.first_name}}" placeholder="First Name">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="inputAddress2">Last Name</label>
+                        <input type="text" class="form-control" id="inputAddress2" value="{{request.user.last_name}}" placeholder="Last Name">
+                    </div>
+                </div>
+                <div class="form-group ">
+                    <label for="inputEmail4">Email</label>
+                    <input type="email" class="form-control" id="inputEmail4" value="{{request.user.email}}" placeholder="Email">
+                </div>
+                <div class="form-group ">
+                    <label for="inputEmail4">Address</label>
+                    <input type="text" class="form-control" id="Address" value="{{request.user.address}}" placeholder="Address">
+                </div>
+                <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="inputCity">Province</label>
+                    <select id="province" class="form-control">
+                    <option selected disabled>Select District</option>
+                    {%for province in provinces%}
+                    <option value="{{province.id}}">{{province.name}}</option>
+                    {%endfor%}
+                    </select>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="inputState">District</label>
+                    <select id="district" class="form-control">
+                    <option selected disabled>Choose a district</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-2">
+                    <label for="inputZip">Station</label>
+                    <input type="text" class="form-control" id="inputZip">
+                </div>
+                </div>
+                <div class="form-group">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="gridCheck">
+                    <label class="form-check-label" for="gridCheck">
+                    Check me out
+                    </label>
+                </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Update</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+<script>
+    $("#province").change(function () {
+        const provinceID = $(this).val();  // get the selected subject ID from the HTML dropdown list 
+        $.ajax({                       // initialize an AJAX request
+            type: "POST",
+            url: '{% url "load-districts" %}',
+            data: {
+                'province_id': provinceID,       // add the country id to the POST parameters
+                'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val(),
+            },
+            success: function (data) {   // `data` is from `get_topics_ajax` view function
+                let html_data = '<option value="">Choose a district</option>';
+                data.forEach(function (data) {
+                    html_data += `<option value="${data.id}">${data.name}</option>`
+                });
+                $("#district").html(html_data); // replace the contents of the topic input with the data that came from the server
+            }
+        });
+    });
+</script>
+{%endblock%}

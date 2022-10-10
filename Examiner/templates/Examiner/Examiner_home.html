@@ -1,8 +1,69 @@
-{%extends 'index.html' %}
-
-
+{% extends 'base.html'%}
 {%block content%}
+Examiner Home Page
+<div class="container-fluid">
+    <div class="row">
+      <div class="col-lg-6">
+        <div class="card card-success card-outline">
+          <div class="card-body">
+            <h5 class="card-title">Card title</h5>
 
-<h1>Home for the Examiner / User</h1>
+            <p class="card-text">
+             Examinations council of zambia news /updats to the examinations marker or some general information in here
+            </p>
+
+            <a href="#" class="card-link">Card link</a>
+            <a href="#" class="card-link">Another link</a>
+          </div>
+        </div>
+<!--card-primary card-outline-->
+        <div class="card card-success card-outline">
+          <div class="card-body">
+            <h5 class="card-title">Card title</h5>
+
+            <p class="card-text">
+              Examinations council of zambia news /updats to the examinations marker or 
+              some general information in here
+            </p>
+            <a href="#" class="card-link">Card link</a>
+            <a href="#" class="card-link">Another link</a>
+          </div>  
+        </div>  <!-- /.card -->
+      </div>
+      <!-- /.col-md-6 -->
+      <div class="col-lg-6">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="m-0">Featured</h5>
+          </div>
+          <div class="card-body">
+            <h6 class="card-title">Special title treatment</h6>
+
+            <p class="card-text">go to some additional content.</p>
+            <a href="#" class="btn btn-success">Go somewhere</a>
+          </div>
+        </div>
+
+        <div class="card card-success card-outline">
+          <div class="card-header">
+            <h5 class="m-0">Featured</h5>
+          </div>
+          <div class="card-body">
+            <h6 class="card-title">Special title treatment</h6>
+
+            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+            <a href="#" class="btn btn-success">Go somewhere</a>
+          </div>
+        </div>
+      </div>
+      <!-- /.col-md-6 -->
+    </div>
+    <!-- /.row -->
+  </div>
+
+ 
+<hr>
+
+<h1>{{request.user.user_type}}</h1>
 
 {%endblock content%}

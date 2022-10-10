@@ -1,0 +1,76 @@
+{%extends 'index.html' %}
+
+{%block content%}
+<h2>Examiner Creation Form</h2>
+
+<form method="POST" id="ExaminerForm" data-districts-url="{% url 'load-districts'%}">
+    <div class="container-fluid">
+
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+              <div class="card card-primary">
+                {% csrf_token%}
+                {%for field in form%}
+                 <div class="card-body">
+                  <label for="exampleinputpassword" class="form-lable">{{field.label}}</label>
+                  {{field}}
+                 </div>
+                {%endfor%}
+
+
+              </div>
+                <!-- /.card -->
+
+            </div>
+        </div>
+
+    </div><!-- /.container-fluid -->
+   
+    <a href="{%url 'examiner-list'%}">back</a>  <input type="submit" value="Submit">
+</form>
+
+<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+<script>
+    $("#id_province").change(function () {
+        const provinceID = $(this).val();  // get the selected subject ID from the HTML dropdown list 
+        $.ajax({                       // initialize an AJAX request
+            type: "POST",
+            url: '{% url "load-districts" %}',
+            data: {
+                'province_id': provinceID,       // add the country id to the POST parameters
+                'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val(),
+            },
+            success: function (data) {   // `data` is from `get_topics_ajax` view function
+                let html_data = '<option value="">Choose a district</option>';
+                data.forEach(function (data) {
+                    html_data += `<option value="${data.id}">${data.name}</option>`
+                });
+                $("#id_district").html(html_data); // replace the contents of the topic input with the data that came from the server
+            }
+        });
+    });
+</script>
+<script>
+  $("#id_bank").change(function () {
+      const bankID = $(this).val();  // get the selected  ID from the HTML dropdown list 
+      $.ajax({                       // initialize an AJAX request
+          type: "POST",
+          url: '{% url "load-bank-branches" %}',
+          data: {
+              'bank_id': bankID,       // add the  id to the POST parameters
+              'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val(),
+          },
+          success: function (data) {   // `data` is from `load-bank-branches` view function
+              let html_data = '<option value="">Choose a bank branch</option>';
+              data.forEach(function (data) {
+                  html_data += `<option value="${data.id}">${data.name}</option>`
+              });
+              $("#id_branch").html(html_data); // replace the contents  with the data that came from the server
+          }
+      });
+  });
+</script>
+{%endblock content%}
+
+

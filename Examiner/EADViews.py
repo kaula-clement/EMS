@@ -1,42 +1,46 @@
+from dataclasses import field
 from django.shortcuts import render,redirect
-from .models import Examiner,Invitation,Subject,Position,EAD
+from datetime import date
+from .models import Examiner,Invitation,Subject,Position,EAD,CustomUser,Province
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView,UpdateView,DeleteView
 from django.urls import reverse_lazy
 from . forms import EADForm,InvitationForm,ExaminerForm
 #======================================
-from django.contrib.auth.views import LoginView
-from django.contrib.auth.models import User
+
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 
+from . decorators import unauthenticated_user,allowed_users
 #======================================
 
-
-@login_required()
-def Home(request):
-    #examiner_obj=Examiner.objects.get(ExaminerCode=request.user.user_id)
-    notifications=Invitation.objects.filter(toAddress=request.user.id)
-    T_nots=notifications.count()
-    context={'notifications':notifications,'T_nots':T_nots}
-    return render(request, 'index.html',context)
+#@login_required()
+@ unauthenticated_user
+def EADHome(request): 
+    examiners=Examiner.objects.all()
+    examiners_count=examiners.count()
+    available_examiners=examiners.filter(availability=True).count()
+    subject_count=Subject.objects.all().count()
+    context={
+            'examiners_count':examiners_count,
+            'subject_count':subject_count,
+            'available_examiners':available_examiners
+            }
+    print("Im in the right view +++++++++++++++++++")
+    return render(request, 'EAD/EAD_home.html',context)
 
 class EADCreateView(CreateView):
     model=EAD
     form_class=EADForm
     template_name='EAD/EAD_Create.html'
+    success_url=reverse_lazy('ead-list')
+
 
 class EADListView(ListView):
     model=EAD
     context_object_name='EADs'
     template_name='EAD/EAD_List.html'
-
-class EADDeleteView(DeleteView):
-    model=EAD
-    context_object_name='obj'
-    template_name='Subject/confirm_Delete.html'
-    success_url=reverse_lazy('ead-list')
 
 class EADUpdateView(UpdateView):
     model=EAD
@@ -44,35 +48,11 @@ class EADUpdateView(UpdateView):
     template_name='EAD/EAD_Create.html'
     success_url = reverse_lazy('subject-list')
 
-
-
-def add_staff(request):
-    return render(request, "hod_template/add_staff_template.html")
-
-
-def add_staff_save(request):
-    if request.method != "POST":
-        messages.error(request, "Invalid Method ")
-        return redirect('add_staff')
-    else:
-        first_name = request.POST.get('first_name')
-        last_name = request.POST.get('last_name')
-        username = request.POST.get('username')
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-        address = request.POST.get('address')
-
-        try:
-            user = CustomUser.objects.create_user(username=username, password=password, email=email, first_name=first_name, last_name=last_name, user_type=2)
-            user.staffs.address = address
-            user.save()
-            messages.success(request, "Staff Added Successfully!")
-            return redirect('add_staff')
-        except:
-            messages.error(request, "Failed to Add Staff!")
-            return redirect('add_staff')
-
-
+class EADDeleteView(DeleteView):
+    model=EAD
+    context_object_name='obj'
+    template_name='Subject/confirm_Delete.html'
+    success_url=reverse_lazy('ead-list')
 
 class SubjectCreateView(CreateView):
     model=Subject
@@ -97,69 +77,39 @@ class SubjectDeleteView(DeleteView):
     template_name='Subject/confirm_Delete.html'
     success_url=reverse_lazy('subject-list')
 
-class CustomLoginView(LoginView):
-    template_name='registration/login.html'
-    fields='__all__'
-    redirect_authenticated_user=True
 
-    def get_success_url(self):
-        return reverse_lazy('home')
-        #return reverse_lazy('examiner-list')
-
-"""
-class Home(LoginRequiredMixin,ListView):
-    template_name='index.html'
+class ExaminerCreate(LoginRequiredMixin,CreateView):
     model=Examiner
-    context_object_name='examiner'
+    form_class=ExaminerForm
+    template_name='EAD/Examiner_form.html'
+    success_url=reverse_lazy('examiner-list')
+    def form_valid(self, ExaminerForm):
+        #get current date year
+        td=str(date.today().year)
+        #pre save to get id
+        super().form_valid(ExaminerForm)
+        #concatenate year(2digits)+[subject code]+ [id] to make code
+        code=td[-2:]+'-'+ExaminerForm.instance.subject.subjectCode+str(self.object.id)
+        #Examinercode is = concatenated code 
+        ExaminerForm.instance.ExaminerCode=code
+        #create user for the examiner
+        ExaminerForm.instance.user=CustomUser.objects.create_user(username=code,
+                            password='password3', email='MicroVich.1@abc.com',
+                            user_type=3)
+            #return a valid form
+        return super(ExaminerCreate,self).form_valid(ExaminerForm)
 
-    #to view only the examiner whose the user is loged 
-    def get_context_data(self,**kwargs):
-        context = super().get_context_data(**kwargs)
-        context['examiner',]= context['examiner'].filter(user=self.request.user)
-        return context
- 
-"""
-@login_required()
-def Home(request):
-    #examiner_obj=Examiner.objects.get(ExaminerCode=request.user.user_id)
-    notifications=Invitation.objects.filter(toAddress=request.user.id)
-    T_nots=notifications.count()
-    context={'notifications':notifications,'T_nots':T_nots}
-    return render(request, 'index.html',context)
-'''    
-def sendInvitation(request,UserID):
-    fromUser=request.user
-    toUser=User.objects.get(id=UserID)
-'''
+
 
 class ExaminerList(LoginRequiredMixin,ListView):
     model=Examiner
+    template_name='EAD/Examiner_list.html'
     context_object_name='examiners'
-
-
-class NotificationList(LoginRequiredMixin,ListView):
-    model=Invitation
-    context_object_name='invitations'
-    template_name='Examiner/notifications_list.html'
-
-
-
-class ExaminerDetail(LoginRequiredMixin,DetailView):
-    model=Examiner
-    form_class=ExaminerForm
-    context_object_name='Examiner'
-"""
-class ExaminerCreate(LoginRequiredMixin,CreateView):
-    model=Examiner
-    #fields='__all__'
-    fields=['subject','position','name','Address','District','Province',
-                'AccountDetails','NRC','TPIN','cell_Number','email']
-    success_url=reverse_lazy('examiner-list')
- """
 
 class ExaminerUpdate(LoginRequiredMixin,UpdateView):
     model=Examiner
-    fields='__all__'
+    form_class=ExaminerForm
+    template_name='EAD/Examiner_form.html'
     success_url=reverse_lazy('examiner-list')
 
 class ExaminerDelete(LoginRequiredMixin,DeleteView):
@@ -167,13 +117,86 @@ class ExaminerDelete(LoginRequiredMixin,DeleteView):
     context_object_name='Examiner'
     success_url=reverse_lazy('examiner-list')
 
+class ExaminerDetail(LoginRequiredMixin,DetailView):
+    model=Examiner
+    form_class=ExaminerForm
+    context_object_name='Examiner'
+    
+
+def updateprofile(request):
+    User= CustomUser.objects.get(id=request.user.id)
+    print("============EAD:",User)
+    EADobj=EAD.objects.get(user=User)
+    provinces=Province.objects.all()
+    
+    context={
+        'User':User,
+        'EADobj':EADobj,
+        'provinces':provinces
+            }
+    return render(request,'EAD/update_profile.html',context)
+
+class EADUpdate(UpdateView):
+    model=CustomUser
+    fields="__all__"
+    context_object_name='ead'
+    template_name='EAD/update_profile.html'
+    success_url=reverse_lazy('ead-list')
+    
+
+def updateprofilesave(request):
+    print("Im in saving method =============")
+    if request.method=="POST":
+        print("getting post data")
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        password = request.POST.get('password')
+        address = request.POST.get('address')
+        province=request.POST.get('province')
+        district=request.POST.get('district')
+
+        try:
+            customuser = CustomUser.objects.get(id=request.user.id)
+            print("Replacing post data")
+            customuser = CustomUser.objects.get(id=request.user.id)
+            print("Replacing post data for USER: ",customuser)
+            customuser.first_name = first_name
+            customuser.last_name = last_name
+            if password != None and password != "":
+                customuser.set_password(password)    
+            form=form(request.Post)
+            if form.is_valid():
+                form.save()   
+            ead = EAD.objects.get(user=customuser.id)
+            ead.address = address
+            ead.province=province
+            ead.district=district
+            
+            
+            customuser.save()
+            ead.save()
+        
+            print("EAD Profile updated: ",ead.address)
+            #messages.success(request, "Profile Updated Successfully")
+            return redirect('profile')
+        except:
+            pass
+            #messages.error(request, "Failed to Update Profile")
+            return redirect('profile')
+
+
+
+class NotificationList(LoginRequiredMixin,ListView):
+    model=Invitation
+    context_object_name='invitations'
+    template_name='Examiner/notifications_list.html'
+
 class InviteView(CreateView):
     model=Invitation
     form_class=InvitationForm
     template_name='Examiner/Invite.html'
     success_url=reverse_lazy('notifications-list')
     
-
 class invitationResponse(LoginRequiredMixin,UpdateView):
     model=Invitation
     template_name='confirm_Invitation.html'

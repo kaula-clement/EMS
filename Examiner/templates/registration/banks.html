@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<a href="{% url 'upload_csv'%}">Upload bank branches from csv</a>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Bank </th>
+            <th>Bank Branch</th>
+            <th>sort code</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for branch in branches %}
+        <tr>
+            <td>{{branch.bank.name}}<td>
+            <td>{{branch.name}}<td>
+            <td>{{branch.sortcode}}<td>
+        </tr>
+        {% endfor %}
+
+    </tbody>
+</table>
+
+
+
+{% endblock content %}
+
+
