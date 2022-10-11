@@ -1,17 +1,12 @@
-from dataclasses import fields
-from .models import Person, City,BankBranch,Bank
-from django.shortcuts import render, redirect
+from .models import City,BankBranch,Bank
+from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from .models import Examiner, Invitation, Province, District,districtcsv
 from django.views.generic.list import ListView
-from django.views.generic.detail import DetailView
-from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.views.generic.edit import CreateView
 from django.urls import reverse_lazy, reverse
-from . decorators import unauthenticated_user
-# ======================================
 
-from django.contrib.auth.models import User
-from django.contrib.auth import login, logout, authenticate
+# ======================================
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import BankBranchForm

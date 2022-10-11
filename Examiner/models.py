@@ -73,7 +73,7 @@ class Subject(models.Model):
     subjectName=models.CharField(max_length=20,null=True)
     subjectDescription=models.CharField(max_length=50,null=True,blank=True)
     datecreated= models.DateField(auto_now=True)
-    dateupdated= models.DateField(auto_now=True)
+    dateupdated= models.DateField(auto_now=True) 
 
     def __str__(self):
        return self.subjectCode
@@ -163,5 +163,21 @@ class districtcsv(models.Model):
 class subjectselector(models.Model):
     code=models.CharField(max_length=50)
     papernumber=models.IntegerField()
- 
+    
+from django.dispatch import receiver
+
+@receiver(models.signals.post_delete, sender=Examiner)
+def handle_deleted_examiner(sender, instance, **kwargs):
+    if instance.user:
+        instance.user.delete()
+        
+@receiver(models.signals.post_delete, sender=Staff)
+def handle_deleted_staff(sender, instance, **kwargs):
+    if instance.user:
+        instance.user.delete()
+        
+@receiver(models.signals.post_delete, sender=EAD)
+def handle_deleted_ead(sender, instance, **kwargs):
+    if instance.user:
+        instance.user.delete()
    

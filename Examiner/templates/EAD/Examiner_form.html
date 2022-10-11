@@ -11,17 +11,148 @@
                 <!-- general form elements -->
               <div class="card card-primary">
                 {% csrf_token%}
-                {%for field in form%}
-                 <div class="card-body">
-                  <label for="exampleinputpassword" class="form-lable">{{field.label}}</label>
-                  {{field}}
-                 </div>
-                {%endfor%}
-
-
+      <!--          
+                    {%for field in form%}
+                    <div class="card-body">
+                    <label for="exampleinputpassword" class="form-lable">{{field.label}}</label>
+                    {{field}}
+                    </div>
+                    {%endfor%}
+        -->
               </div>
                 <!-- /.card -->
 
+            </div>
+        </div>
+
+
+        <div class="card">
+            <div class="card-body">
+                <form method="POST" action="" id="profile-form" >
+                    {% csrf_token %}
+                <div class="row">
+                    <div class="form-group col-md-4">
+                        <label for="inputText">First Name</label>
+                        <input type="text" class="form-control" id="name"  placeholder="First Name" >
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="inputText">Middle Name</label>
+                        <input type="text" class="form-control" id="name"  placeholder="Middle Name" >
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="inputText">Last Name</label>
+                        <input type="text" class="form-control" id="name" placeholder="Last Name" >
+                    </div>
+
+                </div>
+                <div class="row">
+    
+                        <div class="form-group col-md-6">
+                            <label for="inputText">NRC</label>
+                            <input type="text" class="form-control" id="name"  placeholder="NRC Number" >
+                        </div>
+      
+      
+                        <div class="form-group col-md-6">
+                            <label for="inputText">Cell Phone</label>
+                            <input type="text" class="form-control" id="name"  placeholder="Cell Phone Number" >
+                        </div>
+ 
+                </div>
+                    <div class="form-group ">
+                        <label for="inputEmail4">Email</label>
+                        <input type="email" class="form-control" id="inputEmail4"  placeholder="Email">
+                    </div>
+                    <div class="form-group ">
+                        <label for="inputEmail4">Address</label>
+                        <input type="text" class="form-control" id="Address" value="{{request.user.address}}" placeholder="Address">
+                    </div>
+    
+                    <div class="form-row">                
+
+                        <div class="form-group col-md-6">
+                            <label for="subject">Subject</label>
+                            <select id="id_subject" class="form-control">
+                            <option selected disabled>Select Subject</option>
+                            {%for subject in subject_list %}
+                            <option value="{{subject.id}}">{{subject.subjectName}}</option>
+                            {%endfor%}
+                            </select>
+                        </div>
+                        <div class "form-group col-md-4">
+                            <label for "posision">Position</label>
+                            <select id="select" class="form-control">
+                                <option value+"">Select Position</option>
+                                    {% for position in position_list %}
+                                <option value="{{position.id}}">{{position.name}}</option>   
+                                    {% endfor %}
+                            </select>
+                        </div>
+                        
+                    </div>
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label for="Province">Province</label>
+                        <select id="id_province" name="province" class="form-control">
+                        <option selected disabled>Choose a Province</option>
+                        {% for province in province_list %}
+                        <option value="{{province.id}}">{{province.name}}</option>
+                        {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="inputState">District</label>
+                        <select name="district" class="form-control" placeholder="District" required="" id="id_district">
+                        <option selected disabled>Choose a district</option>
+                        </select>
+                    </div>
+                
+                    <div class="form-group col-md-4">
+                        <label for="inputZip">Station</label>
+                        <input type="text" name="station"class="form-control" id="inputZip">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label for="Province">Bank</label>
+                        <select id="id_bank" name="bank" class="form-control">
+                        <option selected disabled>Choose a Bank</option>
+                        {% for bank in bank_list %}
+                        <option value="{{bank.id}}">{{bank.name}}</option>
+                        {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="branch">Bank Branch</label>
+                        <select name="branch" class="form-control" placeholder="bankbranch" required="" id="id_branch">
+                        <option selected disabled>Choose a branch</option>
+                        </select>
+                    </div>
+                
+                    <div class="form-group col-md-4">
+                        <label for="inputZip">Account Number</label>
+                        <input type="text" name="accountdetails"class="form-control" id="inputZip">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="TPIN">TPIN</label>
+                        <input type="text" class="form-control" id="tpin"  placeholder="T-Pin" >
+                    </div>
+                </div>
+
+
+
+                    <div class="form-group">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="gridCheck">
+                        <label class="form-check-label" for="gridCheck">
+                        Available for the marking session?
+                        </label>
+                    </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
             </div>
         </div>
 

@@ -1,4 +1,5 @@
 from dataclasses import field, fields
+from xml.dom.minidom import Attr
 from django import forms
 from django.contrib.auth. forms import UserCreationForm
 from .models import Examiner,EAD,District,Province,Person,City,Invitation ,districtcsv,Subject,Bank,BankBranch,Staff
@@ -9,13 +10,13 @@ class ExaminerForm(forms.ModelForm):
         #fields='__all__'
         fields=('name','subject','position','Address','province','district',
                 'AccountDetails','NRC','TPIN','cell_Number','email','availability','bank','branch')
-       
+        
         widgets = {
-            'name': forms.TextInput(attrs={'class':'form-control','placeholder':'name'}),
-            'subject': forms.Select(attrs={'class':'form-control'}),
+            'name': forms.TextInput(attrs={'class':'form-control col-md-4','placeholder':'name'}),
+            'subject': forms.Select(attrs={'class':'form-control col-md-4'}),
             'position': forms.Select(attrs={'class':'form-control','placeholder':'Select Position'}),
             'Address': forms.TextInput(attrs={'class':'form-control','placeholder':'Address'}),
-            'province': forms.Select(attrs={'class':'form-control','placeholder':'Provinve'}),
+            'province': forms.Select(attrs={'class':'form-control','placeholder':'Province'}),
             'district': forms.Select(attrs={'class':'form-control','placeholder':'District'}),
             'AccountDetails': forms.TextInput(attrs={'class':'form-control','placeholder':'Account Details'}),
             'NRC': forms.TextInput(attrs={'class':'form-control','placeholder':'NRC Number'}),

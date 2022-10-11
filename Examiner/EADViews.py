@@ -1,7 +1,7 @@
 from dataclasses import field
 from django.shortcuts import render,redirect
 from datetime import date
-from .models import Examiner,Invitation,Subject,Position,EAD,CustomUser,Province
+from .models import Bank, Examiner,Invitation,Subject,Position,EAD,CustomUser,Province
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView,UpdateView,DeleteView
@@ -80,9 +80,18 @@ class SubjectDeleteView(DeleteView):
 
 class ExaminerCreate(LoginRequiredMixin,CreateView):
     model=Examiner
-    form_class=ExaminerForm
+    form_class=ExaminerForm 
     template_name='EAD/Examiner_form.html'
     success_url=reverse_lazy('examiner-list')
+    def get_context_data(self, **kwargs):
+        context= super().get_context_data(**kwargs)
+        context['subject_list']=Subject.objects.all()
+        context['province_list']=Province.objects.all()
+        context['position_list']=Position.objects.all()
+        context['bank_list']=Bank.objects.all()
+        return context
+        
+        
     def form_valid(self, ExaminerForm):
         #get current date year
         td=str(date.today().year)
@@ -105,6 +114,11 @@ class ExaminerList(LoginRequiredMixin,ListView):
     model=Examiner
     template_name='EAD/Examiner_list.html'
     context_object_name='examiners'
+    def post(self,request,*args, **kwargs):
+        if request.method=="POST":
+            Examiner.objects.filter(id__in=request.POST.getlist('id[]')).delete()
+        return redirect('examiner-list')
+        
 
 class ExaminerUpdate(LoginRequiredMixin,UpdateView):
     model=Examiner
@@ -116,6 +130,7 @@ class ExaminerDelete(LoginRequiredMixin,DeleteView):
     model=Examiner
     context_object_name='Examiner'
     success_url=reverse_lazy('examiner-list')
+    
 
 class ExaminerDetail(LoginRequiredMixin,DetailView):
     model=Examiner

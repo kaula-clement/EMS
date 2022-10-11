@@ -19,7 +19,7 @@
         <th></th>
     </tr>
     {%for item in examiners %} 
-<tr>
+<tr id="{{item.id}}">
    <!-- <td>{{item.id}}</td> -->
     <td>{{item.ExaminerCode}}</td>
     <td>{{item.name}}</td>
@@ -58,22 +58,22 @@ $(document).ready(function(){
             alert("No items checked!")
         }else{
             console.log(id)
-            $.ajax{
-                url:"",
+            $.ajax({
+                url:'',
                 method:"POST",
-                data{
+                data:{
                     id,
-                    csrfToken:csrf,
+                    csrfmiddlewaretoken:csrf
 
                 },
                 success:function(response){
                     for(var i =0; i<= id.length; i++){
-                        $('tr#'+id[i]+'')
+                        $('tr#'+id[i]+'').css('background-color','#ccc');
+                        $('tr#'+id[i]+'').fadeOut('slow');
                     }
                 }
-            }
+            })
         }
-
     })
 })
 
