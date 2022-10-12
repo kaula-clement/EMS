@@ -1,6 +1,8 @@
 from dataclasses import field
 from django.shortcuts import render,redirect
 from datetime import date
+
+from requests import request
 from .models import Bank, Examiner,Invitation,Subject,Position,EAD,CustomUser,Province
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
@@ -93,7 +95,6 @@ class ExaminerCreate(LoginRequiredMixin,CreateView):
         
         
     def form_valid(self, ExaminerForm):
-        #get current date year
         td=str(date.today().year)
         #pre save to get id
         super().form_valid(ExaminerForm)
@@ -105,7 +106,7 @@ class ExaminerCreate(LoginRequiredMixin,CreateView):
         ExaminerForm.instance.user=CustomUser.objects.create_user(username=code,
                             password='password3', email='MicroVich.1@abc.com',
                             user_type=3)
-            #return a valid form
+                #return a valid form
         return super(ExaminerCreate,self).form_valid(ExaminerForm)
 
 

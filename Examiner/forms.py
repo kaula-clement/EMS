@@ -12,8 +12,8 @@ class ExaminerForm(forms.ModelForm):
                 'AccountDetails','NRC','TPIN','cell_Number','email','availability','bank','branch')
         
         widgets = {
-            'name': forms.TextInput(attrs={'class':'form-control col-md-4','placeholder':'name'}),
-            'subject': forms.Select(attrs={'class':'form-control col-md-4'}),
+            'name': forms.TextInput(attrs={'class':'form-control','placeholder':'name'}),
+            'subject': forms.Select(attrs={'class':'form-control '}),
             'position': forms.Select(attrs={'class':'form-control','placeholder':'Select Position'}),
             'Address': forms.TextInput(attrs={'class':'form-control','placeholder':'Address'}),
             'province': forms.Select(attrs={'class':'form-control','placeholder':'Province'}),
@@ -83,6 +83,11 @@ class BankBranchForm(forms.ModelForm):
     class Meta:
         model=BankBranch
         fields=('bank','name','sortcode')
+        
+class BankForm(forms.ModelForm):
+    class Meta:
+        model=Bank
+        fields=('name',)
         
 class StaffForm(forms.ModelForm):
     class Meta:

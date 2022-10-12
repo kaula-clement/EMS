@@ -76,7 +76,7 @@ class Subject(models.Model):
     dateupdated= models.DateField(auto_now=True) 
 
     def __str__(self):
-       return self.subjectCode
+       return self.subjectName
 
 class Invitation(models.Model):
     #toAddress=models.ForeignKey(CustomUser, on_delete = models.CASCADE,null=True,blank=True)

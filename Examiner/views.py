@@ -9,7 +9,7 @@ from django.urls import reverse_lazy, reverse
 # ======================================
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .forms import BankBranchForm
+from .forms import BankBranchForm,BankForm
 # ======================================pdf
 import csv
 from django.contrib import messages
@@ -113,15 +113,15 @@ def upload_csv(request):
         lines = file_data.split("\n")
         # loop over the lines and save them in db. If error , store as string and then display
         data=districtcsv.objects.all()
-        print(data)
+        #print(data)
         for line in lines:
             print("=======Line: ",line)
             fields = line.split(",")
             data_dict = {}
-            data_dict["bank"] =2  # field=uploaded file column
+            data_dict["bank"] =fields[6]  # field=uploaded file column
             data_dict["name"] = fields[0]
-            data_dict["sortcode"] = fields[6]
-            try:
+            data_dict["sortcode"] = fields[5]
+            try: 
                 form = BankBranchForm(data_dict)
                 print("data_dict:",data_dict)
                 if form.is_valid():
@@ -129,7 +129,7 @@ def upload_csv(request):
                 else:
 
                     logging.getLogger("error_logger").error(
-                        form.errors.as_json())
+                       form.errors.as_json())
 
             except Exception as e:
                 logging.getLogger("error_logger").error(repr(e))
