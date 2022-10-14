@@ -8,11 +8,13 @@ class ExaminerForm(forms.ModelForm):
     class Meta:
         model=Examiner 
         #fields='__all__'
-        fields=('name','subject','position','Address','province','district',
+        fields=('middle_name','last_name','first_name','subject','position','Address','province','district',
                 'AccountDetails','NRC','TPIN','cell_Number','email','availability','bank','branch')
         
         widgets = {
-            'name': forms.TextInput(attrs={'class':'form-control','placeholder':'name'}),
+            'middle_name':forms.TextInput(attrs={'class':'form-control','placeholder':'middle name'}),
+            'last_name':forms.TextInput(attrs={'class':'form-control','placeholder':'last name'}),
+            'first_name': forms.TextInput(attrs={'class':'form-control','placeholder':'name'}),
             'subject': forms.Select(attrs={'class':'form-control '}),
             'position': forms.Select(attrs={'class':'form-control','placeholder':'Select Position'}),
             'Address': forms.TextInput(attrs={'class':'form-control','placeholder':'Address'}),

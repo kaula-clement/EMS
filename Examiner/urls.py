@@ -15,6 +15,7 @@ urlpatterns = [
    
    #AUTH and Registration urls
    path('login/',CustomLoginView.as_view(),name='login'),
+   path('register/',views.registerpage,name='register'),
    path('logout/',LogoutView.as_view(next_page='login'),name='logout'), 
    path('update-user/<int:pk>/',CustomUserUpdate.as_view(),name='update-user'),
    path('group-list',CustomGroupList.as_view(),name='group-list'),

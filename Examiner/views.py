@@ -9,15 +9,25 @@ from django.urls import reverse_lazy, reverse
 # ======================================
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .forms import BankBranchForm,BankForm
+from .forms import BankBranchForm,ExaminerForm
 # ======================================pdf
 import csv
 from django.contrib import messages
+from django.contrib.auth.forms import UserCreationForm
 import logging
 from django.core.mail import send_mail
 
 
-
+def registerpage(request):
+    form=ExaminerForm
+    
+    if request.method=='POST':
+        form=ExaminerForm(request.POST)
+        if form.is_valid():
+            form.save()
+            
+    context={'form':form}
+    return render(request,'registration/register.html',context)
 
 @login_required()
 def Home(request):

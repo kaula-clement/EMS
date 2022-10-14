@@ -10,7 +10,9 @@
     <tr>
       <!--  <th>id</th> -->
         <th>Examiner Number</th>
-        <th>Name</th>
+        <th>First Name</th>
+        <th>Middle Name</th>
+        <th>Last Name</th>
         <th>position</th>
         <th>Subject</th>
         <th>Availability</th>
@@ -22,7 +24,9 @@
 <tr id="{{item.id}}">
    <!-- <td>{{item.id}}</td> -->
     <td>{{item.ExaminerCode}}</td>
-    <td>{{item.name}}</td>
+    <td>{{item.first_name}}</td>
+    <td>{{item.middle_name}}</td>
+    <td>{{item.last_name}}</td>
     <td>{{item.position.name}}</td>
     <td>{{item.subject.subjectName}}</td>
         {% if item.availability %}

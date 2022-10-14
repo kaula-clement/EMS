@@ -103,7 +103,11 @@ class ExaminerCreate(LoginRequiredMixin,CreateView):
         #Examinercode is = concatenated code 
         ExaminerForm.instance.ExaminerCode=code
         #create user for the examiner
+        first_name=ExaminerForm.instance.first_name
+        last_name=ExaminerForm.instance.last_name
         ExaminerForm.instance.user=CustomUser.objects.create_user(username=code,
+                                                                  first_name=first_name,
+                                                                  last_name=last_name,
                             password='password3', email='MicroVich.1@abc.com',
                             user_type=3)
                 #return a valid form
