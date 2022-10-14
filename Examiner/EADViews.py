@@ -123,6 +123,20 @@ class ExaminerList(LoginRequiredMixin,ListView):
         if request.method=="POST":
             Examiner.objects.filter(id__in=request.POST.getlist('id[]')).delete()
         return redirect('examiner-list')
+    
+def examinerRequests(request):
+    examiners=Examiner.objects.filter(approved=False)
+    
+    context={
+        'examiners':examiners
+    }
+    if request.method=='post':
+        toApprove=Examiner.objects.filter(id__in=request.POST.getlist('id[]'))
+        for item in toApprove:
+            print("Approve: ",item.first_name)
+        return redirect('examiner-requests')
+        
+    return render(request,'Examiner/examinerRequests.html',context)
         
 
 class ExaminerUpdate(LoginRequiredMixin,UpdateView):

@@ -15,7 +15,7 @@ urlpatterns = [
    
    #AUTH and Registration urls
    path('login/',CustomLoginView.as_view(),name='login'),
-   path('register/',views.registerpage,name='register'),
+   path('register/',views.Registerpage.as_view(),name='register'),
    path('logout/',LogoutView.as_view(next_page='login'),name='logout'), 
    path('update-user/<int:pk>/',CustomUserUpdate.as_view(),name='update-user'),
    path('group-list',CustomGroupList.as_view(),name='group-list'),
@@ -25,6 +25,7 @@ urlpatterns = [
    #====================================EAD Menu
    path('ead-home/',EADViews.EADHome,name='ead-home'),
    path('examiner/<int:pk>',ExaminerDetail.as_view(),name='examiner-details'),
+   path('examiner/requests',EADViews.examinerRequests,name='examiner-requests'),
    path('examiner-edit/<int:pk>',ExaminerUpdate.as_view(),name='examiner-edit'),
    path('examiner-delete/<int:pk>',ExaminerDelete.as_view(),name='examiner-delete'),
    path('create/',ExaminerCreate.as_view(),name='add-examiner'),

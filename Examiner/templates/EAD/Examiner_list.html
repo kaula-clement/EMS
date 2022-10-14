@@ -3,8 +3,9 @@
 
 {%block content%}
 <hr>
-<h3>Examiner list </h3>
-
+<a href="{%url 'examiner-requests'%}">see unaproved requests</a>
+<h3>Examiner list </h3> 
+<div class="table-responsive overflow-auto">
 <table class="table table-hover text-nowrap">
  {% csrf_token %}
     <tr>
@@ -16,6 +17,7 @@
         <th>position</th>
         <th>Subject</th>
         <th>Availability</th>
+        <th>Status</th>
      
         <th></th>
         <th></th>
@@ -35,6 +37,13 @@
         {% if not item.availability %}
         <td>Not Available</td>
         {% endif %}
+
+        {% if item.approved %}
+         <td>Apoved</td>
+        {% endif %}
+        {% if not item.approved %}
+        <td>Not Approved</td>
+        {% endif %}
     <td> <input type="checkbox" name="examiner_id[]" value="{{item.id}}" id="delete_examiner">
     </td>
     <td><a href="{% url 'examiner-details' item.id %}">view</a></td>
@@ -45,7 +54,16 @@
 <h4>no Examiners in list</h4>
     {%endfor%}
 </table>
-<a href="{%url 'add-examiner'%}">ADD New</a> <input type="submit" value="Delete selected" id="delete_multiple_btn">
+</div>
+
+<a href="{%url 'add-examiner'%}">ADD New</a>
+<select>
+    <option value="" >-------</option>
+    <option value="1" >Approve Selected</option>
+    <option value="2" >Delete Selected</option>
+</select> 
+
+<input type="submit" value="Delete selected" id="delete_multiple_btn">
 
 <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
 <script>

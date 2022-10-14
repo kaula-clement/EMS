@@ -134,6 +134,7 @@ class Examiner(models.Model):
     email=models.EmailField(null=True)
     country=models.ForeignKey(Country, on_delete=models.SET_NULL,null=True)
     city=models.ForeignKey(City, on_delete=models.SET_NULL,null=True)
+    approved=models.BooleanField(default=False)
     availability=models.BooleanField(default=False)
 
     objects = models.Manager()

@@ -1,4 +1,4 @@
-from .models import City,BankBranch,Bank
+from .models import City,BankBranch,Bank,CustomUser
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from .models import Examiner, Invitation, Province, District,districtcsv
@@ -16,18 +16,35 @@ from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm
 import logging
 from django.core.mail import send_mail
+from datetime import date
 
 
-def registerpage(request):
+class Registerpage(CreateView):
+    model=Examiner
+    form_class=ExaminerForm 
+    template_name='registration/register.html'
+    success_url=reverse_lazy('login')
     form=ExaminerForm
-    
-    if request.method=='POST':
-        form=ExaminerForm(request.POST)
-        if form.is_valid():
-            form.save()
-            
-    context={'form':form}
-    return render(request,'registration/register.html',context)
+    def form_valid(self, ExaminerForm):
+        td=str(date.today().year)
+        #pre save to get id
+        super().form_valid(ExaminerForm)
+        #concatenate year(2digits)+[subject code]+ [id] to make code
+        code=td[-2:]+'-'+ExaminerForm.instance.subject.subjectCode+str(self.object.id)
+        #Examinercode is = concatenated code 
+        ExaminerForm.instance.ExaminerCode=code
+        #create user for the examiner
+        first_name=ExaminerForm.instance.first_name
+        last_name=ExaminerForm.instance.last_name
+        user_email=ExaminerForm.instance.email
+        ExaminerForm.instance.user=CustomUser.objects.create_user(username=code,
+                                                                  first_name=first_name,
+                                                                  last_name=last_name,
+                            password='password3', email=user_email,
+                            user_type=3)
+                #return a valid form
+        return super(Registerpage,self).form_valid(ExaminerForm)
+   
 
 @login_required()
 def Home(request):
