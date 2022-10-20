@@ -64,7 +64,7 @@ class District(models.Model):
 
 
 class Position(models.Model):
-    name=models.CharField(max_length=20,null=True)
+    name=models.CharField(max_length=50,null=True)
     def __str__(self):
        return self.name
 
@@ -91,19 +91,28 @@ class Invitation(models.Model):
 
 class EAD(models.Model):
     user = models.OneToOneField(CustomUser, on_delete = models.SET_NULL,null=True,blank=True)
-    firstName=models.CharField(max_length=50,null=True)
-    LastName=models.CharField(max_length=50,null=True)
+    first_name=models.CharField(max_length=50,null=True)
+    middle_name=models.CharField(max_length=50,null=True,blank=True)
+    last_name=models.CharField(max_length=50,null=True)
     UserName=models.CharField(max_length=50,null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    address=models.CharField(max_length=50,null=True,blank=True)
+    bank=models.ForeignKey(Bank,on_delete=models.SET_NULL,null=True,blank=True)
+    branch=models.ForeignKey(BankBranch,on_delete=models.SET_NULL,null=True,blank=True)
+    AccountDetails=models.CharField(max_length=150,null=True)
+    NRC=models.CharField(max_length=12,null=True)
+    TPIN=models.CharField(max_length=10,null=True)
+    cell_Number=models.CharField(max_length=12,null=True)
+    email=models.EmailField(null=True)
+    Address=models.CharField(max_length=50,null=True,blank=True)
     province=models.ForeignKey(Province, on_delete=models.SET_NULL,null=True,blank=True)
     district=models.ForeignKey(District, on_delete=models.SET_NULL,null=True,blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     def save(self,*args,**kwargs):
             super().save(*args,**kwargs)
             if not self.user:
                 self.user= CustomUser.objects.create_user(username=self.UserName,
-                                                         first_name=self.firstName,last_name=self.LastName,
+                                                         first_name=self.first_name,
+                                                         last_name=self.last_name,
                                                          password='password3', email='MicroVich.1@abc.com',
                                                          is_staff=True,
                                                          user_type=1
@@ -149,7 +158,8 @@ class Staff(models.Model):
             super().save(*args,**kwargs)
             if not self.user:
                 self.user= CustomUser.objects.create_user(username=self.Username,
-                                                         first_name=self.name,
+                                                         first_name=self.first_name,
+                                                         last_name=self.last_name,
                                                          password='password3', email='MicroVich.1@abc.com',
                                                          is_staff=True,
                                                          user_type=2
@@ -166,6 +176,18 @@ class districtcsv(models.Model):
 class subjectselector(models.Model):
     code=models.CharField(max_length=50)
     papernumber=models.IntegerField()
+
+   
+class comment(models.Model):
+    commentAuthor=models.ForeignKey(CustomUser,on_delete=models.DO_NOTHING)
+    examiner=models.ForeignKey(Examiner,on_delete=models.CASCADE)
+    title=models.CharField(max_length=50)
+    msg=models.TextField(max_length=255)
+    msg2=models.TextField(max_length=255)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+   
     
 from django.dispatch import receiver
 

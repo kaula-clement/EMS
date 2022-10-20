@@ -1,11 +1,12 @@
 
 from django.urls import path
-from . import views,EADViews,ExaminerViews,StaffViews
+from . import views,EADViews,ExaminerViews,StaffViews,AuthView
 from .views import Home,BankListView
 from django.contrib.auth.views import LogoutView
 from . EADViews import NotificationList,SubjectCreateView,SubjectListView,SubjectUpdateView,SubjectDeleteView,EADCreateView,EADListView,EADDeleteView,EADUpdateView,InviteView,ExaminerCreate,ExaminerList,ExaminerDetail,ExaminerUpdate,ExaminerDelete,EADUpdate
 from . AuthView import CustomGroupList,CustomUserList,CustomUserUpdate,CustomLoginView
 from .StaffViews import StaffExaminerList
+
 
 #app_name='Examiner'
 
@@ -36,10 +37,9 @@ urlpatterns = [
    path('ead/<int:pk>',EADListView.as_view(),name='ead-details'),
    path('ead-delete/<int:pk>',EADDeleteView.as_view(),name='ead-delete'),
    path('ead/<int:pk>/',EADUpdateView.as_view(),name='update-ead'),
-   
-   path('update-profile/',EADViews.updateprofile,name='profile'),
    path('updated-profile/',EADViews.updateprofilesave,name='profile-save'),
-   path('updateprofile/<int:pk>',EADUpdate.as_view(),name='updateprofile'),
+   path('updateprofile/<str:pk>',AuthView.updateprofile,name='updateprofile'),
+   path('password-update',AuthView.updatepassword,name='updatepassword'),
    #======================================Staff Menu
    path('Staff-home/',StaffViews.StaffHome,name='staff-home'),
    path('staff/examiners/',StaffExaminerList.as_view(),name='staff-examiner-list'),   
@@ -55,6 +55,8 @@ urlpatterns = [
    path('invite-reject/<inv_id>',ExaminerViews.invitation_reject,name='invite-reject'),
    path('notifications/',NotificationList.as_view(),name='notifications-list'),
    
+   path('comments/list',ExaminerViews.examinerComment,name='comments-list'),
+   
 
    #=================================
    path('add-subject/',SubjectCreateView.as_view(),name='add-subject'),
@@ -68,7 +70,7 @@ urlpatterns = [
 
    #=========================================
 
-
+  
 
    #=========================================
 

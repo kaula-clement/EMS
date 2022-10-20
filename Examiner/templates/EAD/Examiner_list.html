@@ -2,14 +2,15 @@
 
 
 {%block content%}
+<h3>Examiners</h3>
 <hr>
-<a href="{%url 'examiner-requests'%}">see unaproved requests</a>
-<h3>Examiner list </h3> 
+<a href="{%url 'examiner-requests'%}">see unaproved requests</a> 
 <div class="table-responsive overflow-auto">
 <table class="table table-hover text-nowrap">
  {% csrf_token %}
     <tr>
       <!--  <th>id</th> -->
+        <th></th>
         <th>Examiner Number</th>
         <th>First Name</th>
         <th>Middle Name</th>
@@ -22,8 +23,11 @@
         <th></th>
         <th></th>
     </tr>
-    {%for item in examiners %} 
-<tr id="{{item.id}}">
+
+    {%for item in approved_examiners %} 
+<trid="{{item.id}}">
+    <td> <input type="checkbox" name="examiner_id[]" value="{{item.id}}" id="delete_examiner">
+    </td>
    <!-- <td>{{item.id}}</td> -->
     <td>{{item.ExaminerCode}}</td>
     <td>{{item.first_name}}</td>
@@ -44,11 +48,10 @@
         {% if not item.approved %}
         <td>Not Approved</td>
         {% endif %}
-    <td> <input type="checkbox" name="examiner_id[]" value="{{item.id}}" id="delete_examiner">
-    </td>
-    <td><a href="{% url 'examiner-details' item.id %}">view</a></td>
-    <td><a href="{% url 'examiner-edit' item.id %}">edit</a></td>
-    <td><a href="{% url 'examiner-delete' item.id %}">delete</a></td>
+    
+    <td><a href="{% url 'examiner-details' item.id %}"><i class='fas fa-eye'></i></a></td>
+    <td><a href="{% url 'examiner-edit' item.id %}"><i class='fas fa-pencil-alt'></i></a></td>
+    <td><a href="{% url 'examiner-delete' item.id %}"><i class='far fa-trash-alt' style='color:red'></i></a></td>
 </tr>
 {%empty%}
 <h4>no Examiners in list</h4>

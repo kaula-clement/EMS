@@ -1,75 +1,246 @@
 {%extends 'base.html'%}
+
+{% load static %}
+
 {%block content%}
 <h3>Profile update</h3>
 <div class="container">
     <div class="card">
         <div class="card-body">
-            <form method="POST" action="" id="profile-form" >
+            <form method="POST" action="" >
                 {% csrf_token %}
                 <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="inputText">UserName</label>
+                    {% if request.user.user_type is 3 %}
                     <input type="text" class="form-control" id="UserName" value="{{request.user.username}}" placeholder="UserName" disabled>
+                    {% else %}
+                    {{form.UserName}}
+
+                    {% endif %}
+                   <!--
+                     <input type="text" class="form-control" id="UserName" value="{{request.user.username}}" placeholder="UserName" disabled>
+                -->
+                    <span><a href="{%url 'updatepassword'%}"  >change password</a></span>
                 </div>
-                
-                </div>
+            </div>
 
                 <div class="row">
-                    <div class="form-group col-md-6">
-                      <label for="inputAddress">First Name</label>
-                      <input type="text" class="form-control" id="inputAddress" value="{{request.user.first_name}}" placeholder="First Name">
+                    <div class="col ">
+                        <label for="inputText">First Name</label>
+                        {{form.first_name}}
+                       <!-- <input type="text" class="form-control" id="id_name" name="name"  placeholder="First Name" > -->
                     </div>
-                    <div class="form-group col-md-6">
-                        <label for="inputAddress2">Last Name</label>
-                        <input type="text" class="form-control" id="inputAddress2" value="{{request.user.last_name}}" placeholder="Last Name">
+                
+                    <div class="col ">
+                        <label for="inputText">Middle Name</label>
+                            {{form.middle_name}}
+                       <!-- <input type="text" class="form-control" id="name"  placeholder="Middle Name" > -->
                     </div>
+                    <div class="col">
+                        <label for="inputText">Last Name</label>
+                        {{form.last_name}}
+                       <!-- <input type="text" class="form-control" id="name" placeholder="Last Name" > -->
+                    </div>
+                    
+        
                 </div>
-                <div class="form-group ">
-                    <label for="inputEmail4">Email</label>
-                    <input type="email" class="form-control" id="inputEmail4" value="{{request.user.email}}" placeholder="Email">
-                </div>
-                <div class="form-group ">
-                    <label for="inputEmail4">Address</label>
-                    <input type="text" class="form-control" id="Address" value="{{request.user.address}}" placeholder="Address">
-                </div>
+                <div class="row">
+        
+                        <div class="form-group col-md-6">
+                            <label for="inputText">NRC</label>
+                            {{form.NRC}}
+                           <!-- <input type="text" class="form-control" id="id_NRC" name="NRC" maxlength="11"  placeholder="NRC Number" > -->
+                        </div>
+        
+        
+                        <div class="form-group col-md-6">
+                            <label for="inputText">Cell Phone</label>
+                            {{form.cell_Number}}
+                           <!-- <input type="text" class="form-control" id="id_cell_Number" name="cell_Number" maxlength="10"  placeholder="10 digit Cell Phone Number" >-->
+                        </div>
+                    </div>
+               
+                
+                    <div class="form-group ">
+                        <label for="inputEmail4">Email</label>
+                        {{form.email}}
+        
+                    </div>
+                    <div class="form-group ">
+                        <label for="inputEmail4">Address</label>
+                      {{form.Address}}
+                        <!--<input type="text" name="Address" class="form-control" placeholder="Address" maxlength="500" required="" id="id_Address"> -->
+                    </div>
+               
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="province">Province</label>
+                            {{form.province}}
+                          <!--  <select id="province" class="form-control">
+                            <option selected disabled>Select District</option>
+                            {%for province in provinces%}
+                            <option value="{{province.id}}">{{province.name}}</option>
+                            {%endfor%}
+                            </select> -->
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="district">District</label>
+                            {{form.district}}
+                          <!--  <select id="district" class="form-control">
+                            <option selected disabled>Choose a district</option>
+                            </select>-->
+                            
+                        </div>
+                   <!--     <div class="form-group col-md-2">
+                            <label for="inputZip">Station</label>
+                            {{form.}}
+                        </div>
+                    -->                       
+                     </div>
+                     {% if request.user.user_type is 3 %}
                 <div class="form-row">
-                <div class="form-group col-md-6">
-                    <label for="inputCity">Province</label>
-                    <select id="province" class="form-control">
-                    <option selected disabled>Select District</option>
-                    {%for province in provinces%}
-                    <option value="{{province.id}}">{{province.name}}</option>
-                    {%endfor%}
-                    </select>
+                    <div class="form-group col-md-4">
+                        <label for="subject">Subject</label>
+                        {{form.subject}}
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="position">Position</label>
+                        {{form.position}}
+                    </div>
                 </div>
-                <div class="form-group col-md-4">
-                    <label for="inputState">District</label>
-                    <select id="district" class="form-control">
-                    <option selected disabled>Choose a district</option>
-                    </select>
-                </div>
-                <div class="form-group col-md-2">
-                    <label for="inputZip">Station</label>
-                    <input type="text" class="form-control" id="inputZip">
-                </div>
-                </div>
-                <div class="form-group">
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="gridCheck">
-                    <label class="form-check-label" for="gridCheck">
-                    Check me out
-                    </label>
-                </div>
-                </div>
+                    {% endif %}
+
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <label for="bank">Bank</label>
+                                {{form.bank}}
+                               <!-- <select id="id_bank" name="bank" class="form-control">
+                                <option selected disabled>Choose a Bank</option>
+                                {% for bank in bank_list %}
+                                <option value="{{bank.id}}">{{bank.name}}</option>
+                                {% endfor %}
+                                </select> -->
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="branch">Bank Branch</label>
+                                {{form.branch}}
+                                <!--<select name="branch" class="form-control" placeholder="bankbranch" required="" id="id_branch">
+                                <option selected disabled>Choose a branch</option>
+                                </select> -->
+                            </div>
+                        
+                            <div class="form-group col-md-4">
+                                <label for="inputZip">Account Number</label>
+                                {{form.AccountDetails}}
+                                <!-- <input type="text" name="AccountDetails" class="form-control" placeholder="Account Details" maxlength="150" required="" id="id_AccountDetails"> -->
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-9">
+                                <label for="TPIN">TPIN</label>
+                                {{form.TPIN}}
+                            <!--    <input type="text" name="TPIN" class="form-control" placeholder="T Pin" maxlength="10" required="" id="id_TPIN"> -->
+                            </div>
+                        </div>
+                
+                
                 <button type="submit" class="btn btn-primary">Update</button>
+        
             </form>
         </div>
     </div>
 </div>
+<!--=================modal=======================================-->
 
-<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+
+<!--===================================close mdal======================================-->
+
+{%endblock%}
+
+{% block script %}
 <script>
-    $("#province").change(function () {
+    $("#id_bank").change(function () {
+        const bankID = $(this).val();  // get the selected  ID from the HTML dropdown list 
+        $.ajax({                       // initialize an AJAX request
+            type: "POST",
+            url: '{% url "load-bank-branches" %}',
+            data: {
+                'bank_id': bankID,       // add the  id to the POST parameters
+                'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val(),
+            },
+            success: function (data) {   // `data` is from `load-bank-branches` view function
+                let html_data = '<option value="">Choose a bank branch</option>';
+                data.forEach(function (data) {
+                    html_data += `<option value="${data.id}">${data.name}</option>`
+                });
+                $("#id_branch").html(html_data); // replace the contents  with the data that came from the server
+            }
+        });
+    });
+
+</script>
+<script>
+    $(document).on("click", "#changepassword", function(){
+            //Disabling the Button while data is being saved in Server
+         //   $(this).attr("disabled", "disabled")
+         //   $(this).text("updating password...")
+
+            var pass1=$("#id_new_password1").val();
+            var pass2=$("#id_new_password2").val();
+            
+
+            $.ajax({
+                url:"{%url 'updatepassword'%}",
+                type:'POST',
+                data:{'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val(),pass1:pass1, pass2:pass2},
+            })
+
+/*
+            if(pass1==pass2){
+                //console.log("same")
+                // Saving Attendance Data into Database
+           $.ajax({
+                url:"{%url 'updatepassword'%}",
+                type:'POST',
+                data:{pass1:pass1, pass2:pass2},
+            })
+            . done(function(response){
+                    
+                    if(response=="True")
+                    {
+                        alert("pasword changed!")
+                    }
+                    else
+                    {
+                        alert("Failed to change password!")
+                    }
+                    location.reload()
+                    
+                    //console.log(response)
+                })
+    
+                .fail(function(){
+                    alert("Error changing password")
+                })
+            }
+            else{
+                console.log("defferent")
+            }
+            */
+
+            console.log(pass1);
+            console.log(pass2);
+            
+          
+
+
+        })
+
+</script>
+<script>
+    $("#id_province").change(function () {
         const provinceID = $(this).val();  // get the selected subject ID from the HTML dropdown list 
         $.ajax({                       // initialize an AJAX request
             type: "POST",
@@ -83,9 +254,9 @@
                 data.forEach(function (data) {
                     html_data += `<option value="${data.id}">${data.name}</option>`
                 });
-                $("#district").html(html_data); // replace the contents of the topic input with the data that came from the server
+                $("#id_district").html(html_data); // replace the contents of the topic input with the data that came from the server
             }
         });
     });
 </script>
-{%endblock%}
+{% endblock script %}

@@ -1,14 +1,15 @@
-from dataclasses import field
-from django.shortcuts import render,redirect
+import http
+from django.shortcuts import render,redirect,HttpResponse
 from datetime import date
+from django.views.decorators.csrf import csrf_exempt
 
-from requests import request
-from .models import Bank, Examiner,Invitation,Subject,Position,EAD,CustomUser,Province
+from requests import put, request
+from .models import Bank, Examiner,Invitation, Staff,Subject,Position,EAD,CustomUser,Province
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView,UpdateView,DeleteView
-from django.urls import reverse_lazy
-from . forms import EADForm,InvitationForm,ExaminerForm
+from django.urls import is_valid_path, reverse_lazy
+from . forms import EADForm,InvitationForm,ExaminerForm, UserForm,ChangePassword
 #======================================
 
 from django.contrib.auth.decorators import login_required
@@ -22,12 +23,17 @@ from . decorators import unauthenticated_user,allowed_users
 def EADHome(request): 
     examiners=Examiner.objects.all()
     examiners_count=examiners.count()
+    staffs=Staff.objects.all()
+    staffs_count=staffs.count()
+    approved_examiners=examiners.filter(approved=True).count()
     available_examiners=examiners.filter(availability=True).count()
     subject_count=Subject.objects.all().count()
     context={
             'examiners_count':examiners_count,
             'subject_count':subject_count,
-            'available_examiners':available_examiners
+            'staffs_count':staffs_count,
+            'available_examiners':available_examiners,
+            'approved_examiners':approved_examiners
             }
     print("Im in the right view +++++++++++++++++++")
     return render(request, 'EAD/EAD_home.html',context)
@@ -119,6 +125,14 @@ class ExaminerList(LoginRequiredMixin,ListView):
     model=Examiner
     template_name='EAD/Examiner_list.html'
     context_object_name='examiners'
+    def get_context_data(self,**kwargs):
+        context=super().get_context_data(**kwargs)
+        context['available_examiners']=Examiner.objects.filter(availability=True)
+        context['approved_examiners']=context['available_examiners'].filter(approved=True)
+        return context
+        
+    
+    
     def post(self,request,*args, **kwargs):
         if request.method=="POST":
             Examiner.objects.filter(id__in=request.POST.getlist('id[]')).delete()
@@ -130,10 +144,14 @@ def examinerRequests(request):
     context={
         'examiners':examiners
     }
-    if request.method=='post':
-        toApprove=Examiner.objects.filter(id__in=request.POST.getlist('id[]'))
+    if request.method=='POST':
+        toApprove=request.POST.getlist('id[]')
         for item in toApprove:
-            print("Approve: ",item.first_name)
+            examiner=Examiner.objects.get(pk=item)
+            if examiner.availability==True:                
+                examiner.approved=True
+                examiner.save()
+            print("Approve: ",examiner.first_name)
         return redirect('examiner-requests')
         
     return render(request,'Examiner/examinerRequests.html',context)
@@ -146,6 +164,7 @@ class ExaminerUpdate(LoginRequiredMixin,UpdateView):
     success_url=reverse_lazy('examiner-list')
 
 class ExaminerDelete(LoginRequiredMixin,DeleteView):
+    print("Deleting view for EAD")
     model=Examiner
     context_object_name='Examiner'
     success_url=reverse_lazy('examiner-list')
@@ -157,19 +176,16 @@ class ExaminerDetail(LoginRequiredMixin,DetailView):
     context_object_name='Examiner'
     
 
-def updateprofile(request):
-    User= CustomUser.objects.get(id=request.user.id)
-    print("============EAD:",User)
-    EADobj=EAD.objects.get(user=User)
-    provinces=Province.objects.all()
-    
-    context={
-        'User':User,
-        'EADobj':EADobj,
-        'provinces':provinces
-            }
-    return render(request,'EAD/update_profile.html',context)
+"""        
 
+if form_edit_password.is_valid():
+    form_edit_password.save()
+    return self.__succes_response(_('Password updated'))
+else:
+    return self.__error_response([form_edit_password])
+        
+"""       
+        
 class EADUpdate(UpdateView):
     model=CustomUser
     fields="__all__"

@@ -47,9 +47,9 @@ class StaffCreate(LoginRequiredMixin,CreateView):
  
 class StaffExaminerList(LoginRequiredMixin,ListView):
     model=Examiner
-    queryset= Examiner.objects.filter(availability=True)
+    queryset= Examiner.objects.filter(approved=True)
     template_name='Staff/Examiner_list.html'
-    context_object_name='examiners'
+    context_object_name='examiners' 
     
     
     

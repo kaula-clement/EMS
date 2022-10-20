@@ -1,9 +1,11 @@
-from django.shortcuts import render,redirect
-from .models import Examiner,Invitation
+from django.shortcuts import render,redirect,HttpResponse
+from django.views.decorators.csrf import csrf_exempt
+from .models import CustomUser, Examiner,Invitation , comment
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView,UpdateView,DeleteView
 from django.urls import reverse_lazy
+from . forms import CommentForm
 #======================================
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.models import User
@@ -80,4 +82,64 @@ def invitation_reject(request, inv_id):
     invitation.StatusConfirm = 2
     invitation.save()
     return redirect('home')
-   
+
+@csrf_exempt
+def examinerComment(request):
+    comments = comment.objects.all()
+    examiners=Examiner.objects.filter(approved=True)
+    context = {
+        "examiners":examiners,
+        "comments": comments
+    }
+
+    if request.method=="POST":
+        exId = request.POST.get('id')
+        msg = request.POST.get('msg')
+        commentFrom=request.POST.get('user')
+        try:
+            comment.examiner=Examiner.objects.get(id=exId)
+            comment.commentAuthor=CustomUser.objects.get(id=commentFrom)
+            comment.msg = msg
+            comment.save()
+            return HttpResponse("True")
+        except:
+            return HttpResponse("False")
+    
+    return render(request, 'Examiner/comments.html', context)
+
+"""  
+class CommentsListView(ListView):
+ 
+    model=comment
+
+    context_object_name='comments'
+    template_name='Examiner/comments.html'
+    def get_context_data(self,**kwargs):
+        context=super().get_context_data(**kwargs)
+        context['Examiners']=Examiner.objects.filter(approved=True)
+        form=CommentForm
+        context['form']=form
+        return context
+    def post(self,request,*args, **kwargs):
+        if request.method=="POST":
+            form=CommentForm()
+            commentFor=request.POST.get('id')
+            title=request.POST.get('title')
+            text=request.POST.get('textmsg') 
+            print("Printing Post Data:")
+            print("Exam:",commentFor) 
+            print("title:",title)
+            print("Exam:",text)        
+            #c =comment(examiner=commentFor,title=title,msg=text)
+            
+        return redirect('examiner-list')
+    
+
+ 
+class CommentCreateView(CreateView):
+
+
+    form_set=CommentForm
+    context_object_name='comment'
+    success_url = reverse_lazy('comments-list')
+"""

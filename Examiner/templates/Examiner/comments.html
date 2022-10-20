@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Coments
+{% endblock title %}
+
+{% block content %}
+
+<div class="card">
+    <div class= "card-body">
+       <button class="btn btn-primary " data-toggle="modal" data-target="#commentModal"> Add New Comment</button>
+    </div>
+</div>
+
+Comment section
+<table class="table">
+    <thead>
+        <tr>
+            <th>Examiner Number</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Subject</th>
+            <th>Comment</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in examiners %}
+        <tr>
+        <td>{{item.ExaminerCode}}</td>
+        <td>{{item.first_name}}</td>
+        <td>{{item.last_name}}</td>
+        <td>{{item.subject}}</td>
+        <td><button class="btn btn-primary" >comment</button></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<br>
+<hr>
+<div class="card">
+    <div class="card-title">
+    <p>  New Comment</p>
+    </div>
+    <div class="card-body">
+       <form method="POST" action="">
+            {% csrf_token %}
+            {{form}}
+       </form>
+    </div>
+</div>
+
+
+
+<div class="modal fade" id="commentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Comment</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <p>Comment by: <b><span id="user_name"></span></b></p>
+                <input type="dissabled" id="current_user" value={{request.user.id}}  readonly/>
+            <p>to: <b><span id="comment_name"></span></b> 
+                <select id="examiner_id">
+                    <option Selected dissabled>Choose ----</option>
+                    {% for item in examiners %}
+                    <option value={{item.id}} >{{item.ExaminerCode}} &nbsp {{item.first_name}}&nbsp{{item.last_name}}</option>
+                    {% endfor %}
+                </select>
+                
+                </p>
+            
+                <textarea class="form-control" rows="5" id="comment_message"></textarea>
+        </div>
+        <div class="modal-footer">
+            {% comment %} <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> {% endcomment %}
+            <button type="button" class="btn btn-primary btn-block " id="comment_button">Comment</button>
+        </div>
+        </div>
+    </div>
+    </div>
+
+
+
+{% comment %} Custom JS to Identify the Examiner and Post the comment {% endcomment %}
+
+
+<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+<script>
+
+        $(document).on("click", "#comment_button", function(){
+            //Disabling the Button while data is being saved in Server
+      //      $(this).attr("disabled", "disabled")
+      //      $(this).text("Sending comment...")
+
+            //console.log("SAVE")
+            
+            var user=$("#current_user").val();
+            var id=$("#examiner_id").val();
+            var msg=$("#comment_message").val();
+            console.log(id);
+            console.log(msg);
+            console.log(user)
+
+            // Saving Attendance Data into Database
+            $.ajax({
+                url:'',
+                type:'POST',
+                data:{id:id, msg:msg,user:user},
+            })
+            .done(function(response){
+                    
+                if(response=="True")
+                {
+                    alert("Comment Sent!")
+                }
+                else
+                {
+                    alert("Failed to Send Reply!")
+                }
+                location.reload()
+                
+                //console.log(response)
+            })
+
+            .fail(function(){
+                alert("Error in Sending Feedback Reply.")
+            })
+
+
+        })
+
+
+    
+</script>
+
+{% endblock content %}

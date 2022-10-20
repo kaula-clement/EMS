@@ -1,8 +1,9 @@
 from dataclasses import field, fields
 from xml.dom.minidom import Attr
 from django import forms
+from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth. forms import UserCreationForm
-from .models import Examiner,EAD,District,Province,Person,City,Invitation ,districtcsv,Subject,Bank,BankBranch,Staff
+from .models import Examiner,EAD,CustomUser,Person,City,Invitation ,districtcsv,Subject,Bank,BankBranch,Staff,comment
 
 class ExaminerForm(forms.ModelForm):
     class Meta:
@@ -36,11 +37,22 @@ class ExaminerForm(forms.ModelForm):
 class EADForm(forms.ModelForm):
     class Meta:
         model=EAD
-        fields=('firstName','LastName','UserName')
+        fields=('first_name','last_name','UserName','middle_name','bank','branch','AccountDetails','NRC','TPIN','cell_Number','email','Address','province','district')
         widgets = {
-            'firstName': forms.TextInput(attrs={'class':'form-control','placeholder':'firstName'}),
-            'LastName': forms.TextInput(attrs={'class':'form-control','placeholder':'LastName'}),
-            'UserName': forms.TextInput(attrs={'class':'form-control','placeholder':'UserName'}),
+            'UserName':forms.TextInput(attrs={'class':'form-control','placeholder':'User Name'}),
+            'first_name': forms.TextInput(attrs={'class':'form-control','placeholder':'firstName'}),
+            'last_name': forms.TextInput(attrs={'class':'form-control','placeholder':'LastName'}),
+            'middle_name': forms.TextInput(attrs={'class':'form-control','placeholder':'UserName'}),
+            'bank': forms.Select(attrs={'class':'form-control '}),
+            'branch': forms.Select(attrs={'class':'form-control '}),
+            'AccountDetails':forms.TextInput(attrs={'class':'form-control','placeholder':'firstName'}),
+            'NRC':forms.TextInput(attrs={'class':'form-control','placeholder':'firstName'}),
+            'TPIN':forms.TextInput(attrs={'class':'form-control','placeholder':'firstName'}),
+            'cell_Number':forms.TextInput(attrs={'class':'form-control','placeholder':'firstName'}),
+            'email': forms.EmailInput(attrs={'class':'form-control','placeholder':'email@abc.abc'}),
+            'Address':forms.TextInput(attrs={'class':'form-control','placeholder':'firstName'}), 
+            'province':forms.Select(attrs={'class':'form-control '}),
+            'district':forms.Select(attrs={'class':'form-control '}),
             
         }
     
@@ -99,3 +111,44 @@ class StaffForm(forms.ModelForm):
     class Meta:
         model=Staff
         fields=('name',)
+        
+        
+class UserForm(forms.ModelForm):
+    class Meta:
+        model= CustomUser
+        fields=('first_name','last_name','email','user_type','password') 
+        widgets = {
+            'first_name': forms.TextInput(attrs={'class':'form-control','placeholder':'firstName'}),
+            'last_name': forms.TextInput(attrs={'class':'form-control','placeholder':'lastName'}),
+            'email': forms.EmailInput(attrs={'class':'form-control','placeholder':'email'}),
+            'password': forms.TextInput(attrs={'class':'form-control','placeholder':'password'}),
+            'user_type': forms.Select(attrs={'class':'form-control '}),  
+        } 
+        
+    
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model=comment
+        fields=('examiner','title','msg',)
+        try:
+            examiners = Examiner.objects.filter(approved=True)
+            examiner_list = []
+            for item in examiners:
+                single_examiner = (item.id, item.first_name,item.last_name)
+                examiner_list.append(single_examiner)
+        except:
+            examiner_list = []
+        widgets = {
+            'examiner': forms.Select(choices=examiner_list,attrs={'class':'form-control '}), 
+            'title': forms.TextInput(attrs={'class':'form-control','placeholder':'firstName'}),
+            'msg': forms.Textarea(attrs={'class':'form-control','placeholder':'LastName'}),
+             
+        }
+
+
+class ChangePassword(PasswordChangeForm):
+   old_password = forms.CharField( max_length=50, widget=forms.PasswordInput(attrs={"class":"form-control"}))
+   new_password1 = forms.CharField( max_length=50, required="" , widget=forms.PasswordInput(attrs={"class":"form-control"}))
+   new_password2 = forms.CharField( max_length=50, widget=forms.PasswordInput(attrs={"class":"form-control"}))
+
+#<input type="password" name="new_password1" autocomplete="new-password" required="" id="id_new_password1">

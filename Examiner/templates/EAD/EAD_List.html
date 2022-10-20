@@ -1,7 +1,13 @@
 {% extends 'base.html'%}
 
+{% block title %}
+EAD List
+{% endblock title %}
+
+
 {%block content%}
 <div class="container">
+    <h4>Examinations Administrators List</h4>
     <table class="table table-sm">
         <caption>List of EADs</caption>
         <tr>
@@ -13,8 +19,8 @@
        {%for EAD in EADs%}
         <tr>
             <td>{{EAD.id}}</td>
-            <td>{{EAD.firstName}}</td>
-            <td>{{EAD.LastName}}</td>
+            <td>{{EAD.first_name}}</td>
+            <td>{{EAD.last_name}}</td>
             <td>{{EAD.UserName}}</td>
        
             <td><a href="{%url 'ead-details' EAD.id%}">Details</a></td>

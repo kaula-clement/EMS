@@ -1,7 +1,78 @@
 {% extends 'base.html'%}
-{%block content%}
+
+{% block title %}
 EAD Home Page
+{% endblock title %}
+
+{%block content%}
 <div class="container-fluid">
+          <!-- Small boxes (Stat box) -->
+          <div class="row">
+            <div class="col-lg-3 col-6">
+              <!-- small box -->
+              <div class="small-box bg-info">
+                <div class="inner">
+                  <h3>{{ examiners_count }}</h3>
+
+                  <p>Total Examiners</p>
+                </div>
+                <div class="icon">
+                  <i class="ion ion-stats-bars"></i>
+                </div>
+                <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              </div>
+            </div>
+            <!-- ./col -->
+            <div class="col-lg-3 col-6">
+              <!-- small box -->
+              <div class="small-box bg-danger">
+                <div class="inner">
+                  <h3>{{ staffs_count }}</h3>
+
+                  <p>Total Staffs</p>
+                </div>
+                <div class="icon">
+                  <i class="ion ion-stats-bars"></i>
+                </div>
+                <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              </div>
+            </div>
+            <!-- ./col -->
+            
+            <div class="col-lg-3 col-6">
+              <!-- small box -->
+              <div class="small-box bg-warning">
+                <div class="inner">
+                  <h3>{{ approved_examiners }}</h3>
+
+                  <p>Approved Examiners</p>
+                </div>
+                <div class="icon">
+                  <i class="ion ion-stats-bars"></i>
+                </div>
+                <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              </div>
+            </div>
+            <!-- ./col -->
+            <div class="col-lg-3 col-6">
+              <!-- small box -->
+              <div class="small-box bg-success">
+                <div class="inner">
+                  <h3>{{ subject_count }}</h3>
+
+                  <p>Total Subjects</p>
+                </div>
+                <div class="icon">
+                  <i class="ion ion-stats-bars"></i>
+                </div>
+                <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              </div>
+            </div>
+            <!-- ./col -->
+            
+          </div>
+
+
     <div class="row">
       <div class="col-lg-6">
         <div class="card card-success card-outline">
@@ -12,6 +83,7 @@ EAD Home Page
               <p>Total Examiners:{{examiners_count}}</p>
               <p>Total Subjects:{{subject_count}}</p>
               <p>available_examiners:{{available_examiners}}</p>
+              <p>Approved Examiners:{{approved_examiners}}
              
             </p>
 
