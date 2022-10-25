@@ -81,8 +81,8 @@ def updateprofile(request,pk):
             User=EAD.objects.get(user=pk)
             form=EADForm(request.POST,instance=User)
         elif request.user.user_type==2:
-            User=Staff.objects.get(user=User)
-            form=StaffForm(request.POST)
+            User=Staff.objects.get(user=pk)
+            form=StaffForm(request.POST,instance=User)
         elif request.user.user_type==3:
             User=Examiner.objects.get(user=pk)
             form=ExaminerForm(request.POST,instance=User)

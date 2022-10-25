@@ -5,70 +5,87 @@ Examiner Register Home
 {% endblock title %}
 
 {%block content%}
-Examiner Home Page
+
 <div class="container-fluid">
-    <div class="row">
-      <div class="col-lg-6">
-        <div class="card card-success card-outline">
-          <div class="card-body">
-            <h5 class="card-title">Card title</h5>
+  <div class="col-lg-12">
+    <!-- BAR CHART -->
+    <div class="card card-success collapsed-card">
+    <div class="card-header">
+        <h3 class="card-title">Password change</h3>
 
-            <p class="card-text">
-             Examinations council of zambia news /updats to the examinations marker or some general information in here
-            </p>
-
-            <a href="#" class="card-link">Card link</a>
-            <a href="#" class="card-link">Another link</a>
-          </div>
+        <div class="card-tools">
+        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
+        </button>
+       
         </div>
-<!--card-primary card-outline-->
-        <div class="card card-success card-outline">
-          <div class="card-body">
-            <h5 class="card-title">Card title</h5>
-
-            <p class="card-text">
-              Examinations council of zambia news /updats to the examinations marker or 
-              some general information in here
-            </p>
-            <a href="#" class="card-link">Card link</a>
-            <a href="#" class="card-link">Another link</a>
-          </div>  
-        </div>  <!-- /.card -->
-      </div>
-      <!-- /.col-md-6 -->
-      <div class="col-lg-6">
-        <div class="card">
-          <div class="card-header">
-            <h5 class="m-0">Featured</h5>
-          </div>
-          <div class="card-body">
-            <h6 class="card-title">Special title treatment</h6>
-
-            <p class="card-text">go to some additional content.</p>
-            <a href="#" class="btn btn-success">Go somewhere</a>
-          </div>
-        </div>
-
-        <div class="card card-success card-outline">
-          <div class="card-header">
-            <h5 class="m-0">Featured</h5>
-          </div>
-          <div class="card-body">
-            <h6 class="card-title">Special title treatment</h6>
-
-            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-            <a href="#" class="btn btn-success">Go somewhere</a>
-          </div>
-        </div>
-      </div>
-      <!-- /.col-md-6 -->
     </div>
+    <div class="card-body">
+      
+    <p>Wellcome {{request.user.first_name}}.</p>
+    <p>You can change the passwprd of your examiner portal account.To do this, Click on the </p>
+    <p>top left corner icon displayoing your examiner number.This will direct you to a page where you </p>
+    <p>can change your personal information.On the page,you will see a link in blue,just beneath your </p>
+    <p>examiner number.You will enter the old password, then the new password twice.</p>
+    <p>a success message will appear. And thats it</p>
+    </div>
+    <!-- /.card-body -->
+  </div>
+    </div>
+    <div class="col-lg-12">
+      <!-- BAR CHART -->
+      <div class="card card-success collapsed-card">
+      <div class="card-header">
+          <h3 class="card-title">Acceptance notification</h3>
+
+          <div class="card-tools">
+          <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
+          </button>
+         
+          </div>
+      </div>
+      <div class="card-body">
+        
+      <p>Wellcome {{request.user.first_name}}.</p>
+      <p>We are pleased to inform you that you have been shortlisted to take part in the forth comming</p>
+      <p>marking session scheduled to begin on the 31st of August 2022</p>
+      <p>Be informed that changes to the dates,or any other details will be communicated in due time</p>
+      <p>Thank you</p>
+      </div>
+      <!-- /.card-body -->
+    </div>
+      </div>
+      <div class="col-lg-12">
+        <!-- BAR CHART -->
+        <div class="card card-success collapsed-card" >
+        <div class="card-header">
+            <h3 class="card-title">Details Verification / Updates</h3>
+  
+            <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
+            </button>
+           
+            </div>
+        </div>
+        <div class="card-body">
+          
+        <p>Wellcome {{request.user.first_name}}.</p>
+        <p>Please be advised to check your details as entered during the application process.</p>
+        <p>You are adviced to make your changes/updates to your details before the commencement of the 2022 GCE/Internal</p>
+        <p>marking session.</p>
+        <p>Thank you</p>
+        </div>
+        <!-- /.card-body -->
+      </div>
+        </div>
+
+
+
+        
     <!-- /.row -->
   </div>
+  
 
  
-<hr>
 
-<h1>{{request.user.user_type}}</h1>
 
 {%endblock content%}

@@ -1,3 +1,6 @@
+from urllib import response
+
+from requests import request
 from .models import City,BankBranch,Bank,CustomUser
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
@@ -12,11 +15,12 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import BankBranchForm,ExaminerForm
 # ======================================pdf
 import csv
+import xlwt
 from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm
 import logging
 from django.core.mail import send_mail
-from datetime import date
+from datetime import date, datetime
 
 
 class Registerpage(CreateView):
@@ -68,27 +72,6 @@ def load_district(request):
     print("==================================================")
     return render(request, 'registration/district_dropdown.html', {'districts': districts})
 
-"""
-def render_to_pdf(template_source,context_dict={}):
-    template=get_template(template_source)
-    html=template.render(context_dict)
-    result=BytesIO()
-    pdf=pisa.pisaDocument(BytesIO(html.encode("ISO-8859-1")),result)
-    if not pdf.err:
-        return HttpResponse(result.getvalue(),content_type='application/pdf')
-    return None
-    buffer=io.BytesIO()
-
-
-class GeneratePDF(View):
-    def get(self,request,*args,**kwargs):
-        data=Examiner.objects.get(id=10)
-        open('templates/temp.html',"w").write(render_to_string('Examiner/Examiner_Detail.html',{'Examiner':Examiner}))
-        pdf=render_to_pdf('temp.html')
-
-        return HttpResponse(pdf,content_type='application/pdf')
-
-"""
 
 # AJAX
 def get_districts_ajax(request):
@@ -207,3 +190,73 @@ def sendmail(request):
               ['rariyoj844@migonom.com'],
               fail_silently=False)
     return render(request,'registration/email_temp.html')
+
+def export_csv(request):
+    response=HttpResponse(content_type='text/csv')
+    response['Content-Disposition']='attachment;filename=Examiners-schedule'+str(datetime.now())+'.csv'
+    
+    writer=csv.writer(response)
+    writer.writerow(['ID','Examiner Number','First Name','Middle Name',
+                     'Last Name','position','Subject','Province','District',
+                     'Bank','Branch','Sort Code','Account Number'])
+    examiners=Examiner.objects.filter(approved=True)
+    for item in examiners:
+        writer.writerow([item.id,item.ExaminerCode,item.first_name,item.middle_name,item.last_name,
+                         item.position,item.subject,item.province,item.district,item.bank,
+                         item.branch,item.branch.sortcode,
+                         item.AccountDetails])
+    return response
+
+def export_excel(request):
+    response=HttpResponse(content_type='ms-excel')
+    response['Content-Disposition']='attachment;filename=Examiners-schedule'+str(datetime.now())+'.xls'
+    
+    wb=xlwt.Workbook(encoding='utf-8')
+    ws=wb.add_sheet('Examiners')
+    row_num=0
+    font_style=xlwt.XFStyle()
+    font_style.font.bold=True
+    
+    columns=['ID','Examiner Number','First Name','Middle Name',
+                     'Last Name','position','Subject','Province','District',
+                     'Bank','Branch','Sort Code','Account Number']
+    
+    for column_num in range(len(columns)):
+        ws.write(row_num,column_num,columns[column_num],font_style)
+    font_style=xlwt.XFStyle()
+    
+    examinerlist=[]
+    print("=========================++++++++++++1111111")
+    print(examinerlist)
+    examiners=Examiner.objects.filter(approved=True)
+    for item in examiners:
+        examiner=(item.id,
+            item.ExaminerCode,
+            item.first_name,
+            item.middle_name,
+            item.last_name,
+            str(item.position),
+            str(item.subject),
+            str(item.province),
+            str(item.district),
+            str(item.bank),
+            str(item.branch),
+            item.branch.sortcode,
+            item.AccountDetails
+
+        )
+        examinerlist.append(examiner)
+        
+    rows=examinerlist
+    print(rows)
+    print("=========================+++++++++++++++2222")
+    print(examinerlist)
+    for row in rows:
+        row_num += 1
+        for col_num in range(len(row)):
+            ws.write(row_num,col_num,str(row[col_num]),font_style)
+            
+    wb.save(response)
+    return response
+
+            

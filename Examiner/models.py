@@ -78,15 +78,6 @@ class Subject(models.Model):
     def __str__(self):
        return self.subjectName
 
-class Invitation(models.Model):
-    #toAddress=models.ForeignKey(CustomUser, on_delete = models.CASCADE,null=True,blank=True)
-    toAddress=models.ManyToManyField(CustomUser)
-    title=models.CharField(max_length=50,null=True)
-    datecreated= models.DateField(auto_now=True)
-    dateupdated= models.DateField(auto_now=True)
-    #message=models.TextField(max_length=500,null=True)
-    StatusConfirm=models.IntegerField(default=0)
-    objects = models.Manager()
 
 
 class EAD(models.Model):
@@ -98,9 +89,9 @@ class EAD(models.Model):
     bank=models.ForeignKey(Bank,on_delete=models.SET_NULL,null=True,blank=True)
     branch=models.ForeignKey(BankBranch,on_delete=models.SET_NULL,null=True,blank=True)
     AccountDetails=models.CharField(max_length=150,null=True)
-    NRC=models.CharField(max_length=12,null=True)
+    NRC=models.CharField(max_length=11,null=True)
     TPIN=models.CharField(max_length=10,null=True)
-    cell_Number=models.CharField(max_length=12,null=True)
+    cell_Number=models.CharField(max_length=10,null=True)
     email=models.EmailField(null=True)
     Address=models.CharField(max_length=50,null=True,blank=True)
     province=models.ForeignKey(Province, on_delete=models.SET_NULL,null=True,blank=True)
@@ -137,9 +128,9 @@ class Examiner(models.Model):
     bank=models.ForeignKey(Bank,on_delete=models.SET_NULL,null=True,blank=True)
     branch=models.ForeignKey(BankBranch,on_delete=models.SET_NULL,null=True,blank=True)
     AccountDetails=models.CharField(max_length=150,null=True)
-    NRC=models.CharField(max_length=12,null=True)
+    NRC=models.CharField(max_length=11,null=True)
     TPIN=models.CharField(max_length=10,null=True)
-    cell_Number=models.CharField(max_length=12,null=True)
+    cell_Number=models.CharField(max_length=10,null=True)
     email=models.EmailField(null=True)
     country=models.ForeignKey(Country, on_delete=models.SET_NULL,null=True)
     city=models.ForeignKey(City, on_delete=models.SET_NULL,null=True)
@@ -149,15 +140,40 @@ class Examiner(models.Model):
     objects = models.Manager()
 
 
+class Invitation(models.Model):
+    fromAddress=models.ForeignKey(EAD, on_delete = models.CASCADE,null=True,blank=True)
+    toAddress=models.ForeignKey(Examiner, on_delete = models.CASCADE,null=True,blank=True)
+    title=models.CharField(max_length=50,null=True)
+    datecreated= models.DateField(auto_now=True)
+    dateupdated= models.DateField(auto_now=True)
+    msg=models.TextField(max_length=500,null=True)
+    StatusConfirm=models.IntegerField(default=0)
+    objects = models.Manager()
+
+
 class Staff(models.Model):
     user=models.OneToOneField(CustomUser,
         on_delete=models.CASCADE,null=True,blank=True)
-    name=models.CharField(max_length=64)
-    Username=models.CharField( max_length=50)
+    first_name=models.CharField(max_length=50,null=True)
+    middle_name=models.CharField(max_length=50,null=True,blank=True)
+    last_name=models.CharField(max_length=50,null=True)
+    UserName=models.CharField(max_length=50,null=True)
+    bank=models.ForeignKey(Bank,on_delete=models.SET_NULL,null=True,blank=True)
+    branch=models.ForeignKey(BankBranch,on_delete=models.SET_NULL,null=True,blank=True)
+    AccountDetails=models.CharField(max_length=150,null=True)
+    NRC=models.CharField(max_length=11,null=True)
+    TPIN=models.CharField(max_length=10,null=True)
+    cell_Number=models.CharField(max_length=10,null=True)
+    email=models.EmailField(null=True)
+    Address=models.CharField(max_length=50,null=True,blank=True)
+    province=models.ForeignKey(Province, on_delete=models.SET_NULL,null=True,blank=True)
+    district=models.ForeignKey(District, on_delete=models.SET_NULL,null=True,blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     def save(self,*args,**kwargs):
             super().save(*args,**kwargs)
             if not self.user:
-                self.user= CustomUser.objects.create_user(username=self.Username,
+                self.user= CustomUser.objects.create_user(username=self.UserName,
                                                          first_name=self.first_name,
                                                          last_name=self.last_name,
                                                          password='password3', email='MicroVich.1@abc.com',

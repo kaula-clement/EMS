@@ -12,7 +12,7 @@ from .StaffViews import StaffExaminerList
 
 urlpatterns = [
    
-   path('',views.Home,name='home'), #Home / Landing page
+   path('',CustomLoginView.as_view(),name='home'), #Home / Landing page
    
    #AUTH and Registration urls
    path('login/',CustomLoginView.as_view(),name='login'),
@@ -40,6 +40,10 @@ urlpatterns = [
    path('updated-profile/',EADViews.updateprofilesave,name='profile-save'),
    path('updateprofile/<str:pk>',AuthView.updateprofile,name='updateprofile'),
    path('password-update',AuthView.updatepassword,name='updatepassword'),
+   path('staff/create',StaffViews.StaffCreate.as_view(),name='staff-create'),
+   path('staff/list',StaffViews.StaffListView.as_view(),name='staff-list'),
+   
+   
    #======================================Staff Menu
    path('Staff-home/',StaffViews.StaffHome,name='staff-home'),
    path('staff/examiners/',StaffExaminerList.as_view(),name='staff-examiner-list'),   
@@ -80,6 +84,9 @@ urlpatterns = [
 
     #path('upload-subjects/',views.uploadSubject,name='uploadSubject'),
     path('upload/csv/', views.upload_csv, name='upload_csv'),
+    path('export-csv/',views.export_csv,name='export-csv'),
+    path('export-excel/',views.export_excel,name='export-excel'),
+    
     
     path('users/',CustomUserList.as_view(),name='userlist'),
 

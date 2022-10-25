@@ -1,8 +1,6 @@
 from dataclasses import field, fields
-from xml.dom.minidom import Attr
 from django import forms
 from django.contrib.auth.forms import PasswordChangeForm
-from django.contrib.auth. forms import UserCreationForm
 from .models import Examiner,EAD,CustomUser,Person,City,Invitation ,districtcsv,Subject,Bank,BankBranch,Staff,comment
 
 class ExaminerForm(forms.ModelForm):
@@ -79,10 +77,10 @@ class PersonCreationForm(forms.ModelForm):
 class InvitationForm(forms.ModelForm):
     class Meta:
         model=Invitation
-        fields=('toAddress','title',)
+        fields=('title','msg')
         widgets = {
-            'toAddress': forms.SelectMultiple(attrs={'class':'form-control','placeholder':'Send To'}),
-            'title': forms.TextInput(attrs={'class':'form-control','placeholder':'UserName'}),
+            'msg': forms.TextInput(attrs={'class':'form-control','placeholder':'Message'}),
+            'title': forms.TextInput(attrs={'class':'form-control','placeholder':'Title'}),
             
         }
 
@@ -110,7 +108,24 @@ class BankForm(forms.ModelForm):
 class StaffForm(forms.ModelForm):
     class Meta:
         model=Staff
-        fields=('name',)
+        fields=('first_name','last_name','UserName','middle_name','bank','branch','AccountDetails','NRC','TPIN','cell_Number','email','Address','province','district')
+        widgets = {
+            'UserName':forms.TextInput(attrs={'class':'form-control','placeholder':'User Name'}),
+            'first_name': forms.TextInput(attrs={'class':'form-control','placeholder':'firstName'}),
+            'last_name': forms.TextInput(attrs={'class':'form-control','placeholder':'LastName'}),
+            'middle_name': forms.TextInput(attrs={'class':'form-control','placeholder':'UserName'}),
+            'bank': forms.Select(attrs={'class':'form-control '}),
+            'branch': forms.Select(attrs={'class':'form-control '}),
+            'AccountDetails':forms.TextInput(attrs={'class':'form-control','placeholder':'firstName'}),
+            'NRC':forms.TextInput(attrs={'class':'form-control','placeholder':'firstName'}),
+            'TPIN':forms.TextInput(attrs={'class':'form-control','placeholder':'firstName'}),
+            'cell_Number':forms.TextInput(attrs={'class':'form-control','placeholder':'firstName'}),
+            'email': forms.EmailInput(attrs={'class':'form-control','placeholder':'email@abc.abc'}),
+            'Address':forms.TextInput(attrs={'class':'form-control','placeholder':'firstName'}), 
+            'province':forms.Select(attrs={'class':'form-control '}),
+            'district':forms.Select(attrs={'class':'form-control '}),
+            
+        }
         
         
 class UserForm(forms.ModelForm):

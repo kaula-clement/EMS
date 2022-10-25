@@ -36,14 +36,20 @@ class StaffCreate(LoginRequiredMixin,CreateView):
         #pre save to get id
         super().form_valid(StaffForm) 
         #create user for the staff
-        StaffForm.instance.user=CustomUser.objects.create_user(username=self.request.Post.get('name'),
+        StaffForm.instance.user=CustomUser.objects.create_user(username=self.request.POST.get('UserName'),
+                                                               first_name=self.request.POST.get('first_name'),
+                                                               last_name=self.request.POST.get('last_name'),
                             password='password3', email='MicroVich.1@abc.com',
                             user_type=2)
             #return a valid form
         print("User Staff created:")
         print("Usename: ",)
         return super(StaffForm,self).form_valid(StaffForm)
- 
+
+class StaffListView(ListView):
+    model=Staff
+    template_name='EAD/Stafflist.html'
+    context_object_name='staffs'
  
 class StaffExaminerList(LoginRequiredMixin,ListView):
     model=Examiner
