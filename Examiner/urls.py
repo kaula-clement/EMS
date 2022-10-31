@@ -17,6 +17,8 @@ urlpatterns = [
    #AUTH and Registration urls
    path('login/',CustomLoginView.as_view(),name='login'),
    path('register/',views.Registerpage.as_view(),name='register'),
+   path('register-confirm/',views.confirmRegDetails,name='register-confirm'),
+   
    path('logout/',LogoutView.as_view(next_page='login'),name='logout'), 
    path('update-user/<int:pk>/',CustomUserUpdate.as_view(),name='update-user'),
    path('group-list',CustomGroupList.as_view(),name='group-list'),
@@ -57,8 +59,8 @@ urlpatterns = [
    path('invite-response/<int:pk>',ExaminerViews.invitationResponse.as_view(),name='invite-response'),
    path('invite-approve/<inv_id>',ExaminerViews.invitation_approve,name='invite-approve'),
    path('invite-reject/<inv_id>',ExaminerViews.invitation_reject,name='invite-reject'),
-   path('notifications/',NotificationList.as_view(),name='notifications-list'),
-   
+   path('notifications/',ExaminerViews.NotificationList.as_view(),name='notifications-list'),
+   path('download/invitation-letter',ExaminerViews.letter2pdf,name='download-letter'),
    path('comments/list',ExaminerViews.examinerComment,name='comments-list'),
    
 

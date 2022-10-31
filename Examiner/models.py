@@ -35,7 +35,7 @@ class Bank(models.Model):
 class BankBranch(models.Model):
     bank=models.ForeignKey(Bank,on_delete=models.CASCADE,null=True)
     name=models.CharField(max_length=64)
-    sortcode=models.IntegerField()
+    sortcode=models.CharField(max_length=6)
     def __str__(self):
         return self.name
  
@@ -81,6 +81,8 @@ class Subject(models.Model):
 
 
 class EAD(models.Model):
+    gender_data = ((0,"SELECT GENDER"),(1, "MALE"), (2, "FEMALE"))
+    gender = models.IntegerField(default=0, choices=gender_data)
     user = models.OneToOneField(CustomUser, on_delete = models.SET_NULL,null=True,blank=True)
     first_name=models.CharField(max_length=50,null=True)
     middle_name=models.CharField(max_length=50,null=True,blank=True)
@@ -116,10 +118,12 @@ class EAD(models.Model):
 class Examiner(models.Model):
     user=models.OneToOneField(CustomUser,
         on_delete=models.CASCADE,null=True,blank=True)
+    gender_data = ((0,"SELECT GENDER"),(1, "MALE"), (2, "FEMALE"))
+    gender = models.IntegerField(default=0, choices=gender_data)
     subject=models.ForeignKey(Subject, on_delete=models.SET_NULL,null=True)
     position=models.ForeignKey(Position,on_delete=models.SET_NULL,null=True)
-    middle_name=models.CharField(max_length=50,null=True)
-    first_name=models.CharField(max_length=50,null=True)
+    middle_name=models.CharField(max_length=50,null=True,blank=True)
+    first_name=models.CharField(max_length=50,null=True) 
     last_name=models.CharField(max_length=50,null=True)
     ExaminerCode=models.CharField(max_length=50,null=True,unique=True)
     Address=models.CharField(max_length=500,null=True)
@@ -131,9 +135,7 @@ class Examiner(models.Model):
     NRC=models.CharField(max_length=11,null=True)
     TPIN=models.CharField(max_length=10,null=True)
     cell_Number=models.CharField(max_length=10,null=True)
-    email=models.EmailField(null=True)
-    country=models.ForeignKey(Country, on_delete=models.SET_NULL,null=True)
-    city=models.ForeignKey(City, on_delete=models.SET_NULL,null=True)
+    email=models.EmailField(null=True,unique=True)
     approved=models.BooleanField(default=False)
     availability=models.BooleanField(default=False)
 
@@ -154,6 +156,8 @@ class Invitation(models.Model):
 class Staff(models.Model):
     user=models.OneToOneField(CustomUser,
         on_delete=models.CASCADE,null=True,blank=True)
+    gender_data = ((0,"SELECT GENDER"),(1, "MALE"), (2, "FEMALE"))
+    gender = models.IntegerField(default=0, choices=gender_data)
     first_name=models.CharField(max_length=50,null=True)
     middle_name=models.CharField(max_length=50,null=True,blank=True)
     last_name=models.CharField(max_length=50,null=True)

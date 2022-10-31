@@ -1,5 +1,9 @@
+import datetime
+from unittest import result
 from django.shortcuts import render,redirect,HttpResponse
 from django.views.decorators.csrf import csrf_exempt
+#import weasyprint
+#from weasyprint import HTML
 from .models import CustomUser, Examiner,Invitation , comment
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
@@ -11,6 +15,9 @@ from django.contrib.auth.views import LoginView
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.template.loader import render_to_string
+import tempfile
+
 
 #======================================
 
@@ -49,6 +56,12 @@ class NotificationList(LoginRequiredMixin,ListView):
     model=Invitation
     context_object_name='invitations'
     template_name='Examiner/notifications_list.html'
+    def get_context_data(self,**kwargs):
+        context=super().get_context_data(**kwargs)
+        examiner=Examiner.objects.get(user=self.request.user)
+        context['letters']=Invitation.objects.filter(toAddress=examiner)
+        
+        return context
 
 
 
@@ -107,39 +120,22 @@ def examinerComment(request):
     
     return render(request, 'Examiner/comments.html', context)
 
-"""  
-class CommentsListView(ListView):
- 
-    model=comment
-
-    context_object_name='comments'
-    template_name='Examiner/comments.html'
-    def get_context_data(self,**kwargs):
-        context=super().get_context_data(**kwargs)
-        context['Examiners']=Examiner.objects.filter(approved=True)
-        form=CommentForm
-        context['form']=form
-        return context
-    def post(self,request,*args, **kwargs):
-        if request.method=="POST":
-            form=CommentForm()
-            commentFor=request.POST.get('id')
-            title=request.POST.get('title')
-            text=request.POST.get('textmsg') 
-            print("Printing Post Data:")
-            print("Exam:",commentFor) 
-            print("title:",title)
-            print("Exam:",text)        
-            #c =comment(examiner=commentFor,title=title,msg=text)
-            
-        return redirect('examiner-list')
+def letter2pdf(request):
+    pass
+""" response=HttpResponse(content_type='application/pdf')
+    response['Content-Disposition']='attachment;filename=Examiners_invitation_letter'+str(datetime.now())+'.pdf'
+    response['content-Transfer-Encoding']='binary'
     
-
- 
-class CommentCreateView(CreateView):
-
-
-    form_set=CommentForm
-    context_object_name='comment'
-    success_url = reverse_lazy('comments-list')
+    html_string= render_to_string('confirm_Invitation.html')
+    html=HTML(string=html_string)
+    result= html.write_pdf()
+    
+    with tempfile.TemporaryFile(delete=True) as output:
+        output.write(result)
+        output.flush()
+        
+        output=open(output.name, 'rb')
+        response.write(output.read())
+    
+    return response
 """

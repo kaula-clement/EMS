@@ -86,6 +86,7 @@ html {
 
 /*Blue Buttons*/
 #msform .action-button {
+    border-radius: 12px;
     width: 100px;
     background: skyblue;
     font-weight: bold;

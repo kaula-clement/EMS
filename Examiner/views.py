@@ -1,7 +1,7 @@
 from urllib import response
 
 from requests import request
-from .models import City,BankBranch,Bank,CustomUser
+from .models import City,BankBranch,Bank,CustomUser, comment
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from .models import Examiner, Invitation, Province, District,districtcsv
@@ -19,7 +19,7 @@ import xlwt
 from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm
 import logging
-from django.core.mail import send_mail
+from django.core.mail import send_mail,EmailMessage
 from datetime import date, datetime
 
 
@@ -28,7 +28,7 @@ class Registerpage(CreateView):
     form_class=ExaminerForm 
     template_name='registration/register.html'
     success_url=reverse_lazy('login')
-    form=ExaminerForm
+    form=ExaminerForm 
     def form_valid(self, ExaminerForm):
         td=str(date.today().year)
         #pre save to get id
@@ -48,7 +48,16 @@ class Registerpage(CreateView):
                             user_type=3)
                 #return a valid form
         return super(Registerpage,self).form_valid(ExaminerForm)
+
    
+
+def confirmRegDetails(request):
+    if request.method=="POST":
+        form=ExaminerForm()
+        context={
+            "form":form
+        }
+    return context
 
 @login_required()
 def Home(request):
@@ -186,8 +195,8 @@ class BankCreateView(CreateView):
 def sendmail(request):
     send_mail('Testing mail',
               'JHellow user,This is a testing email',
-              'kaulaclementb@gmail.com',
-              ['rariyoj844@migonom.com'],
+              'microvich@zoho.com',
+              ['kaulaclementb@gmail.com'],
               fail_silently=False)
     return render(request,'registration/email_temp.html')
 
@@ -241,7 +250,7 @@ def export_excel(request):
             str(item.district),
             str(item.bank),
             str(item.branch),
-            item.branch.sortcode,
+            str(item.branch.sortcode).zfill(6),
             item.AccountDetails
 
         )

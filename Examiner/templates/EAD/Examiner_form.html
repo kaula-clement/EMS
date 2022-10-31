@@ -6,6 +6,8 @@
     <div class="card-body">
         <form method="POST" action="" >
             {% csrf_token %}
+
+            {{field.errors}}
         <div class="row">
             <div class="form-group col-md-4">
                 <label for="inputText">First Name</label>
@@ -38,6 +40,11 @@
                 <div class="form-group col-md-6">
                     <label for="inputText">Cell Phone</label>
                     {{form.cell_Number}}
+                   <!-- <input type="text" class="form-control" id="id_cell_Number" name="cell_Number" maxlength="10"  placeholder="10 digit Cell Phone Number" >-->
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="inputText">Gender</label>
+                    {{form.gender}}
                    <!-- <input type="text" class="form-control" id="id_cell_Number" name="cell_Number" maxlength="10"  placeholder="10 digit Cell Phone Number" >-->
                 </div>
 

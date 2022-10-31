@@ -8,6 +8,8 @@
     <div class="card-body">
     {% csrf_token %}
    Invitation Contract form
+  
+   <a href="{% url 'download-letter'%}"  class ="btn btn-info float-right">pdf </a>
 <h4>To: {{request.user.username}}</h4>
 <h4>{{invitation.title}}</h4>
 <br>

@@ -9,7 +9,7 @@
     <link  href="{%static '/css/bootstrap4.min.css'%}" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/regbasestyle.css'%}">
 </head>
-<body>
+<body> 
 
 <!--style="background-color: rgb(28, 144, 74);  "-->
 <body class="hold-transition login-page" style="background: linear-gradient(154deg, rgba(255,255,255,0.8463760504201681) 0%, rgba(8,159,73,1) 81%);" >
@@ -59,7 +59,10 @@
                                   <button type="submit" class="btn btn-success btn-block">Sign In</button>
                                 </div>
                     </form>
-                    Don't have an account? <a href="{%url 'register'%}">Sign up</a>
+                    <div>
+                      <a href="{%url 'forget'%}" >forget password?<a/>
+                    </div>
+                    Don't have an account? <a class="btn btn-primary btn-sm" href="{%url 'register'%}">Sign up</a>
                 </div>
             </div>
         </div>

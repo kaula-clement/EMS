@@ -2,7 +2,7 @@ import http
 from django.shortcuts import render,redirect,HttpResponse
 from datetime import date
 from django.views.decorators.csrf import csrf_exempt
-
+from django.contrib import messages
 from requests import put, request
 from .models import Bank, Examiner,Invitation, Staff,Subject,Position,EAD,CustomUser,Province
 from django.views.generic.list import ListView
@@ -11,7 +11,7 @@ from django.views.generic.edit import CreateView,UpdateView,DeleteView
 from django.urls import is_valid_path, reverse_lazy
 from . forms import EADForm,InvitationForm,ExaminerForm, UserForm,ChangePassword
 #======================================
-
+from django.core.mail import send_mail
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 
@@ -98,8 +98,6 @@ class ExaminerCreate(LoginRequiredMixin,CreateView):
         context['position_list']=Position.objects.all()
         context['bank_list']=Bank.objects.all()
         return context
-        
-        
     def form_valid(self, ExaminerForm):
         td=str(date.today().year)
         #pre save to get id
@@ -140,7 +138,7 @@ class ExaminerList(LoginRequiredMixin,ListView):
     
 def examinerRequests(request):
     examiners=Examiner.objects.filter(approved=False)
-    
+    ead=EAD.objects.get(user=request.user)
     context={
         'examiners':examiners
     }
@@ -149,9 +147,25 @@ def examinerRequests(request):
         for item in toApprove:
             examiner=Examiner.objects.get(pk=item)
             if examiner.availability==True:                
-                examiner.approved=True
-                examiner.save()
-            print("Approve: ",examiner.first_name)
+                try:
+                    examiner.approved=True
+                    examiner.save()
+                    letter=Invitation.objects.create(toAddress=examiner,fromAddress=ead,title="Tiltle of the new invitation letter",
+                                                    msg="the message is ryt here ..wooo")
+                    letter.save()
+                except:
+                    print("coudn't approve",examiner)
+                try:
+                    send_mail(
+                        'ECZ Examiner application approval',
+                        'Hellow Examiner,Your application has been approved.Thank you',
+                        'microvich@zohomail.com',
+                        [examiner.email],
+                        fail_silently=False,
+                    )
+                except:
+                    print("couldn't send email to:",examiner.email)
+                    
         return redirect('examiner-requests')
         
     return render(request,'Examiner/examinerRequests.html',context)
@@ -173,18 +187,7 @@ class ExaminerDelete(LoginRequiredMixin,DeleteView):
 class ExaminerDetail(LoginRequiredMixin,DetailView):
     model=Examiner
     form_class=ExaminerForm
-    context_object_name='Examiner'
-    
-
-"""        
-
-if form_edit_password.is_valid():
-    form_edit_password.save()
-    return self.__succes_response(_('Password updated'))
-else:
-    return self.__error_response([form_edit_password])
-        
-"""       
+    context_object_name='Examiner'      
         
 class EADUpdate(UpdateView):
     model=CustomUser

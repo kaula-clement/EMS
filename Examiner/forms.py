@@ -7,13 +7,33 @@ class ExaminerForm(forms.ModelForm):
     class Meta:
         model=Examiner 
         #fields='__all__'
-        fields=('middle_name','last_name','first_name','subject','position','Address','province','district',
-                'AccountDetails','NRC','TPIN','cell_Number','email','availability','bank','branch','approved')
+        fields=('middle_name','last_name','first_name','gender','subject','position','Address','province','district',
+                'AccountDetails','NRC','TPIN','cell_Number','email','availability','bank','branch')
+        def clean(self):
+ 
+            # data from the form is fetched using super function
+            super(ExaminerForm, self).clean()
+            
+            # extract the username and text field from the data
+            first_name = self.cleaned_data.get('first_name')
+            email = self.cleaned_data.get('email')
+    
+            # conditions to be met for the username length
+            if len(first_name) < 5:
+                self._errors['username'] = self.error_class([
+                    'Minimum 5 characters required'])
+            if len(email) <10:
+                self._errors['text'] = self.error_class([
+                    'Post Should Contain a minimum of 10 characters'])
+    
+            # return any errors if found
+            return self.cleaned_data
         
         widgets = {
             'middle_name':forms.TextInput(attrs={'class':'form-control','placeholder':'Middle Name'}),
             'last_name':forms.TextInput(attrs={'class':'form-control','placeholder':'Last Name'}),
             'first_name': forms.TextInput(attrs={'class':'form-control','placeholder':'First Name'}),
+            'gender':forms.Select(attrs={'class':'form-control '}),
             'subject': forms.Select(attrs={'class':'form-control '}),
             'position': forms.Select(attrs={'class':'form-control','placeholder':'Select Position'}),
             'Address': forms.TextInput(attrs={'class':'form-control','placeholder':'Address'}),
@@ -35,7 +55,7 @@ class ExaminerForm(forms.ModelForm):
 class EADForm(forms.ModelForm):
     class Meta:
         model=EAD
-        fields=('first_name','last_name','UserName','middle_name','bank','branch','AccountDetails','NRC','TPIN','cell_Number','email','Address','province','district')
+        fields=('first_name','last_name','gender','UserName','middle_name','bank','branch','AccountDetails','NRC','TPIN','cell_Number','email','Address','province','district')
         widgets = {
             'UserName':forms.TextInput(attrs={'class':'form-control','placeholder':'User Name'}),
             'first_name': forms.TextInput(attrs={'class':'form-control','placeholder':'firstName'}),
@@ -50,6 +70,7 @@ class EADForm(forms.ModelForm):
             'email': forms.EmailInput(attrs={'class':'form-control','placeholder':'email@abc.abc'}),
             'Address':forms.TextInput(attrs={'class':'form-control','placeholder':'firstName'}), 
             'province':forms.Select(attrs={'class':'form-control '}),
+            'gender':forms.Select(attrs={'class':'form-control '}),
             'district':forms.Select(attrs={'class':'form-control '}),
             
         }
@@ -108,7 +129,7 @@ class BankForm(forms.ModelForm):
 class StaffForm(forms.ModelForm):
     class Meta:
         model=Staff
-        fields=('first_name','last_name','UserName','middle_name','bank','branch','AccountDetails','NRC','TPIN','cell_Number','email','Address','province','district')
+        fields=('first_name','last_name','gender','UserName','middle_name','bank','branch','AccountDetails','NRC','TPIN','cell_Number','email','Address','province','district')
         widgets = {
             'UserName':forms.TextInput(attrs={'class':'form-control','placeholder':'User Name'}),
             'first_name': forms.TextInput(attrs={'class':'form-control','placeholder':'firstName'}),
@@ -116,6 +137,7 @@ class StaffForm(forms.ModelForm):
             'middle_name': forms.TextInput(attrs={'class':'form-control','placeholder':'UserName'}),
             'bank': forms.Select(attrs={'class':'form-control '}),
             'branch': forms.Select(attrs={'class':'form-control '}),
+            'gender':forms.Select(attrs={'class':'form-control '}),
             'AccountDetails':forms.TextInput(attrs={'class':'form-control','placeholder':'firstName'}),
             'NRC':forms.TextInput(attrs={'class':'form-control','placeholder':'firstName'}),
             'TPIN':forms.TextInput(attrs={'class':'form-control','placeholder':'firstName'}),
@@ -167,3 +189,5 @@ class ChangePassword(PasswordChangeForm):
    new_password2 = forms.CharField( max_length=50, widget=forms.PasswordInput(attrs={"class":"form-control"}))
 
 #<input type="password" name="new_password1" autocomplete="new-password" required="" id="id_new_password1">
+
+
