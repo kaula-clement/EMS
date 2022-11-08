@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+
+{% block title %}
+
+{% endblock title %}
+
+{% block content %}
+All Sessions here
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+    Create Session
+  </button>
+  <span> <input class="btn btn-danger" type="button" value="Delete" id="BulkSessionDelete"></span>
+  <div class="table-responsive">
+    <table class="table">
+        <thead>
+        <tr>
+            <th></th>
+            <th>ID</th>
+            <th>Session Name</th>
+            <th>Session Start-Date</th>
+            <th>Session End-Date</th>
+            <th>Session status</th>
+        </tr>
+        </thead>
+
+        {% for session in sessions %}
+        <tbody>
+        <tr>
+            <td><input type="checkbox" value="{{ session.id }}"></td>
+            <td>{{ session.id }}</td>
+            <td>{{ session.name }}</td>
+            <td>{{ session.start_date }}</td>
+            <td>{{ session.end_date }}</td>
+            <td>
+                {% if session.active %}
+                  Active
+                {% else %}
+                Expired
+                {% endif %}
+                
+            </td>
+        </tr>
+        </tbody>
+        {% endfor %}
+
+    </table>
+</div>
+
+
+
+
+
+
+
+  <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Session</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <form method="POST" action="">
+                {% csrf_token %}
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                        <label>Session Name </label>
+                        <input type="text" class="form-control" name="session_name" maxlength=20>
+                        </div>
+                    </div>
+                    <div class="row">
+                    <div class="col">
+                        <label>Session Start Year </label>
+                        <input type="date" class="form-control" name="start_date">
+                    </div>
+                    <div class="col">
+                        <label>Session End Year </label>
+                        <input type="date" class="form-control" name="end_date">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                  </div>
+                
+                </div>
+                {{form.as_p}}
+            </form>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+{% endblock content %}
+
+{% block script %}
+<script>
+  $("#BulkSessionDelete").click(function(){
+    if (confirm('are you sure you whant to Delete the selected Examiners?'))
+    var id=[];
+    var csrf=$('input[name=csrfmiddlewaretoken]').val();
+    $(':checkbox:checked').each(function(i){
+        id[i]=$(this).val()
+    })
+    if (id.length==0){
+        alert("No items checked!")
+    }else{
+        console.log(id)
+        $.ajax({
+            url:"{%url 'batch-session-delete'%}",
+            method:"POST",
+            data:{
+                id,
+                csrfmiddlewaretoken:csrf
+
+            },
+            success:function(response){
+              console.log(id)
+              console.log("deleted")
+            }
+        })
+    }
+})
+
+</script>
+{% endblock script %}
+
+

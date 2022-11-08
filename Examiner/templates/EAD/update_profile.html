@@ -61,12 +61,17 @@
                         </div>
                     </div>
                
-                
-                    <div class="form-group ">
+                    <div class="row">
+                        <div class="col">
+                            <label for="inputEmail4">Gender</label>
+                            {{form.gender}}
+                        </div>
+                    <div class="col ">
                         <label for="inputEmail4">Email</label>
                         {{form.email}}
         
                     </div>
+                </div>
                     <div class="form-group ">
                         <label for="inputEmail4">Address</label>
                       {{form.Address}}
@@ -101,10 +106,13 @@
                      </div>
                      {% if request.user.user_type is 3 %}
                 <div class="form-row">
-                    <div class="form-group col-md-4">
+                  
+                     <div class="form-group col-md-4">
                         <label for="subject">Subject</label>
+                         
                         {{form.subject}}
-                    </div>
+                     </div>
+                  
                     <div class="form-group col-md-4">
                         <label for="position">Position</label>
                         {{form.position}}
@@ -147,6 +155,13 @@
                 
                 
                 <button type="submit" class="btn btn-primary">Update</button>
+                {% if messages %}
+                <ul class="messages">
+                    {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }} :{{form.field.error}}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
         
             </form>
         </div>

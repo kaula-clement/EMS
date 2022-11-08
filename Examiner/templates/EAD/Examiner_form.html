@@ -48,6 +48,11 @@
                    <!-- <input type="text" class="form-control" id="id_cell_Number" name="cell_Number" maxlength="10"  placeholder="10 digit Cell Phone Number" >-->
                 </div>
 
+                <div class="form-group col-md-6">
+                    <label for="inputText">Session</label>
+                    {{form.session}}
+                   <!-- <input type="text" class="form-control" id="id_cell_Number" name="cell_Number" maxlength="10"  placeholder="10 digit Cell Phone Number" >-->
+                </div>
         </div>
             <div class="form-group ">
                 <label for="inputEmail4">Email</label>
@@ -66,22 +71,12 @@
                 <div class="form-group col-md-6">
                     <label for="subject">Subject</label>
                     {{form.subject}}
-                    <!--<select id="id_subject" name="subject" class="form-control">
-                    <option selected disabled>Select Subject</option>
-                    {%for subject in subject_list %}
-                    <option value="{{subject.id}}">{{subject.subjectName}}</option>
-                    {%endfor%}
-                    </select> -->
+                    
                 </div>
                 <div class "form-group col-md-4">
                     <label for "posision">Position</label>
                     {{form.position}}
-                  <!--  <select id="id_position" name="position" class="form-control">
-                        <option value="">Select Position</option>
-                            {% for position in position_list %}
-                        <option value="{{position.id}}">{{position.name}}</option>   
-                            {% endfor %}
-                    </select> -->
+                  
                 </div>
                 
             </div>
@@ -89,56 +84,42 @@
             <div class="form-group col-md-4">
                 <label for="Province">Province</label>
                 {{form.province}}
-                <!--<select id="id_province" name="province" class="form-control">
-                <option selected disabled>Choose a Province</option>
-                {% for province in province_list %}
-                <option value="{{province.id}}">{{province.name}}</option>
-                {% endfor %}
-                </select> -->
+                
             </div>
             <div class="form-group col-md-4">
                 <label for="inputState">District</label>
                 {{form.district}}
-                <!--<select name="district" class="form-control" placeholder="District" required="" id="id_district">
-                <option selected disabled>Choose a district</option>
-                </select> -->
+                
             </div>
         
             <div class="form-group col-md-4">
                 <label for="inputZip">Station</label>
-                <!--<input type="text" name="station"class="form-control" id="inputZip"> -->
+               
             </div>
         </div>
         <div class="form-row">
             <div class="form-group col-md-4">
                 <label for="Province">Bank</label>
                 {{form.bank}}
-               <!-- <select id="id_bank" name="bank" class="form-control">
-                <option selected disabled>Choose a Bank</option>
-                {% for bank in bank_list %}
-                <option value="{{bank.id}}">{{bank.name}}</option>
-                {% endfor %}
-                </select> -->
+              
             </div>
             <div class="form-group col-md-4">
                 <label for="branch">Bank Branch</label>
                 {{form.branch}}
-                <!--<select name="branch" class="form-control" placeholder="bankbranch" required="" id="id_branch">
-                <option selected disabled>Choose a branch</option>
-                </select> -->
+                
             </div>
         
             <div class="form-group col-md-4">
                 <label for="inputZip">Account Number</label>
                 {{form.AccountDetails}}
-                <!-- <input type="text" name="AccountDetails" class="form-control" placeholder="Account Details" maxlength="150" required="" id="id_AccountDetails"> -->
+                
             </div>
         </div>
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="TPIN">TPIN</label>
                 {{form.TPIN}}
-            <!--    <input type="text" name="TPIN" class="form-control" placeholder="T Pin" maxlength="10" required="" id="id_TPIN"> -->
+            
             </div>
         </div>
 
@@ -153,6 +134,14 @@
             </div>
             </div>
             <button type="submit" class="btn btn-primary">Submit</button>
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }} :{{form.field.error}}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {{form.errors}}
         </form>
     </div>
 </div>

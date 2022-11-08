@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block content %}
+examiners per subject
+
+<div class="container">
+<span class="badge badge-pill badge-primary">Primary</span>
+<span class="badge badge-pill badge-secondary">Secondary</span>
+<span class="badge badge-pill badge-success">Success</span>
+<span class="badge badge-pill badge-danger">Danger</span>
+<span class="badge badge-pill badge-warning">Warning</span>
+<span class="badge badge-pill badge-info">Info</span>
+<span class="badge badge-pill badge-light">Light</span>
+<span class="badge badge-pill badge-dark">Dark</span>
+</div>
+
+
+<div class="container">
+{% for subj in subjects %}
+    <p id="subject">{{subj.subjectName}}</p>
+    {% for item in examiners %}
+        {% if item.subject.subjectName == subj.subjectName %}
+         {{item.subject.subjectName}},     
+        {% endif %}
+           
+    {% endfor %}
+<br>
+{% endfor %}
+</div>
+
+{% endblock content %}
+
+{% block script %}
+
+{% endblock script %}
+

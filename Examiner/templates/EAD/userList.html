@@ -1,19 +1,24 @@
 {%extends 'base.html'%}
 
-{%block content%}
-All users here
+{% block title %}
+Users
+{% endblock title %}
 
-    <div  class="table-responsive">
-<table class="table">
+
+{%block content%}
+
+<strong>/USERS</strong>
+
+<div  class="card card-body">
+<table class="table table-sm">
     <thead>
         <tr>
-            <th>User Name<th>
-            <th>First Name<th>
+            <th >User Name<th>
+            <th >First Name<th>
             <th>Last Name<th>
             <th>Email Address<th>
             <th>User Type<th>
             <th>Is Active<th>
-            <th>User Group<th>
         </tr>
     </thead>
     <tbody>
@@ -26,7 +31,6 @@ All users here
         <td>{{user.email}}<td>
         <td>{{user.user_type}}<td>
         <td>{{user.is_active}}<td>
-        <td>{{user.user_group}}<td>
         <td><a href="{%url 'update-user' user.id %}">update-user</a><td>        
     </tr>
         {% endfor %}

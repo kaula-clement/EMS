@@ -1,10 +1,11 @@
+import logging
 from django.shortcuts import render,redirect,HttpResponse
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.models import Group
 from requests import request
 from .models import CustomUser,EAD,Examiner,Province,Staff,Bank
-from .forms import EADForm, ExaminerForm, StaffForm, UserForm
+from .forms import ChangePassword, EADForm, ExaminerForm, StaffForm, UserForm
 from django.views.generic.list import ListView
 from django.contrib.auth.views import LoginView
 from django.views.generic.detail import DetailView
@@ -87,24 +88,27 @@ def updateprofile(request,pk):
             User=Examiner.objects.get(user=pk)
             form=ExaminerForm(request.POST,instance=User)
             
-        if form.is_valid():
+        if form.is_valid(): 
             form.save()
-            messages.success(request, "Your password was successfully updated!")
+            messages.success(request, "Your profile was successfully updated!")
             return redirect('login')
         else:
-            return HttpResponse("profile Update failed")
+            logging.getLogger("error_logger").error(
+                       form.errors.as_json())
+            messages.error(request, '{}'.format(form.errors))
+            #return HttpResponse("profile Update failed")
         
     return render(request,'EAD/update_profile.html',context)
 
 
 
 def updatepassword(request):
-    form=PasswordChangeForm(request.user)
+    form=ChangePassword(request.user)
     context={
         'form':form,
     }  
     if request.method=='POST':
-        form=PasswordChangeForm(request.user, request.POST)
+        form=ChangePassword(request.user, request.POST)
         
         if form.is_valid():
             form.save()
@@ -112,7 +116,8 @@ def updatepassword(request):
             messages.success(request, "Your password was successfully updated!")
             return redirect('updateprofile' ,pk=request.user.id)
         else:
-             return HttpResponse("Error changing password")
+            messages.error(request, '{}'.format(form.errors))
+            return render(request,'EAD/password_change.html',context)
             
     return render(request,'EAD/password_change.html',context)
         

@@ -68,7 +68,7 @@
    
 $(document).ready(function(){
     $("#appove_multiple_btn").click(function(){
-        if (confirm('Note that Approving an examiner will automatically send them a notification.Are you sure you whant to approve selected Examiners?'))
+        if (confirm('Are you sure you whant to approve selected Examiners?'))
         var id=[];
         var csrf=$('input[name=csrfmiddlewaretoken]').val();
         $(':checkbox:checked').each(function(i){

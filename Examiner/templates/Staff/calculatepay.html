@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% block title %}
+Pay calculator
+{% endblock title %}
+
+{% block content %}
+Pay Calc
+
+<table class="table">
+ <thead>
+    <tr>
+        <th>From</th>
+        <th></th>
+        <th>TO</th>
+    </tr>
+ </thead>
+ <tbody>
+    <tr>
+        <td>From Province  </td>
+        <td>From District</td>
+   
+    
+   
+        <td>To Province</td>
+    </tr>
+ </tbody>
+</table>
+<div class="card">
+    <div class="card-body">
+
+        <form method="POST" action="">
+{% csrf_token %}
+<div class="form-row">
+    <div class="col"
+        <label >Select Province<lable>
+            <Select id="id_province">
+                <option value="" selected disabled>Select Province</option>
+                {% for item in  provinces%}
+                <option value="{{item.id}}">{{item.name}}</option>
+                {% endfor %}
+            </Select>
+
+
+        </div>
+        <div class="col">
+            
+            <label for="district" >Select District<lable>
+                <Select id="id_district" name="district">
+                    <option value="0">select</option>
+                </Select>
+            </div>
+        <div class="col">
+                <label >Select Destination/Station</lable>
+                   
+                        
+                        <Select id="id_station" name='station'>
+                            {% for item in Stations %}
+                            <option value="{{item}}">{{item}}</option>
+                            {% endfor %}
+                        </Select>
+                        
+                        
+                    
+                    
+
+        
+
+
+                </div>
+            </div>
+
+
+                <br>
+            <hr>
+                
+                <input type="submit" value="Get Cost">
+        </form>
+
+        <label>ANSWER:</label>
+        <input type="number" value="{{pay}}">
+    </div>
+
+</div>
+
+{% endblock content %}
+
+{% block script %}
+<script>
+    $("#id_province").change(function () {
+        const provinceID = $(this).val();  // get the selected subject ID from the HTML dropdown list 
+        console.log(provinceID)
+        
+        $.ajax({                       // initialize an AJAX request
+            type: "POST",
+            url: '{% url "load-districts" %}',
+            data: {
+                'province_id': provinceID,       // add the country id to the POST parameters
+                'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val(),
+            },
+            success: function (data) {   // `data` is from `get_topics_ajax` view function
+                let html_data = '<option value="">Choose a district</option>';
+                data.forEach(function (data) {
+                    html_data += `<option value="${data.code}">${data.name}</option>`
+                });
+                $("#id_district").html(html_data); // replace the contents of the topic input with the data that came from the server
+            }
+        });
+    });
+</script>
+
+{% endblock script %}
+
+

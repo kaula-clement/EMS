@@ -1,11 +1,13 @@
 
 
 .main-sidebar{
-    background-color: #00461e;
+    background-color:#0b5e28
 }
 .main-header{
-    background-color: #4db66d;
+    background-color: #47b471;
+   /** background-color: #4db66d;**/
 }
+
 .card-link{
     color: #000cb0;
 }
@@ -13,7 +15,7 @@
     outline-color: #000cb0;
 }
 .content-wrapper{
-    background-color: #ddeede;
+    background-color: #bcdbcde8;
 }
 
 /**text #ffffff BG:#00b04c

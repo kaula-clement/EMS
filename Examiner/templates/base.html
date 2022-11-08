@@ -11,13 +11,18 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{%block title%}{%endblock title%}</title>
   <!--Bootstrap-->
-  
+   
 
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!--Bootstrap4-->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="{% static 'plugins/fontawesome-free/css/all.min.css'%}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.1.0/css/v4-shims.min.css" integrity="sha512-p++g4gkFY8DBqLItjIfuKJPFvTPqcg2FzOns2BNaltwoCOrXMqRIOqgWqWEvuqsj/3aVdgoEo2Y7X6SomTfUPA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <!-- Daterange picker -->
+  <link rel="stylesheet" href="{% static "daterangepicker/daterangepicker.css" %}">
+
   <!-- Theme style -->
   <link rel="stylesheet" href="{% static '/dist/css/adminlte.min.css'%}">
   <link rel="stylesheet" href="{% static '/css/style1.css'%}">
@@ -66,7 +71,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     
     <div class="content">
 
-    
+    {% include 'includes/messages.html' %}
  
 <!-- /.container-fluid -->
       {%block content%}
@@ -105,7 +110,11 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
 <!-- jQuery -->
 <script src="{% static 'plugins/jquery/jquery.min.js'%}"></script>
-
+<!-- daterangepicker -->
+<script src="{% static "daterangepicker/moment.min.js"  %}"></script>
+<script src="{% static "daterangepicker/daterangepicker.js"  %}"></script>
+<!-- ChartJS -->
+<script src="{% static "js/Chart.js"  %}"></script>
 {% block script %}
 
 {% endblock script %}

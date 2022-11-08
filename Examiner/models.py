@@ -8,6 +8,7 @@ from multiselectfield import MultiSelectField
 class CustomUser(AbstractUser):
     user_type_data = ((1, "EAD"), (2, "Staff"), (3, "Examiner"))
     user_type = models.IntegerField(default=1, choices=user_type_data)
+    is_admin=models.BooleanField(default=False)
 
 class Country(models.Model):
     name = models.CharField(max_length=40)
@@ -56,11 +57,18 @@ class Province(models.Model):
        return self.name
     
 class District(models.Model):
-    province=models.ForeignKey(Province, on_delete=models.CASCADE)
+    province=models.ForeignKey(Province, on_delete=models.SET_NULL, blank=True, null=True)
+    code=models.IntegerField(unique=True)
     name=models.CharField(max_length=50)
     def __str__(self):
        return self.name
-
+class Session(models.Model):
+    name=models.CharField(max_length=20)
+    start_date=models.DateField()
+    end_date=models.DateField()
+    active=models.BooleanField(default=True)
+    def __str__(self):
+       return self.name
 
 
 class Position(models.Model):
@@ -136,8 +144,11 @@ class Examiner(models.Model):
     TPIN=models.CharField(max_length=10,null=True)
     cell_Number=models.CharField(max_length=10,null=True)
     email=models.EmailField(null=True,unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     approved=models.BooleanField(default=False)
     availability=models.BooleanField(default=False)
+    session=models.ManyToManyField(Session)
 
     objects = models.Manager()
 
@@ -206,8 +217,23 @@ class comment(models.Model):
     msg2=models.TextField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
-   
+
+class SchedulePay(models.Model):
+    FromDistrict=models.ForeignKey(District,to_field="code",db_column="district_code",on_delete=models.SET_NULL,null=True,blank=True)
+    LUSAKA=models.IntegerField()
+    COPPERBELT=models.IntegerField()
+    MONZE=models.IntegerField()
+    KAPIRI=models.IntegerField()
+    LIVINGSTONE=models.IntegerField()
+    CHOMA=models.IntegerField()
+    MWANDI=models.IntegerField()
+    LUNTE=models.IntegerField()
+    MWENSE=models.IntegerField()
+    KASENENGWA=models.IntegerField()
+    CHISAMBA=models.IntegerField()
+    CHIBOMBO=models.IntegerField()
+
+
     
 from django.dispatch import receiver
 

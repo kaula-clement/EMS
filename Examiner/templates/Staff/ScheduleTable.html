@@ -1,0 +1,71 @@
+{%extends 'index.html' %}
+
+
+{%block content%}
+<h3>schedule_table</h3>
+<hr>
+<a href="{%url 'upload_schedule_csv'%}">Upload Schedule data</a> 
+<a class="btn btn-success" href="{%url 'calculate-pay'%}">Calculate Pay</a>
+<div class="row">
+    <div class="col">
+        <div class="card card-body">
+            <form method="get">
+                {{myFilter.form}}
+                <button class="btn btn-primary btn-sm" type="submit">search</button>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="table-responsive overflow-auto">
+<table class="table table-hover text-wrap">
+ {% csrf_token %}
+    <tr>
+      <!--  <th>id</th> -->
+        
+        <th>DISTRICT</th>
+        <th>LUSAKA</th>
+        <th>C/BELT</th>
+        <th>MONZE</th>
+        <th>KAPIRI</th>
+        <th>L/STONE</th>
+        <th>CHOMA</th>
+        <th>MWANDI</th>
+        <th>LUNTE</th>
+        <th>MWENSE</th>
+        <th>KASENENGWA</th>
+        <th>CHISAMBA</th>
+        <th>CHIBOMBO</th>
+        <th></th>
+        <th></th>
+    </tr>
+
+    {%for item in schedule %} 
+<tr id="{{item.id}}">
+   <!-- <td>{{item.id}}</td> -->
+   <td><b>{{item.FromDistrict}}</b></td>
+    <td>{{item.LUSAKA}}Nights</td>
+    <td>{{item.COPPERBELT}}Nights</td>
+    <td>{{item.MONZE}}Nights</td>
+    <td>{{item.KAPIRI}}Nights</td>
+    <td>{{item.LIVINGSTONE}}Nights</td>
+    <td>{{item.CHOMA}}Nights</td>
+    <td>{{item.MWANDI}}Nights</td>
+    <td>{{item.LUNTE}}Nights</td>
+    <td>{{item.MWENSE}}Nights</td>
+    <td>{{item.KASENENGWA}}Nights</td>
+    <td>{{item.CHISAMBA}}Nights</td>
+    <td>{{item.CHIBOMBO}}Nights</td>
+   
+    
+</tr>
+{%empty%}
+<h4>no Schedule data in list</h4>
+    {%endfor%}
+</table>
+</div>
+
+     
+
+{%endblock content%}
+
+

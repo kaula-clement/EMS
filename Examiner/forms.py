@@ -1,33 +1,18 @@
 from dataclasses import field, fields
 from django import forms
 from django.contrib.auth.forms import PasswordChangeForm
-from .models import Examiner,EAD,CustomUser,Person,City,Invitation ,districtcsv,Subject,Bank,BankBranch,Staff,comment
+from .models import Examiner,EAD,CustomUser,Person,City,Invitation ,districtcsv,Subject,Bank,BankBranch,Staff,comment,District,SchedulePay,Session
+
+class ExaminerUploadForm(forms.ModelForm):
+    class Meta:
+        model=Examiner
+        fields=('middle_name','last_name','first_name','position','email','subject',)
 
 class ExaminerForm(forms.ModelForm):
     class Meta:
         model=Examiner 
-        #fields='__all__'
         fields=('middle_name','last_name','first_name','gender','subject','position','Address','province','district',
-                'AccountDetails','NRC','TPIN','cell_Number','email','availability','bank','branch')
-        def clean(self):
- 
-            # data from the form is fetched using super function
-            super(ExaminerForm, self).clean()
-            
-            # extract the username and text field from the data
-            first_name = self.cleaned_data.get('first_name')
-            email = self.cleaned_data.get('email')
-    
-            # conditions to be met for the username length
-            if len(first_name) < 5:
-                self._errors['username'] = self.error_class([
-                    'Minimum 5 characters required'])
-            if len(email) <10:
-                self._errors['text'] = self.error_class([
-                    'Post Should Contain a minimum of 10 characters'])
-    
-            # return any errors if found
-            return self.cleaned_data
+                'AccountDetails','NRC','TPIN','cell_Number','email','availability','bank','branch','session')
         
         widgets = {
             'middle_name':forms.TextInput(attrs={'class':'form-control','placeholder':'Middle Name'}),
@@ -48,7 +33,12 @@ class ExaminerForm(forms.ModelForm):
             'branch':forms.Select(attrs={'class':'form-control','placeholder':'Province'}),
             'approved':forms.CheckboxInput(attrs={'class':'largerCheckbox'}),
             'availability':forms.CheckboxInput(attrs={'class':'largerCheckbox'}),
+            #'session':forms.SelectMultiple(attrs={'class':'form-control'}),
+            
         }
+    def __init__(self, *args, **kargs):
+            super().__init__(*args, **kargs)
+            self.fields['session'].queryset = Session.objects.filter(active=True)
 
 
 
@@ -153,13 +143,15 @@ class StaffForm(forms.ModelForm):
 class UserForm(forms.ModelForm):
     class Meta:
         model= CustomUser
-        fields=('first_name','last_name','email','user_type','password') 
+        fields=('first_name','last_name','email','user_type','password','is_active','is_admin') 
         widgets = {
             'first_name': forms.TextInput(attrs={'class':'form-control','placeholder':'firstName'}),
             'last_name': forms.TextInput(attrs={'class':'form-control','placeholder':'lastName'}),
             'email': forms.EmailInput(attrs={'class':'form-control','placeholder':'email'}),
             'password': forms.TextInput(attrs={'class':'form-control','placeholder':'password'}),
             'user_type': forms.Select(attrs={'class':'form-control '}),  
+            'is_active':forms.CheckboxInput(),
+            'is_admin':forms.CheckboxInput(),
         } 
         
     
@@ -188,6 +180,15 @@ class ChangePassword(PasswordChangeForm):
    new_password1 = forms.CharField( max_length=50, required="" , widget=forms.PasswordInput(attrs={"class":"form-control"}))
    new_password2 = forms.CharField( max_length=50, widget=forms.PasswordInput(attrs={"class":"form-control"}))
 
-#<input type="password" name="new_password1" autocomplete="new-password" required="" id="id_new_password1">
 
 
+class DistrictForm(forms.ModelForm):
+    class Meta:
+        model=District
+        fields='__all__'
+        
+class ScheduleForm(forms.ModelForm):
+    class Meta:
+        model=SchedulePay
+        fields=('FromDistrict','LUSAKA','COPPERBELT','MONZE','KAPIRI','LIVINGSTONE',
+                'CHOMA','MWANDI','LUNTE','MWENSE','KASENENGWA','CHISAMBA','CHIBOMBO',)

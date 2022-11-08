@@ -8,11 +8,12 @@ from .models import Examiner, Invitation, Province, District,districtcsv
 from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView
 from django.urls import reverse_lazy, reverse
+from django.views.decorators.csrf import csrf_exempt
 
 # ======================================
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .forms import BankBranchForm,ExaminerForm
+from .forms import BankBranchForm,ExaminerForm,DistrictForm
 # ======================================pdf
 import csv
 import xlwt
@@ -83,6 +84,8 @@ def load_district(request):
 
 
 # AJAX
+
+@csrf_exempt
 def get_districts_ajax(request):
     if request.method == "POST":
         province_id = request.POST['province_id']
@@ -94,7 +97,7 @@ def get_districts_ajax(request):
             pass
            # data['error_message'] = 'error'
            # return JsonResponse(data)
-        return JsonResponse(list(districts.values('id', 'name')), safe = False) 
+        return JsonResponse(list(districts.values('id', 'name','code')), safe = False) 
     
 def get_bankbranch_ajax(request):
     if request.method == "POST":
@@ -160,6 +163,57 @@ def upload_csv(request):
         messages.error(request, "Unable to upload file. "+repr(e))
 
     return HttpResponseRedirect(reverse("upload_csv"))
+
+
+def upload_district_csv(request):
+    data = {}
+    if "GET" == request.method:
+        return render(request, "registration/upload_district_csv.html", data)
+    # if not GET, then proceed
+    try:
+        csv_file = request.FILES["csv_file"]
+        if not csv_file.name.endswith('.csv'):
+            messages.error(request, 'File is not CSV type')
+            return HttpResponseRedirect(reverse("upload_district_csv"))
+    # if file is too large, return
+        if csv_file.multiple_chunks():
+            messages.error(request, "Uploaded file is too big (%.2f MB)." % (
+                csv_file.size/(1000*1000),))
+            return HttpResponseRedirect(reverse("upload_district_csv"))
+
+        file_data = csv_file.read().decode("utf-8")
+        lines = file_data.split("\n")
+        lines=lines[1:len(lines)-1]
+        # loop over the lines and save them in db. If error , store as string and then display
+        for line in lines:
+            print("=======Line: ",line)
+            fields = line.split(",")
+            data_dict = {}
+            data_dict["province"] =fields[1]  # field=uploaded file column
+            data_dict["code"] = fields[0]
+            data_dict["name"] = fields[2]
+            try: 
+                form =DistrictForm(data_dict)
+                print("data_dict:",data_dict)
+                if form.is_valid():
+                    
+                    form.save()
+                else:
+
+                    logging.getLogger("error_logger").error(
+                       form.errors.as_json())
+                    messages.error(request, '{}'.format(form.errors,line))
+            except Exception as e:
+                logging.getLogger("error_logger").error(repr(e))
+                pass
+
+    except Exception as e:
+        logging.getLogger("error_logger").error(
+            "Unable to upload file. "+repr(e))
+        messages.error(request, "Unable to upload file. "+repr(e))
+
+    return HttpResponseRedirect(reverse("upload_district_csv"))
+
 
 
 from . models import Country, City, Person

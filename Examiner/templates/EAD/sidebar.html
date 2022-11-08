@@ -1,6 +1,6 @@
 {% load static%}
 
-<aside class="main-sidebar  elevation-4">
+<aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
     <a href="{% url 'ead-home'%}" class="brand-link">
       <img src="{% static '/img/ECZ-Logo2.jpg'%}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
@@ -12,7 +12,7 @@
       <!-- Sidebar user panel (optional) -->
       <div class="user-panel mt-3 pb-3 mb-3 d-flex">
         <div class="image">
-          <img src="{% static 'dist/img/user2-160x160.jpg'%}" class="img-circle elevation-2" alt="User Image">
+          <img src="{% static 'dist/img/user.png'%}" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
           <a href="{%url 'updateprofile' request.user.id %}" class="d-block">{{ request.user.username}}</a>
@@ -39,7 +39,7 @@
 
           <li class="nav-item">
             <a href="{%url 'examiner-list'%}" class="nav-link">
-              <i class="nav-icon fas fa-th"></i>
+              <i class='nav-icon fas fa-book-reader' style='font-size:24px'></i>
               <p>
                 Manage Examiners
               
@@ -47,10 +47,62 @@
             </a>
           </li>
           <li class="nav-item">
-            <a href="{%url 'invite'%}" class="nav-link">
+            <a href="{%url 'notifications-list'%}" class="nav-link">
+              <i class='nav-icon fas fa-bullhorn' style='font-size:24px'></i>
+              <p>
+              All  Invitations
+              
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{%url 'bank-list'%}" class="nav-link">
+              <i class='far fa-building' style='font-size:24px'></i
+              <p>
+              Banks  
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{%url 'send-email'%}" class="nav-link">
+              <i class='nav-icon fas fa-mail-bulk' style='font-size:24px'></i>
+              <p>
+              Send mail  
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{%url 'add-subject'%}" class="nav-link">
+              <i class='nav-icon far fa-address-book' style='font-size:24px'></i>
+              <p>
+                subjects
+              
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{%url 'schedule_table'%}" class="nav-link">
+              <i class='nav-icon far fa-address-book' style='font-size:24px'></i>
+              <p>
+                Schedule
+              
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{%url 'subject-list'%}" class="nav-link">
+              <i class='fas fa-list-ol' style='font-size:24px'></i>
+              <p>
+                subjects list
+              
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{%url 'sessions-all'%}" class="nav-link">
               <i class="nav-icon fas fa-th"></i>
               <p>
-                Add Invitations
+                Sessions
               
               </p>
             </a>
@@ -58,16 +110,16 @@
         </li>
         <li class="nav-item">
           <a href="{%url 'userlist'%}" class="nav-link">
-            <i class="nav-icon fas fa-th"></i>
+            <i class='nav-icon fas fa-users' style='font-size:24px'></i>
             <p>
-              User Manager
+              Users
             
             </p>
           </a>
         </li>
         <li class="nav-item">
           <a href="{%url 'staff-list'%}" class="nav-link">
-            <i class=" nav-icon fa-solid fa-clipboard-user"></i>
+            <i class='nav-icon fas fa-chalkboard-teacher'  style='font-size:24px'></i>
             <p>
               Manager Staff
             
@@ -83,63 +135,22 @@
             </p>
           </a>
         </li>
-          <li class="nav-item">
-            <a href="{%url 'notifications-list'%}" class="nav-link">
-              <i class="nav-icon fas fa-th"></i>
-              <p>
-              All  Invitations
-              
-              </p>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="{%url 'bank-list'%}" class="nav-link">
-              <i class="nav-icon fas fa-th"></i>
-              <p>
-              Banks  
-              </p>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="{%url 'send-email'%}" class="nav-link">
-              <i class="nav-icon fas fa-th"></i>
-              <p>
-              Send mail  
-              </p>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="{%url 'add-subject'%}" class="nav-link">
-              <i class="nav-icon fas fa-th"></i>
-              <p>
-                subjects
-              
-              </p>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="{%url 'subject-list'%}" class="nav-link">
-              <i class="nav-icon fas fa-th"></i>
-              <p>
-                subjects list
-              
-              </p>
-            </a>
-          </li>
+          {% if request.user.is_admin %}
           <li class="nav-item">
             <a href="{%url 'ead-list'%}" class="nav-link">
-              <i class="nav-icon fas fa-th"></i>
+              <i class='nav-icon fas fa-user-friends' style='font-size:24px'></i>
               <p>
                 Manage EAD
               
               </p>
             </a>
           </li>
+          {% endif %}
           <li class="nav-item">
             <a href="{%url 'comments-list'%}" class="nav-link">
-              <i class="nav-icon fas fa-th"></i>
+              <i class='nav-icon far fa-comment-alt' style='font-size:24px'></i>
               <p>
-              Invitation Template
+              Comments
               
               </p>
             </a>

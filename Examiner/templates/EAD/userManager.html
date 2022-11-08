@@ -2,12 +2,62 @@
 
 {%block content%}
 
+
 <form method="POST" action="">
     {% csrf_token %}
-{{form.as_p}}
+    <div class="container pt-3 my-0 border">
+    <div class="header">
+        Change/Update User 
+    </div>
+    <hr>
 
-<input type="submit" value="submit">
-
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="first_name">First Name</label>
+        {{form.first_name}}
+      </div>
+      <div class="form-group col-md-6">
+        <label for="last_name">last_name</label>
+        {{form.last_name}}
+      </div>
+    </div>
+    <div class="form-group">
+        <div class="col-lg-4">
+            <label for="user_type">User Type</label>
+            {{form.user_type}}
+        </div>
+        <div class="col">
+            <label for="email">Email</label>
+            {{form.email}}
+        </div>
+    </div>
+    <div class="form-group">
+      <label for="inputAddress2">Password</label>
+      {{form.password}}
+    </div>
+    <div class="form-group">
+      <div class="form-check">
+        <label >
+      Is Active
+          </label>
+        {{form.is_active}}
+        
+        
+        <span class="helptext">Designates whether this user should be treated as active. Unselect this instead of deleting accounts.</span>
+      </div>
+      <div class="form-check">
+        <label>
+            Is Admin
+          </label>
+        {{form.is_admin}}
+        
+      </div>
+    </div>
+    
+    <input type="submit" class="btn btn-primary" value="Submit">
+</div>  
 </form>
+
+
 
 {%endblock%}

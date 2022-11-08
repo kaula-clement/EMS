@@ -1,0 +1,48 @@
+{% extends 'base.html'%}
+
+{%block content%}
+<form action= "{%url 'examiner_upload_csv'%}" method="POST" enctype="multipart/form-data" class="form-horizontal"> 
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="name" class="col-md-3 col-sm-3 col-xs-12 control-label">File: </label>
+        <div class="col-md-8">
+            <input type="file" name="csv_file" id="csv_file" required="True" class="form-control">
+        </div>                    
+    </div>
+    <div class="form-group">                    
+        <div class="col-md-3 col-sm-3 col-xs-12 col-md-offset-3" style="margin-bottom:10px;">
+             <button class="btn btn-primary"> <span class="glyphicon glyphicon-upload" style="margin-right:5px;"></span>Upload </button>
+        </div> 
+    </div>
+{{errors}}
+    {% if form.errors %}
+       {% for field in form %}
+           {% for error in field.errors %} 
+              <div class="alert alert-danger">
+                   <strong>{{ error|escape }}</strong>
+              </div>
+           {% endfor %}
+       {% endfor %}
+    {% endif %}
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }} :{{form.field.error}}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+    </form>
+
+    format of csv file
+    <table class="table table-sm">
+<tr>
+    <th>First Name</th>
+    <th>Middle Name</th>
+    <th>Last Name</th>
+    <th>Subject Name</th>
+    <th>Subject Code</th>
+    <th>Position</th>
+    <th>Email</th>
+</tr>
+    </table>
+{%endblock%}
