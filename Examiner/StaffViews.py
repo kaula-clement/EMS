@@ -10,7 +10,7 @@ from django.contrib.auth.views import LoginView
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .forms import StaffForm,ScheduleForm
+from .forms import StaffForm,ScheduleForm,StationForm
 
 import logging
 from django.contrib import messages
@@ -77,6 +77,13 @@ class ScheduleTableList(ListView):
     model= SchedulePay
     context_object_name='schedule'
     template_name='Staff/ScheduleTable.html'
+    
+def schedule(request):
+    examiners=Examiner.objects.filter(approved=True)
+    context={
+        'examiners':examiners
+    }
+    return render(request,'Staff/Schedule.html',context)
     
     
 def calculatePay(request):
@@ -170,3 +177,55 @@ def upload_schedule_csv(request):
         messages.error(request, "Unable to upload file. "+repr(e))
 
     return HttpResponseRedirect(reverse("upload_schedule_csv"))
+
+#Upload Stations
+def upload_stations_csv(request): 
+    data = {}
+    if "GET" == request.method:
+        return render(request, "Staff/upload_stations.html", data)
+    # if not GET, then proceed
+    try:
+        csv_file = request.FILES["csv_file"]
+        if not csv_file.name.endswith('.csv'):
+            messages.error(request, 'File is not CSV type')
+            return HttpResponseRedirect(reverse("upload_stations"))
+    # if file is too large, return
+        if csv_file.multiple_chunks():
+            messages.error(request, "Uploaded file is too big (%.2f MB)." % (
+                csv_file.size/(1000*1000),))
+            return HttpResponseRedirect(reverse("upload_stations"))
+
+        file_data = csv_file.read().decode("utf-8")
+        lines = file_data.split("\n")
+        lines=lines[1:len(lines)-1]
+        # loop over the lines and save them in db. If error , store as string and then display
+        for line in lines:
+            print("=======Line: ",line)
+            fields = line.split(",")
+            data_dict = {}
+            
+            data_dict["province"] =fields[0]  # field=uploaded file column
+            data_dict["name"] = fields[1]
+            
+            try: 
+                form = StationForm(data_dict)
+                print("data_dict:",data_dict)
+                if form.is_valid():
+                    form.save()
+                    messages.success(request,"uploaded record")
+                else:
+
+                    logging.getLogger("error_logger").error(
+                       form.errors.as_json())
+                    messages.error(request, '{}'.format(form.errors,line))
+                   
+            except Exception as e:
+                logging.getLogger("error_logger").error(repr(e))
+                
+
+    except Exception as e:
+        logging.getLogger("error_logger").error(
+            "Unable to upload file. "+repr(e))
+        messages.error(request, "Unable to upload file. "+repr(e))
+
+    return HttpResponseRedirect(reverse("upload_stations"))

@@ -165,8 +165,10 @@ def batchmailExaminer(request):
                     maillist,
                     fail_silently=False,
                 )
+                messages.success(request,"Batch Emails Sent")
             else:
                 logging.getLogger("error_logger").error()
+                messages.error(request,"error sending emails")
         except Exception as e:
             logging.getLogger("error_logger").error(repr(e))
             
@@ -372,17 +374,17 @@ def upload_csv(request):
             data_dict["email"] = fields[5]
             positionData=Position.objects.get(name=fields[6])
             data_dict["position"] =positionData.id
-           # data_dict["approved"] = True
-            #data_dict["availability"] = True 
+            data_dict["approved"] = True
+            data_dict["availability"] = True 
             
             try: 
                 form = ExaminerUploadForm(data_dict)
                 print("data_dict:",data_dict)
                 if form.is_valid():
-                    form.save()
+                    #form.save()
                     td=str(date.today().year)
                     code=td[-2:]+'-'+form.instance.subject.subjectCode+str(form.instance.pk)
-                    print("CODE:",code)
+                    #print("CODE:",code)
                     form.instance.ExaminerCode=code
                     first_name=form.instance.first_name
                     last_name=form.instance.last_name

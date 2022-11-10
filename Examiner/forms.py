@@ -1,7 +1,7 @@
 from dataclasses import field, fields
 from django import forms
 from django.contrib.auth.forms import PasswordChangeForm
-from .models import Examiner,EAD,CustomUser,Person,City,Invitation ,districtcsv,Subject,Bank,BankBranch,Staff,comment,District,SchedulePay,Session
+from .models import Examiner,EAD,CustomUser,Person,City,Invitation ,districtcsv,Subject,Bank,BankBranch,Staff,comment,District,SchedulePay,Session,Station
 
 class ExaminerUploadForm(forms.ModelForm):
     class Meta:
@@ -12,7 +12,8 @@ class ExaminerForm(forms.ModelForm):
     class Meta:
         model=Examiner 
         fields=('middle_name','last_name','first_name','gender','subject','position','Address','province','district',
-                'AccountDetails','NRC','TPIN','cell_Number','email','availability','bank','branch','session')
+                'AccountDetails','NRC','TPIN','cell_Number','email','availability','bank','branch','session',
+                'from_station','to_station')
         
         widgets = {
             'middle_name':forms.TextInput(attrs={'class':'form-control','placeholder':'Middle Name'}),
@@ -31,6 +32,8 @@ class ExaminerForm(forms.ModelForm):
             'email': forms.EmailInput(attrs={'class':'form-control','placeholder':'email@abc.abc'}),
             'bank':forms.Select(attrs={'class':'form-control','placeholder':'Province'}),
             'branch':forms.Select(attrs={'class':'form-control','placeholder':'Province'}),
+            'from_station':forms.Select(attrs={'class':'form-control'}),
+            'to_station':forms.Select(attrs={'class':'form-control'}),
             'approved':forms.CheckboxInput(attrs={'class':'largerCheckbox'}),
             'availability':forms.CheckboxInput(attrs={'class':'largerCheckbox'}),
             #'session':forms.SelectMultiple(attrs={'class':'form-control'}),
@@ -192,3 +195,8 @@ class ScheduleForm(forms.ModelForm):
         model=SchedulePay
         fields=('FromDistrict','LUSAKA','COPPERBELT','MONZE','KAPIRI','LIVINGSTONE',
                 'CHOMA','MWANDI','LUNTE','MWENSE','KASENENGWA','CHISAMBA','CHIBOMBO',)
+        
+class StationForm(forms.ModelForm):
+    class Meta:
+        model=Station
+        fields=('province','name')

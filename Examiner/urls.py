@@ -48,15 +48,20 @@ urlpatterns = [
    path('staff/create',StaffViews.StaffCreate.as_view(),name='staff-create'),
    path('staff/list',StaffViews.StaffListView.as_view(),name='staff-list'),
    
-   path('schedule/',StaffViews.ScheduleTableList.as_view(), name='schedule_table'),
-   path('paycalc/',StaffViews.calculatePay, name='calculate-pay'),
+   
+   
    
    path('Sessions-all/',EADViews.SessionCreate.as_view(), name='sessions-all'),
    path('batch-session-delete/',EADViews.batchSessionDelete,name='batch-session-delete'),
    
    #======================================Staff Menu
    path('Staff-home/',StaffViews.StaffHome,name='new-session'),
-   path('staff/examiners/',StaffExaminerList.as_view(),name='staff-examiner-list'),   
+   path('staff/examiners/',StaffExaminerList.as_view(),name='staff-examiner-list'),  
+   
+   path('Examiner/schedule/',StaffViews.schedule,name='schedule'),
+   path('schedule/',StaffViews.ScheduleTableList.as_view(), name='schedule_table'),
+   path('paycalc/',StaffViews.calculatePay, name='calculate-pay'),
+   path('Upload/stations/',StaffViews.upload_stations_csv,name='upload_stations'),
    
    
    

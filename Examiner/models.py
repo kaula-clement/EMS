@@ -62,6 +62,13 @@ class District(models.Model):
     name=models.CharField(max_length=50)
     def __str__(self):
        return self.name
+   
+class Station(models.Model):
+    province=models.ForeignKey(Province,on_delete=models.SET_NULL, blank=True, null=True)
+    name=models.CharField(max_length=50)
+    def __str__(self):
+       return self.name
+
 class Session(models.Model):
     name=models.CharField(max_length=20)
     start_date=models.DateField()
@@ -136,6 +143,9 @@ class Examiner(models.Model):
     ExaminerCode=models.CharField(max_length=50,null=True,unique=True)
     Address=models.CharField(max_length=500,null=True)
     district=models.ForeignKey(District, on_delete=models.SET_NULL,null=True)
+    from_station =models.ForeignKey(Station,related_name="from_station",on_delete=models.SET_NULL,null=True,blank=True)
+    to_station =models.ForeignKey(Station,related_name="to_station",on_delete=models.SET_NULL,null=True,blank=True)
+    to_district =models.ForeignKey(District,related_name="to_district",on_delete=models.SET_NULL,null=True,blank=True)
     province=models.ForeignKey(Province, on_delete=models.SET_NULL,null=True)
     bank=models.ForeignKey(Bank,on_delete=models.SET_NULL,null=True,blank=True)
     branch=models.ForeignKey(BankBranch,on_delete=models.SET_NULL,null=True,blank=True)
@@ -147,7 +157,7 @@ class Examiner(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     approved=models.BooleanField(default=False)
-    availability=models.BooleanField(default=False)
+    availability=models.BooleanField(default=False) 
     session=models.ManyToManyField(Session)
 
     objects = models.Manager()

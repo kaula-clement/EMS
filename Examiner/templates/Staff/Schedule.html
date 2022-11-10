@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Schedule
+{% endblock title %}
+
+{% block content %}
+
+LIST OF REGISTERED MARKERS FOR 2022 GCE MARKING
+<hr>
+<a href="#" class="btn btn-success float-right">Export Excel</a>
+<span><a href="{%url 'upload_stations'%}" class="btn btn-primary">Upload Stations</a></span>
+<span><a href="{%url 'schedule_table'%}" class="btn btn-info">Schedule Table</a></span>
+
+<div class="card card-body">
+<div class="table-responsive">
+<table class="table table-sm">
+    <thead>
+        <th>ID</th>
+        <th>First Name</th>
+        <th>Middle Name</th>
+        <th>Last Name</th>
+        <th>NRC</th>
+        <th>CELL</th>
+        <th>RESIDENTIAL ADDRESS</th>
+        <th>FROM PROVINCE</th>
+        <th>FROM Station/District</th>
+        <th>TO STATION</th>
+        <th>TRANSPORT</th>
+        <th>SUBJECT</th>
+        <th>POSITION</th>
+        <th>BANK</th>
+        <th>BRANCH</th>
+        <th>SORT CODE</th>
+        <th>ACCOUNT NUMBER</th>
+        <th>T-PIN</th>
+
+    </thead>
+    <tbody>
+            
+            {% for item in examiners %}
+            <tr>
+                <td>{{item.id}}</td>
+                <td>{{item.first_name}}</td>
+                <td>{{item.middle_name}}</td>
+                <td>{{item.last_name}}</td>
+                <td>{{item.NRC}}</td>
+                <td>{{item.cell_Number}}</td>
+                <td>{{item.Address}}</td>
+                <td>{{item.province}}</td>
+                <td>{{item.from_station}}</td>
+                <td>{{item.to_station}}</td>
+                <td>TRANSPORT</td>
+                <td>{{item.subject.subjectName}}</td>
+                <td>{{item.position}}</td>
+                <td>{{item.bank}}</td>
+                <td>{{item.branch}}</td>
+                <td>{{item.branch.sortcode}}</td>
+                <td>{{item.AccountDetails}}</td>
+                <td>{{item.TPIN}}</td>
+            </tr>
+            {% endfor %}
+
+
+    </tbody>
+</table>
+</div>
+</div>
+{% endblock content %}
+
