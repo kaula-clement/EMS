@@ -38,26 +38,30 @@ LIST OF REGISTERED MARKERS FOR 2022 GCE MARKING
     </thead>
     <tbody>
             
-            {% for item in examiners %}
+            {% for item in payments %}
             <tr>
-                <td>{{item.id}}</td>
-                <td>{{item.first_name}}</td>
-                <td>{{item.middle_name}}</td>
-                <td>{{item.last_name}}</td>
-                <td>{{item.NRC}}</td>
-                <td>{{item.cell_Number}}</td>
-                <td>{{item.Address}}</td>
-                <td>{{item.province}}</td>
-                <td>{{item.from_station}}</td>
-                <td>{{item.to_station}}</td>
-                <td>TRANSPORT</td>
-                <td>{{item.subject.subjectName}}</td>
-                <td>{{item.position}}</td>
-                <td>{{item.bank}}</td>
-                <td>{{item.branch}}</td>
-                <td>{{item.branch.sortcode}}</td>
-                <td>{{item.AccountDetails}}</td>
-                <td>{{item.TPIN}}</td>
+                <td>{{item.examiner.id}}</td>
+                <td>{{item.examiner.first_name}}</td>
+                <td>{{item.examiner.middle_name}}</td>
+                <td>{{item.examiner.last_name}}</td>
+                <td>{{item.examiner.NRC}}</td>
+                <td>{{item.examiner.cell_Number}}</td>
+                <td>{{item.examiner.Address}}</td>
+                <td>{{item.examiner.province}}</td>
+                <td>{{item.examiner.district}}</td>
+                <td>{{item.examiner.to_province}}</td>
+                <td>
+
+                    {{item.transport}}
+                </td>
+
+                <td>{{item.examiner.subject.subjectName}}</td>
+                <td>{{item.examiner.position}}</td>
+                <td>{{item.examiner.bank}}</td>
+                <td>{{item.examiner.branch}}</td>
+                <td>{{item.examiner.branch.sortcode}}</td>
+                <td>{{item.examiner.AccountDetails}}</td>
+                <td>{{item.examiner.TPIN}}</td>
             </tr>
             {% endfor %}
 

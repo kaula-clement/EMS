@@ -92,7 +92,7 @@ urlpatterns = [
    path('upload-examiners/csv/', EADViews.upload_csv, name='examiner_upload_csv'),
    path('upload-districts/csv/',views.upload_district_csv, name='upload_district_csv'),
    
-   path('upload-schedule/csv/',StaffViews.upload_schedule_csv, name='upload_schedule_csv'),
+   path('upload-schedule-data',StaffViews.upload_schedule_csv, name='upload_schedule_csv'),
 
    #=========================================
 
@@ -105,7 +105,7 @@ urlpatterns = [
     path('export-csv/',views.export_csv,name='export-csv'),
     path('export-excel/',views.export_excel,name='export-excel'),
     
-    
+     
     path('users/',CustomUserList.as_view(),name='userlist'),
 
 

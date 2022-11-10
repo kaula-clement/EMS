@@ -81,26 +81,27 @@
                 
             </div>
         <div class="form-row">
-            <div class="form-group col-md-4">
-                <label for="Province">Province</label>
+            <div class="col">
+                <label for="Province">From Province</label>
                 {{form.province}}
                 
             </div>
-            <div class="form-group col-md-4">
-                <label for="inputState">District</label>
+            <div class="col">
+                <label for="inputState">From District/Station</label>
                 {{form.district}}
                 
             </div>
-        
-            <div class="form-group col-md-4">
-                <label for="inputZip">From Station</label>
-               {{form.from_station}}
+            <div class="col">
+                <label for="inputZip">To Province</label>
+            {{form.to_province}}
             </div>
-            <div class="form-group col-md-4">
-                <label for="inputZip">To Station</label>
-                {{form.to_station}}
-            </div>
+
         </div>
+
+        <div class="row">
+                    
+        </div>
+
         <div class="form-row">
             <div class="form-group col-md-4">
                 <label for="Province">Bank</label>
@@ -143,6 +144,8 @@
     </div>
 </div>
 
+
+
 <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
 <script>
     $("#id_province").change(function () {
@@ -164,6 +167,7 @@
         });
     });
 </script>
+
 <script>
   $("#id_bank").change(function () {
       const bankID = $(this).val();  // get the selected  ID from the HTML dropdown list 

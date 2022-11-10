@@ -1,6 +1,6 @@
 from django.shortcuts import render,HttpResponseRedirect
 from django.urls import reverse
-from .models import Examiner,Invitation,CustomUser,Staff,Bank,BankBranch,SchedulePay,Province,District
+from .models import Examiner,Invitation,CustomUser,Staff,Bank,BankBranch,SchedulePay,Province,District,Payment
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView,UpdateView,DeleteView
@@ -80,8 +80,30 @@ class ScheduleTableList(ListView):
     
 def schedule(request):
     examiners=Examiner.objects.filter(approved=True)
+    ratePerNight=1000
+    for item in examiners:
+        payment=Payment.objects.get_or_create(examiner=item)
+        fromStation=item.district
+        toStation=item.to_province
+        print("==================")
+        print("Name:",item.first_name)
+        print("Province:",item.province)
+        print("From",fromStation)
+        print("To",toStation)
+        try: 
+            nights=SchedulePay.objects.get(FromDistrict=fromStation)
+            print("Night Row",nights)
+            nights=getattr(nights,toStation)
+            print("Nights2",nights)
+            payment.transport=int(nights)*ratePerNight
+            payment.save()
+            print("Pay:",payment.transport)
+        except:
+            pass
+        
     context={
-        'examiners':examiners
+        'examiners':examiners,
+        'payments':Payment.objects.all(),
     }
     return render(request,'Staff/Schedule.html',context)
     
@@ -118,7 +140,7 @@ def calculatePay(request):
 def upload_schedule_csv(request): 
     data = {}
     if "GET" == request.method:
-        return render(request, "Staff/upload_schedule_csv.html", data)
+        return render(request, "Staff/upload_schedule_csv .html", data)
     # if not GET, then proceed
     try:
         csv_file = request.FILES["csv_file"]
@@ -140,7 +162,7 @@ def upload_schedule_csv(request):
             fields = line.split(",")
             data_dict = {}
             
-            data_dict["FromDistrict"] =fields[0]  # field=uploaded file column
+            data_dict["FromDistrict"] =fields[1]  # field=uploaded file column
             data_dict["LUSAKA"] = fields[2]
             data_dict["COPPERBELT"] = fields[3]
             data_dict["MONZE"] = fields[4]

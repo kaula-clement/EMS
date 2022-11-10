@@ -122,9 +122,10 @@ class ExaminerCreate(LoginRequiredMixin,CreateView):
                                                                     last_name=last_name,
                                 password='password3', email=email,
                                 user_type=3)
-        except:
-            logging.getLogger("error_logger").error()
-            messages.error(self, '{}'.format(ExaminerForm.errors))
+            messages.success(self.request,"Added examiner")
+        except Exception as e:
+            logging.getLogger("error_logger").error(repr(e))
+            messages.error(self.request,"error adding student")
                     #return a valid form
         return super(ExaminerCreate,self).form_valid(ExaminerForm)
 

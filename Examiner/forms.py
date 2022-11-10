@@ -13,7 +13,7 @@ class ExaminerForm(forms.ModelForm):
         model=Examiner 
         fields=('middle_name','last_name','first_name','gender','subject','position','Address','province','district',
                 'AccountDetails','NRC','TPIN','cell_Number','email','availability','bank','branch','session',
-                'from_station','to_station')
+                'to_province')
         
         widgets = {
             'middle_name':forms.TextInput(attrs={'class':'form-control','placeholder':'Middle Name'}),
@@ -32,8 +32,8 @@ class ExaminerForm(forms.ModelForm):
             'email': forms.EmailInput(attrs={'class':'form-control','placeholder':'email@abc.abc'}),
             'bank':forms.Select(attrs={'class':'form-control','placeholder':'Province'}),
             'branch':forms.Select(attrs={'class':'form-control','placeholder':'Province'}),
-            'from_station':forms.Select(attrs={'class':'form-control'}),
-            'to_station':forms.Select(attrs={'class':'form-control'}),
+            'to_province':forms.Select(attrs={'class':'form-control'}),
+            
             'approved':forms.CheckboxInput(attrs={'class':'largerCheckbox'}),
             'availability':forms.CheckboxInput(attrs={'class':'largerCheckbox'}),
             #'session':forms.SelectMultiple(attrs={'class':'form-control'}),

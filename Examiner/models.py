@@ -1,9 +1,7 @@
 from email.policy import default
-from unittest.util import _MAX_LENGTH
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from datetime import date
-from multiselectfield import MultiSelectField
 
 class CustomUser(AbstractUser):
     user_type_data = ((1, "EAD"), (2, "Staff"), (3, "Examiner"))
@@ -65,7 +63,7 @@ class District(models.Model):
    
 class Station(models.Model):
     province=models.ForeignKey(Province,on_delete=models.SET_NULL, blank=True, null=True)
-    name=models.CharField(max_length=50)
+    name=models.CharField(max_length=50,unique=True)
     def __str__(self):
        return self.name
 
@@ -142,14 +140,19 @@ class Examiner(models.Model):
     last_name=models.CharField(max_length=50,null=True)
     ExaminerCode=models.CharField(max_length=50,null=True,unique=True)
     Address=models.CharField(max_length=500,null=True)
-    district=models.ForeignKey(District, on_delete=models.SET_NULL,null=True)
-    from_station =models.ForeignKey(Station,related_name="from_station",on_delete=models.SET_NULL,null=True,blank=True)
-    to_station =models.ForeignKey(Station,related_name="to_station",on_delete=models.SET_NULL,null=True,blank=True)
-    to_district =models.ForeignKey(District,related_name="to_district",on_delete=models.SET_NULL,null=True,blank=True)
     province=models.ForeignKey(Province, on_delete=models.SET_NULL,null=True)
+    
+    regions=(('LUSAKA','LUSAKA'),('COPPERBELT','COPPERBELT'),('MONZE','MONZE'),
+             ('KAPIRI','KAPIRI'),('LIVINGSTONE','LIVINGSTONE'),
+                ('CHOMA','CHOMA'),('MWANDI','MWANDI'),('LUNTE','LUNTE'),('MWENSE','MWENSE'),
+                ('KASENENGWA','KASENENGWA'),('CHISAMBA','CHISAMBA'),('CHIBOMBO','CHIBOMBO'))
+    
+    district=models.ForeignKey(Station,related_name="district", on_delete=models.SET_NULL,blank=True,null=True)#from station 
+    to_province =models.CharField(max_length=50,choices=regions,null=True,blank=True)   
     bank=models.ForeignKey(Bank,on_delete=models.SET_NULL,null=True,blank=True)
     branch=models.ForeignKey(BankBranch,on_delete=models.SET_NULL,null=True,blank=True)
     AccountDetails=models.CharField(max_length=150,null=True)
+    #payment=models.ForeignKey("Payment", verbose_name=("payment"), on_delete=models.SET_NULL,null=True,blank=True)
     NRC=models.CharField(max_length=11,null=True)
     TPIN=models.CharField(max_length=10,null=True)
     cell_Number=models.CharField(max_length=10,null=True)
@@ -229,7 +232,7 @@ class comment(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
 class SchedulePay(models.Model):
-    FromDistrict=models.ForeignKey(District,to_field="code",db_column="district_code",on_delete=models.SET_NULL,null=True,blank=True)
+    FromDistrict=models.ForeignKey(Station,to_field="name",db_column="station",on_delete=models.SET_NULL,null=True,blank=True)
     LUSAKA=models.IntegerField()
     COPPERBELT=models.IntegerField()
     MONZE=models.IntegerField()
@@ -242,6 +245,12 @@ class SchedulePay(models.Model):
     KASENENGWA=models.IntegerField()
     CHISAMBA=models.IntegerField()
     CHIBOMBO=models.IntegerField()
+    
+class Payment(models.Model):
+    examiner=models.ForeignKey(Examiner, on_delete=models.CASCADE)
+    transport=models.FloatField(default=0.00)
+    daily_allowance=models.FloatField(default=0.00)
+    
 
 
     

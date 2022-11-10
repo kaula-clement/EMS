@@ -1,7 +1,5 @@
-from urllib import response
-
 from requests import request
-from .models import City,BankBranch,Bank,CustomUser, comment
+from .models import City,BankBranch,Bank,CustomUser,Station, comment
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from .models import Examiner, Invitation, Province, District,districtcsv
@@ -92,12 +90,12 @@ def get_districts_ajax(request):
         try:
             province = Province.objects.filter(id = province_id).first()
             print("Province with ID: ",province)
-            districts = District.objects.filter(province = province)
+            districts = Station.objects.filter(province = province)
         except Exception:
             pass
            # data['error_message'] = 'error'
            # return JsonResponse(data)
-        return JsonResponse(list(districts.values('id', 'name','code')), safe = False) 
+        return JsonResponse(list(districts.values('id', 'name')), safe = False) 
     
 def get_bankbranch_ajax(request):
     if request.method == "POST":
