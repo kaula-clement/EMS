@@ -4,24 +4,9 @@ from django.contrib.auth.models import AbstractUser
 from datetime import date
 
 class CustomUser(AbstractUser):
-    user_type_data = ((1, "EAD"), (2, "Staff"), (3, "Examiner"))
+    user_type_data = ((1, "EAD"), (2, "Staff"), (3, "Examiner"),(4,"ECZ-Staff"))
     user_type = models.IntegerField(default=1, choices=user_type_data)
     is_admin=models.BooleanField(default=False)
-
-class Country(models.Model):
-    name = models.CharField(max_length=40)
-
-    def __str__(self):
-        return self.name
-
-
-class City(models.Model):
-    country = models.ForeignKey(Country, on_delete=models.CASCADE)
-    name = models.CharField(max_length=40)
-
-    def __str__(self):
-        return self.name
-
 
     
     
@@ -35,16 +20,6 @@ class BankBranch(models.Model):
     bank=models.ForeignKey(Bank,on_delete=models.CASCADE,null=True)
     name=models.CharField(max_length=64)
     sortcode=models.CharField(max_length=6)
-    def __str__(self):
-        return self.name
- 
-
-
-class Person(models.Model):
-    name = models.CharField(max_length=124)
-    country = models.ForeignKey(Country, on_delete=models.SET_NULL, blank=True, null=True)
-    city = models.ForeignKey(City, on_delete=models.SET_NULL, blank=True, null=True)
-
     def __str__(self):
         return self.name
 
@@ -80,9 +55,9 @@ class Position(models.Model):
     name=models.CharField(max_length=50,null=True)
     def __str__(self):
        return self.name
-
+   
 class Subject(models.Model):
-    subjectCode=models.CharField(max_length=5,null=True)
+    subjectCode=models.CharField(max_length=5,unique=True)
     subjectName=models.CharField(max_length=20,null=True)
     subjectDescription=models.CharField(max_length=50,null=True,blank=True)
     datecreated= models.DateField(auto_now=True)
@@ -90,6 +65,17 @@ class Subject(models.Model):
 
     def __str__(self):
        return self.subjectName
+
+class Paper(models.Model):
+    subject=models.ForeignKey(Subject,to_field="subjectCode",on_delete=models.CASCADE)
+    paper_number=models.IntegerField(default=0)
+    paper_name=models.CharField(max_length=7)
+    paper_description=models.CharField(max_length=50)
+    
+    def __str__(self):
+        return self.paper_name
+
+    
 
 
 
@@ -101,16 +87,16 @@ class EAD(models.Model):
     middle_name=models.CharField(max_length=50,null=True,blank=True)
     last_name=models.CharField(max_length=50,null=True)
     UserName=models.CharField(max_length=50,null=True)
-    bank=models.ForeignKey(Bank,on_delete=models.SET_NULL,null=True,blank=True)
-    branch=models.ForeignKey(BankBranch,on_delete=models.SET_NULL,null=True,blank=True)
-    AccountDetails=models.CharField(max_length=150,null=True)
+    #bank=models.ForeignKey(Bank,on_delete=models.SET_NULL,null=True,blank=True)
+    #branch=models.ForeignKey(BankBranch,on_delete=models.SET_NULL,null=True,blank=True)
+    #AccountDetails=models.CharField(max_length=150,null=True)
     NRC=models.CharField(max_length=11,null=True)
-    TPIN=models.CharField(max_length=10,null=True)
+    #TPIN=models.CharField(max_length=10,null=True)
     cell_Number=models.CharField(max_length=10,null=True)
     email=models.EmailField(null=True)
     Address=models.CharField(max_length=50,null=True,blank=True)
-    province=models.ForeignKey(Province, on_delete=models.SET_NULL,null=True,blank=True)
-    district=models.ForeignKey(District, on_delete=models.SET_NULL,null=True,blank=True)
+    #province=models.ForeignKey(Province, on_delete=models.SET_NULL,null=True,blank=True)
+    #district=models.ForeignKey(District, on_delete=models.SET_NULL,null=True,blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     def save(self,*args,**kwargs):
@@ -119,7 +105,7 @@ class EAD(models.Model):
                 self.user= CustomUser.objects.create_user(username=self.UserName,
                                                          first_name=self.first_name,
                                                          last_name=self.last_name,
-                                                         password='password3', email='MicroVich.1@abc.com',
+                                                         password='password3', email=self.email,
                                                          is_staff=True,
                                                          user_type=1
                                                         )
@@ -128,25 +114,24 @@ class EAD(models.Model):
     objects = models.Manager()
 
 
+regions=(('LUSAKA','LUSAKA'),('COPPERBELT','COPPERBELT'),('MONZE','MONZE'),
+             ('KAPIRI','KAPIRI'),('LIVINGSTONE','LIVINGSTONE'),
+                ('CHOMA','CHOMA'),('MWANDI','MWANDI'),('LUNTE','LUNTE'),('MWENSE','MWENSE'),
+                ('KASENENGWA','KASENENGWA'),('CHISAMBA','CHISAMBA'),('CHIBOMBO','CHIBOMBO'))
 class Examiner(models.Model):
     user=models.OneToOneField(CustomUser,
         on_delete=models.CASCADE,null=True,blank=True)
     gender_data = ((0,"SELECT GENDER"),(1, "MALE"), (2, "FEMALE"))
     gender = models.IntegerField(default=0, choices=gender_data)
-    subject=models.ForeignKey(Subject, on_delete=models.SET_NULL,null=True)
+    subject=models.ForeignKey(Subject,to_field="subjectCode",db_column="Subject_Code", on_delete=models.SET_NULL,null=True,blank=True)
+    paper=models.ForeignKey(Paper,db_column="Paper_Number", on_delete=models.SET_NULL,null=True)
     position=models.ForeignKey(Position,on_delete=models.SET_NULL,null=True)
     middle_name=models.CharField(max_length=50,null=True,blank=True)
     first_name=models.CharField(max_length=50,null=True) 
     last_name=models.CharField(max_length=50,null=True)
-    ExaminerCode=models.CharField(max_length=50,null=True,unique=True)
+    ExaminerCode=models.CharField(max_length=11,unique=True)
     Address=models.CharField(max_length=500,null=True)
-    province=models.ForeignKey(Province, on_delete=models.SET_NULL,null=True)
-    
-    regions=(('LUSAKA','LUSAKA'),('COPPERBELT','COPPERBELT'),('MONZE','MONZE'),
-             ('KAPIRI','KAPIRI'),('LIVINGSTONE','LIVINGSTONE'),
-                ('CHOMA','CHOMA'),('MWANDI','MWANDI'),('LUNTE','LUNTE'),('MWENSE','MWENSE'),
-                ('KASENENGWA','KASENENGWA'),('CHISAMBA','CHISAMBA'),('CHIBOMBO','CHIBOMBO'))
-    
+    province=models.ForeignKey(Province, on_delete=models.SET_NULL,null=True) 
     district=models.ForeignKey(Station,related_name="district", on_delete=models.SET_NULL,blank=True,null=True)#from station 
     to_province =models.CharField(max_length=50,choices=regions,null=True,blank=True)   
     bank=models.ForeignKey(Bank,on_delete=models.SET_NULL,null=True,blank=True)
@@ -161,9 +146,29 @@ class Examiner(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     approved=models.BooleanField(default=False)
     availability=models.BooleanField(default=False) 
-    session=models.ManyToManyField(Session)
+    session=models.ForeignKey(Session,on_delete=models.CASCADE,null=True,blank=True)
 
     objects = models.Manager()
+      
+class ECZStaff(models.Model):
+    user=models.OneToOneField(CustomUser,
+        on_delete=models.CASCADE,null=True,blank=True)
+    username=models.CharField(max_length=50)
+    first_name=models.CharField(max_length=50)
+    last_name=models.CharField(max_length=50)
+    email=models.EmailField(null=True)
+    to_province =models.CharField(max_length=50,choices=regions,null=True,blank=True)
+    def save(self,*args,**kwargs):
+            super().save(*args,**kwargs)
+            if not self.user:
+                self.user= CustomUser.objects.create_user(username=self.username,
+                                                         first_name=self.first_name,
+                                                         last_name=self.last_name,
+                                                         password='password3', email=self.email,
+                                                         is_staff=True,
+                                                         user_type=4
+                                                        )
+                self.save()
 
 
 class Invitation(models.Model):
@@ -186,16 +191,16 @@ class Staff(models.Model):
     middle_name=models.CharField(max_length=50,null=True,blank=True)
     last_name=models.CharField(max_length=50,null=True)
     UserName=models.CharField(max_length=50,null=True)
-    bank=models.ForeignKey(Bank,on_delete=models.SET_NULL,null=True,blank=True)
-    branch=models.ForeignKey(BankBranch,on_delete=models.SET_NULL,null=True,blank=True)
-    AccountDetails=models.CharField(max_length=150,null=True)
+    #bank=models.ForeignKey(Bank,on_delete=models.SET_NULL,null=True,blank=True)
+    #branch=models.ForeignKey(BankBranch,on_delete=models.SET_NULL,null=True,blank=True)
+    #AccountDetails=models.CharField(max_length=150,null=True)
     NRC=models.CharField(max_length=11,null=True)
-    TPIN=models.CharField(max_length=10,null=True)
+    #TPIN=models.CharField(max_length=10,null=True)
     cell_Number=models.CharField(max_length=10,null=True)
     email=models.EmailField(null=True)
     Address=models.CharField(max_length=50,null=True,blank=True)
-    province=models.ForeignKey(Province, on_delete=models.SET_NULL,null=True,blank=True)
-    district=models.ForeignKey(District, on_delete=models.SET_NULL,null=True,blank=True)
+    #province=models.ForeignKey(Province, on_delete=models.SET_NULL,null=True,blank=True)
+    #district=models.ForeignKey(District, on_delete=models.SET_NULL,null=True,blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     def save(self,*args,**kwargs):
@@ -204,7 +209,7 @@ class Staff(models.Model):
                 self.user= CustomUser.objects.create_user(username=self.UserName,
                                                          first_name=self.first_name,
                                                          last_name=self.last_name,
-                                                         password='password3', email='MicroVich.1@abc.com',
+                                                         password='password3', email=self.email,
                                                          is_staff=True,
                                                          user_type=2
                                                         )
@@ -217,9 +222,6 @@ class districtcsv(models.Model):
     code=models.IntegerField()
     name=models.CharField(max_length=50)
     
-class subjectselector(models.Model):
-    code=models.CharField(max_length=50)
-    papernumber=models.IntegerField()
 
    
 class comment(models.Model):
@@ -250,6 +252,10 @@ class Payment(models.Model):
     examiner=models.ForeignKey(Examiner, on_delete=models.CASCADE)
     transport=models.FloatField(default=0.00)
     daily_allowance=models.FloatField(default=0.00)
+    
+class Attendance(models.Model):
+    examiner=models.ForeignKey(Examiner,on_delete=models.CASCADE, related_name="attendance_examiner")
+    status=models.IntegerField(default=1)
     
 
 

@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}Attendance{% endblock title %}
+
+{% block content %}
+Attendance table
+
+<div class="card card-body">
+<div class="container">
+    <a href="{%url 'take-attendance'%}" class="btn btn-primary">Take attendance</a>
+</div>
+
+<table class="table table-responsive">
+<thead>
+    <tr>
+        <th>ID</th>
+        <th>FIRST NAME</th>
+        <th>LAST NAME</th>
+        <th>SUBJECT</th>
+        <th>ATTENDANCE</th>
+        <th></th>
+        <th></th>
+    </tr>
+
+</thead>
+<tbody>
+    {% for item in attendance %}
+    <tr>
+        <td>{{item.id}}</td>
+        <td>{{item.examiner.first_name}}</td>
+        <td>{{item.examiner.last_name}}</td>
+        <td>{{item.examiner.subject.subjectName}}</td>
+        
+        {% if item.status == 1 %}
+        <td>Pending..</td>
+        {% endif %}
+        {% if item.status == 2 %}
+        <td>Present</td>
+        {% endif %}
+        {% if item.status == 3 %}
+        <td>Absent</td>
+        {% endif %}
+    </tr>
+    {% endfor %}
+</tbody>
+</table>
+
+</div>
+
+
+{{item.examiner.first_name}}
+
+
+{% endblock content %}
+
+{% block script %}{% endblock script %}

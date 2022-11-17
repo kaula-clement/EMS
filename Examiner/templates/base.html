@@ -42,6 +42,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
   {% include 'Staff/nav.html' %}
   {%endif%}
 
+  {% if request.user.user_type == 4 %}
+  {% include 'Staff/nav.html' %}
+  {%endif%}
+
   {% if request.user.user_type == 3 %}
   {% include 'Examiner/nav.html' %}
   {%endif%}
@@ -52,6 +56,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
   {% include 'EAD/sidebar.html' %}
   {%endif%}
   {% if request.user.user_type == 2 %}
+  {% include 'Staff/sidebar.html' %}
+  {%endif%}
+
+  {% if request.user.user_type == 4 %}
   {% include 'Staff/sidebar.html' %}
   {%endif%}
 

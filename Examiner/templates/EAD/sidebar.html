@@ -46,7 +46,8 @@
               </p>
             </a>
           </li>
-          <li class="nav-item">
+          {% comment %}
+            <li class="nav-item">
             <a href="{%url 'notifications-list'%}" class="nav-link">
               <i class='nav-icon fas fa-bullhorn' style='font-size:24px'></i>
               <p>
@@ -55,6 +56,8 @@
               </p>
             </a>
           </li>
+          {% endcomment %}
+          
           <li class="nav-item">
             <a href="{%url 'bank-list'%}" class="nav-link">
               <i class='far fa-building' style='font-size:24px'></i
@@ -76,7 +79,7 @@
               <i class='nav-icon far fa-address-book' style='font-size:24px'></i>
               <p>
                 subjects
-              
+               
               </p>
             </a>
           </li>
@@ -113,7 +116,15 @@
             <i class='nav-icon fas fa-users' style='font-size:24px'></i>
             <p>
               Users
-            
+              
+            </p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="{%url 'ECZStaff-create'%}" class="nav-link">
+            <i class='nav-icon fas fa-users' style='font-size:24px'></i>
+            <p>
+              ECZStaff-create
             </p>
           </a>
         </li>
@@ -126,7 +137,8 @@
             </p>
           </a>
         </li>
-        <li class="nav-item">
+        {% comment %}
+          <li class="nav-item">
           <a href="{%url 'group-list'%}" class="nav-link">
             <i class="nav-icon fas fa-th"></i>
             <p>
@@ -135,6 +147,8 @@
             </p>
           </a>
         </li>
+        {% endcomment %}
+        
           {% if request.user.is_admin %}
           <li class="nav-item">
             <a href="{%url 'ead-list'%}" class="nav-link">
@@ -146,7 +160,8 @@
             </a>
           </li>
           {% endif %}
-          <li class="nav-item">
+          {% comment %}
+            <li class="nav-item">
             <a href="{%url 'comments-list'%}" class="nav-link">
               <i class='nav-icon far fa-comment-alt' style='font-size:24px'></i>
               <p>
@@ -155,6 +170,8 @@
               </p>
             </a>
           </li>
+          {% endcomment %}
+          
          
         </ul>
       </nav>

@@ -1,5 +1,5 @@
 from requests import request
-from .models import City,BankBranch,Bank,CustomUser,Station, comment
+from .models import BankBranch,Bank,CustomUser,Station, comment,Subject,Paper
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from .models import Examiner, Invitation, Province, District,districtcsv
@@ -11,7 +11,7 @@ from django.views.decorators.csrf import csrf_exempt
 # ======================================
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .forms import BankBranchForm,ExaminerForm,DistrictForm
+from .forms import BankBranchForm,ExaminerForm,DistrictForm,SubjectForm,PaperForm
 # ======================================pdf
 import csv
 import xlwt
@@ -33,7 +33,7 @@ class Registerpage(CreateView):
         #pre save to get id
         super().form_valid(ExaminerForm)
         #concatenate year(2digits)+[subject code]+ [id] to make code
-        code=td[-2:]+'-'+ExaminerForm.instance.subject.subjectCode+str(self.object.id)
+        code=ExaminerForm.instance.subject.subjectCode+'/'+ str(ExaminerForm.instance.paper.paper_number)+str(self.object.id).zfill(5)
         #Examinercode is = concatenated code 
         ExaminerForm.instance.ExaminerCode=code
         #create user for the examiner
@@ -46,6 +46,7 @@ class Registerpage(CreateView):
                             password='password3', email=user_email,
                             user_type=3)
                 #return a valid form
+        messages.success(self.request,"Successifully submited")
         return super(Registerpage,self).form_valid(ExaminerForm)
 
    
@@ -109,10 +110,24 @@ def get_bankbranch_ajax(request):
            # data['error_message'] = 'error'
            # return JsonResponse(data)
         return JsonResponse(list(branches.values('id', 'name')), safe = False)
+    
+def get_papernumber_ajax(request):
+    if request.method == "POST":
+        subject_code = request.POST['subject_id']
+        try:
+            subject = Subject.objects.filter(subjectCode = subject_code).first()
+            subjectcode=subject.subjectCode
+            #print("Bank with ID: ",bank)
+            papers = Paper.objects.filter(subject = subjectcode)
+        except Exception:
+            pass
+           # data['error_message'] = 'error'
+           # return JsonResponse(data)
+        return JsonResponse(list(papers.values('paper_number', 'paper_name')), safe = False)
 
 # ===================================
 
-
+#Banks Uploading
 def upload_csv(request):
     data = {}
     if "GET" == request.method:
@@ -214,11 +229,64 @@ def upload_district_csv(request):
 
 
 
-from . models import Country, City, Person
+#upload_subjects_csv
+def upload_subjects_csv(request):
+    data = {}
+    if "GET" == request.method:
+        return render(request, "Subject/upload_subjects_csv.html", data)
+    # if not GET, then proceed
+    try:
+        csv_file = request.FILES["csv_file"]
+        if not csv_file.name.endswith('.csv'):
+            messages.error(request, 'File is not CSV type')
+            return HttpResponseRedirect(reverse("upload_subjects_csv"))
+    # if file is too large, return
+        if csv_file.multiple_chunks():
+            messages.error(request, "Uploaded file is too big (%.2f MB)." % (
+                csv_file.size/(1000*1000),))
+            return HttpResponseRedirect(reverse("upload_subjects_csv"))
+
+        file_data = csv_file.read().decode("utf-8")
+        lines = file_data.split("\n")
+        lines=lines[1:len(lines)-1]
+        # loop over the lines and save them in db. If error , store as string and then display
+        for line in lines:
+            print("=======Line: ",line)
+            fields = line.split(",")
+            data_dict = {}
+            data_dict["subject"] =fields[0]  # field=uploaded file column
+            data_dict["paper_name"] = fields[1]
+            data_dict["paper_number"] = fields[2]
+            data_dict["paper_description"] = fields[3]
+            
+            try:   
+                form =PaperForm(data_dict)
+                #('subject','paper_number','paper_name')
+                print("data_dict:",data_dict)
+                if form.is_valid():
+                   # pass
+                  form.save()
+                  
+                else:
+
+                    logging.getLogger("error_logger").error(
+                       form.errors.as_json())
+                    messages.error(request, '{}'.format(form.errors,line))
+            except Exception as e:
+                logging.getLogger("error_logger").error(repr(e))
+                pass
+        messages.success(request,"Successifully upploaded subjects")
+    except Exception as e:
+        logging.getLogger("error_logger").error(
+            "Unable to upload file. "+repr(e))
+        messages.error(request, "Unable to upload file. "+repr(e))
+
+    return HttpResponseRedirect(reverse("upload_subjects_csv"))
+
 from django.http import JsonResponse
 
 def get_topics_ajax(request):
-    if request.method == "POST":
+  """  if request.method == "POST":
         country_id = request.POST['country_id']
         try:
             country = Country.objects.filter(id = country_id).first()
@@ -227,8 +295,9 @@ def get_topics_ajax(request):
         except Exception:
             pass
            # data['error_message'] = 'error'
-           # return JsonResponse(data)
-        return JsonResponse(list(cities.values('id', 'name')), safe = False)
+   """        # return JsonResponse(data)
+  # return JsonResponse(list(cities.values('id', 'name')), safe = False)
+  return 
     
 
     
@@ -287,8 +356,8 @@ def export_excel(request):
     font_style=xlwt.XFStyle()
     
     examinerlist=[]
-    print("=========================++++++++++++1111111")
-    print(examinerlist)
+    #print("=========================++++++++++++1111111")
+    #print(examinerlist)
     examiners=Examiner.objects.filter(approved=True)
     for item in examiners:
         examiner=(item.id,
@@ -309,9 +378,9 @@ def export_excel(request):
         examinerlist.append(examiner)
         
     rows=examinerlist
-    print(rows)
-    print("=========================+++++++++++++++2222")
-    print(examinerlist)
+    #print(rows)
+    #print("=========================+++++++++++++++2222")
+    #print(examinerlist)
     for row in rows:
         row_num += 1
         for col_num in range(len(row)):

@@ -4,7 +4,7 @@
 {%block content%}
 <h3>Examiners</h3>
 <span><a class="btn btn-info" href="#" id='batchmail-btn'> Email selected<a/> </span>
-  <span>  <a class="btn btn-success" href="{%url 'examiner_upload_csv'%}">Upload Excel</a><span>
+  <span>  <a class="btn btn-success" href="{%url 'examiner_upload_csv'%}">Upload CSV</a><span>
 <hr> 
 <a href="{%url 'examiner-requests'%}">see unaproved requests</a> 
 
@@ -14,7 +14,7 @@
  {% csrf_token %}
     <tr>
       <!--  <th>id</th> -->
-        <th></th>
+        <th><input type="checkbox"  id="checkAll" value="chek all"></th>
         <th>Examiner Number</th>
         <th>First Name</th>
         <th>Middle Name</th>
@@ -38,7 +38,15 @@
     <td>{{item.middle_name}}</td>
     <td>{{item.last_name}}</td>
     <td>{{item.position.name}}</td>
-    <td>{{item.subject.subjectName}}</td>
+    <td>
+        
+        {{item.subject.subjectName}}
+
+        {% if item.paper %}
+        ({{item.paper.paper_number}})
+        {% endif %}
+    
+    </td>
         {% if item.availability %}
          <td>Available</td>
         {% endif %}
@@ -74,6 +82,12 @@
 <script>
    
 $(document).ready(function(){
+
+   // $("#checkAll").click(function(){
+      //  $('input:checkbox').not(this).prop('checked', this.checked);
+   // });
+
+
     $("#delete_multiple_btn").click(function(){
         if (confirm('are you sure you whant to delete these items?'))
         var id=[];

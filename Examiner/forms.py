@@ -1,17 +1,17 @@
 from dataclasses import field, fields
 from django import forms
-from django.contrib.auth.forms import PasswordChangeForm
-from .models import Examiner,EAD,CustomUser,Person,City,Invitation ,districtcsv,Subject,Bank,BankBranch,Staff,comment,District,SchedulePay,Session,Station
+from django.contrib.auth.forms import PasswordChangeForm,UserCreationForm
+from .models import Examiner,EAD,CustomUser,Invitation ,districtcsv,Subject,Bank,BankBranch,Staff,comment,District,SchedulePay,Session,Station ,ECZStaff,Paper
 
 class ExaminerUploadForm(forms.ModelForm):
     class Meta:
         model=Examiner
-        fields=('middle_name','last_name','first_name','position','email','subject',)
+        fields=('middle_name','last_name','first_name','position','email','subject','paper',)
 
 class ExaminerForm(forms.ModelForm):
     class Meta:
         model=Examiner 
-        fields=('middle_name','last_name','first_name','gender','subject','position','Address','province','district',
+        fields=('middle_name','last_name','first_name','gender','subject','paper','position','Address','province','district',
                 'AccountDetails','NRC','TPIN','cell_Number','email','availability','bank','branch','session',
                 'to_province')
         
@@ -21,6 +21,7 @@ class ExaminerForm(forms.ModelForm):
             'first_name': forms.TextInput(attrs={'class':'form-control','placeholder':'First Name'}),
             'gender':forms.Select(attrs={'class':'form-control '}),
             'subject': forms.Select(attrs={'class':'form-control '}),
+            'paper': forms.Select(attrs={'class':'form-control '}),
             'position': forms.Select(attrs={'class':'form-control','placeholder':'Select Position'}),
             'Address': forms.TextInput(attrs={'class':'form-control','placeholder':'Address'}),
             'province': forms.Select(attrs={'class':'form-control','placeholder':'Province'}),
@@ -36,7 +37,7 @@ class ExaminerForm(forms.ModelForm):
             
             'approved':forms.CheckboxInput(attrs={'class':'largerCheckbox'}),
             'availability':forms.CheckboxInput(attrs={'class':'largerCheckbox'}),
-            #'session':forms.SelectMultiple(attrs={'class':'form-control'}),
+            'session':forms.Select(attrs={'class':'form-control'}),
             
         }
     def __init__(self, *args, **kargs):
@@ -48,7 +49,7 @@ class ExaminerForm(forms.ModelForm):
 class EADForm(forms.ModelForm):
     class Meta:
         model=EAD
-        fields=('first_name','last_name','gender','UserName','middle_name','bank','branch','AccountDetails','NRC','TPIN','cell_Number','email','Address','province','district')
+        fields=('first_name','last_name','gender','UserName','middle_name','NRC','cell_Number','email','Address',)
         widgets = {
             'UserName':forms.TextInput(attrs={'class':'form-control','placeholder':'User Name'}),
             'first_name': forms.TextInput(attrs={'class':'form-control','placeholder':'firstName'}),
@@ -69,23 +70,6 @@ class EADForm(forms.ModelForm):
         }
     
 #===========================================
-class PersonCreationForm(forms.ModelForm):
-    class Meta:
-        model = Person
-        fields = '__all__'
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['city'].queryset = City.objects.none()
-
-        if 'country' in self.data:
-            try:
-                country_id = int(self.data.get('country'))
-                self.fields['city'].queryset = City.objects.filter(country_id=country_id).order_by('name')
-            except (ValueError, TypeError):
-                pass  # invalid input from the client; ignore and fallback to empty City queryset
-        elif self.instance.pk:
-            self.fields['city'].queryset = self.instance.country.city_set.order_by('name')
 
 
 class InvitationForm(forms.ModelForm):
@@ -109,6 +93,11 @@ class SubjectForm(forms.ModelForm):
         model=Subject
         fields=('subjectCode','subjectName','subjectDescription')
         
+class PaperForm(forms.ModelForm):
+    class Meta:
+        model=Paper
+        fields=('subject','paper_number','paper_name','paper_description',)
+        
 class BankBranchForm(forms.ModelForm):
     class Meta:
         model=BankBranch
@@ -122,7 +111,7 @@ class BankForm(forms.ModelForm):
 class StaffForm(forms.ModelForm):
     class Meta:
         model=Staff
-        fields=('first_name','last_name','gender','UserName','middle_name','bank','branch','AccountDetails','NRC','TPIN','cell_Number','email','Address','province','district')
+        fields=('first_name','last_name','gender','UserName','middle_name','NRC','cell_Number','email','Address',)
         widgets = {
             'UserName':forms.TextInput(attrs={'class':'form-control','placeholder':'User Name'}),
             'first_name': forms.TextInput(attrs={'class':'form-control','placeholder':'firstName'}),
@@ -200,3 +189,9 @@ class StationForm(forms.ModelForm):
     class Meta:
         model=Station
         fields=('province','name')
+       
+class ECZStaffForm(forms.ModelForm):
+    class Meta:
+        model=ECZStaff
+        fields=('username','first_name','last_name','email','to_province',)
+ 

@@ -50,13 +50,19 @@ urlpatterns = [
    
    
    
+   path('create-staff',EADViews.ECZStaffCreateView.as_view(),name='ECZStaff-create'),
    
    path('Sessions-all/',EADViews.SessionCreate.as_view(), name='sessions-all'),
    path('batch-session-delete/',EADViews.batchSessionDelete,name='batch-session-delete'),
    
    #======================================Staff Menu
-   path('Staff-home/',StaffViews.StaffHome,name='new-session'),
+   path('Staff-home/',StaffViews.StaffHome,name='staff-home'), 
    path('staff/examiners/',StaffExaminerList.as_view(),name='staff-examiner-list'),  
+   
+   path('Examiner/attendance/',StaffViews.attendanceView,name='attendance'),
+   path('Examiner/take-attendance/',StaffViews.takeattendance,name='take-attendance'),
+   path('Examiner/present/<int:pk>',StaffViews.present,name='present-link'),
+    path('Examiner/absent/<int:pk>',StaffViews.absent,name='absent-link'),
    
    path('Examiner/schedule/',StaffViews.schedule,name='schedule'),
    path('schedule/',StaffViews.ScheduleTableList.as_view(), name='schedule_table'),
@@ -98,18 +104,21 @@ urlpatterns = [
 
     path('ajax/load-districts/', views.get_districts_ajax, name='load-districts'), # AJAX
     path('ajax/load-bank-branches/', views.get_bankbranch_ajax, name='load-bank-branches'), # AJAX
-
+    path('get-papernumber-ajax/', views.get_papernumber_ajax, name="get_papernumber_ajax"),
 
     #path('upload-subjects/',views.uploadSubject,name='uploadSubject'),
     path('upload/csv/', views.upload_csv, name='upload_csv'),
-    path('export-csv/',views.export_csv,name='export-csv'),
+    path('export-csv/',views.export_csv,name='export-csv'), 
     path('export-excel/',views.export_excel,name='export-excel'),
+    path('upload-subjects/',views.upload_subjects_csv,name="upload_subjects_csv"),
     
      
     path('users/',CustomUserList.as_view(),name='userlist'),
 
 
     path('get-topics-ajax/', views.get_topics_ajax, name="get_topics_ajax"),
+    
+    
        
     #====================banks================
     path('banks/linst/',BankListView.as_view(),name='bank-list'),    

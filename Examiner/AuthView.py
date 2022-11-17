@@ -24,8 +24,11 @@ class CustomLoginView(LoginView):
         user = self.request.user.user_type
         if user == 1:
             return reverse_lazy('ead-home')
-        elif user == 2:
-             return reverse_lazy('staff-home')
+        if user == 2:
+            return reverse_lazy('staff-home')
+        if user == 4:
+            return reverse_lazy('staff-home')
+         
         else:
             return reverse_lazy('Examiner-home')
 

@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block title %}Attendance{% endblock title %}
+
+{% block content %}
+Take Attendance
+
+<div class="card card-body">
+<div class="container">
+   <span> <a  href="{% url 'attendance'%}" class="btn btn-primary float-right">Update List</a></span>
+</div>
+
+<table class="table table-responsive">
+<thead>
+    <tr>
+       
+        <th>ID</th>
+        <th>FIRST NAME</th>
+        <th>LAST NAME</th>
+        <th>SUBJECT</th>
+        <th>ATTENDANCE</th>
+        <th></th>
+        <th></th>
+    </tr>
+
+</thead>
+<tbody>
+    {% for item in attendance %}
+    <tr id ="{{item.id}}">
+        <td>{{item.id}}</td>
+        <td>{{item.examiner.first_name}}</td>
+        <td>{{item.examiner.last_name}}</td>
+        <td>{{item.examiner.subject.subjectName}}</td>
+
+        <td>
+       {% if item.status == 1 %}
+        <a href="{%url 'present-link' item.id %}" class="btn btn-info">Present</a>
+        <a href="{%url 'absent-link' item.id %}" class="btn btn-warning">Absent</a>
+       {% endif %}
+       {% if item.status == 2 %}
+       <button class="btn btn-info" disabled="disabled">Present</button>
+       {% endif %}
+       {% if item.status == 3 %}
+       <button class="btn btn-warning" disabled="disabled">Absent</button>
+       {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+</tbody>
+</table>
+
+</div>
+
+{% comment %}
+    <input id="Present" type="button" class="btn-info" value="Present">
+    <input id="Absent" type="button" class="btn-warning" value="Absent">
+{% endcomment %}
+
+{% endblock content %}
+
+{% block script %}
+
+{% endblock script %}

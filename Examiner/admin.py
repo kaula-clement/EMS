@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Examiner,Subject,Position,Invitation,Province,District,EAD,Person,City,Country,CustomUser,Bank,BankBranch,Staff
+from .models import Examiner,Subject,Position,Invitation,Province,District,EAD,CustomUser,Bank,BankBranch,Staff
 
 
 class ExaminerAdmin(admin.ModelAdmin):
@@ -36,9 +36,6 @@ admin.site.register(CustomUser,CustomUserAdmin)
 admin.site.register(District)
 admin.site.register(EAD)
 
-admin.site.register(City)
-admin.site.register(Country)
-admin.site.register(Person)
 admin.site.register(Bank)
 admin.site.register(BankBranch)
 admin.site.register(Staff,StaffAdmin)

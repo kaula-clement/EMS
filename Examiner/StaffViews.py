@@ -1,6 +1,6 @@
-from django.shortcuts import render,HttpResponseRedirect
+from django.shortcuts import render,HttpResponseRedirect,redirect
 from django.urls import reverse
-from .models import Examiner,Invitation,CustomUser,Staff,Bank,BankBranch,SchedulePay,Province,District,Payment
+from .models import Examiner,Invitation,CustomUser,Staff,Bank,BankBranch,SchedulePay,Province,District,Payment,Attendance
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView,UpdateView,DeleteView
@@ -59,9 +59,36 @@ class StaffExaminerList(LoginRequiredMixin,ListView):
     queryset= Examiner.objects.filter(approved=True)
     template_name='Staff/Examiner_list.html'
     context_object_name='examiners' 
-    
-    
-    
+
+def attendanceView(request):
+    examiners=Examiner.objects.filter(approved=True)
+    for item in examiners:
+        attendance=Attendance.objects.get_or_create(examiner=item)
+        attendance[0].save()
+    attendance=Attendance.objects.all()
+    context={
+        'attendance':attendance
+    }
+    messages.success(request,"Updated examiner list Successifuly")
+    return redirect('take-attendance')
+
+def takeattendance(request):
+    attendance=Attendance.objects.all()
+    context={
+        'attendance':attendance
+    }
+    return render(request,"Staff/takeattendancesheet.html",context)
+def present(request,pk):
+    attendance=Attendance.objects.get(id=pk)
+    attendance.status=2
+    attendance.save()
+    return redirect('take-attendance')
+
+def absent(request,pk):
+    attendance=Attendance.objects.get(id=pk)
+    attendance.status=3
+    attendance.save()
+    return redirect('take-attendance')    
     
 class ExaminerDetail(LoginRequiredMixin,DetailView):
     model=Examiner
@@ -79,27 +106,31 @@ class ScheduleTableList(ListView):
     template_name='Staff/ScheduleTable.html'
     
 def schedule(request):
-    examiners=Examiner.objects.filter(approved=True)
+    present_examiners=Attendance.objects.filter(status=2)
+    examiners=Examiner.objects.filter(attendance_examiner__in=present_examiners)
     ratePerNight=1000
     for item in examiners:
-        payment=Payment.objects.get_or_create(examiner=item)
+        
         fromStation=item.district
         toStation=item.to_province
+        payment=Payment.objects.get_or_create(examiner=item)
         print("==================")
+        print("Payment:",payment[0].transport)
         print("Name:",item.first_name)
         print("Province:",item.province)
         print("From",fromStation)
         print("To",toStation)
         try: 
+            print("Pay1:",payment[0].transport)
             nights=SchedulePay.objects.get(FromDistrict=fromStation)
             print("Night Row",nights)
             nights=getattr(nights,toStation)
             print("Nights2",nights)
-            payment.transport=int(nights)*ratePerNight
-            payment.save()
-            print("Pay:",payment.transport)
-        except:
-            pass
+            payment[0].transport=int(nights)*ratePerNight
+            payment[0].save()
+            print("Pay:",payment[0].transport)
+        except Exception as e:
+            logging.getLogger("error_logger").error(repr(e))
         
     context={
         'examiners':examiners,

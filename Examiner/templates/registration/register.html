@@ -28,6 +28,9 @@
   <!--content inner-->
   <div class="content__inner">
     <div class="container">
+
+
+
         {% comment %}
       <!--content title-->
       <h2 class="content__title content__title--m-sm">Pick animation type</h2>
@@ -88,17 +91,23 @@
                   </div>
                   
                   <div class="form-row mt-4">
-                    <div class="col-12 col-sm-6">
+                    <div class="col">
                      {{form.NRC}}
                     </div>
-                    <div class="col-6 col-sm-3 mt-4 mt-sm-0">
+                    <div class="col">
                       {{form.gender}}
                     </div>
-                    <div class="col-6 col-sm-3 mt-4 mt-sm-0">
-                      {{from.errors}}
-                     {# <input class="multisteps-form__input form-control" type="text" placeholder="Zip"/>#}
-                    </div>
+                    
                   </div>
+                  <div class="row">
+                  <div class="col-12 col-lg-4 m-auto">
+                    <h5>Select Session</h5>
+                    {{form.session}}
+                    {{form.errors}}
+                   {# <input class="multisteps-form__input form-control" type="text" placeholder="Zip"/>#}
+                  </div>
+                </div>
+
                   <div class="button-row d-flex mt-4">
                     <button class="btn btn-primary ml-auto js-btn-next" type="button" title="Next">Next</button>
                   </div>
@@ -126,16 +135,18 @@
                   </div>
                  
                   <div class="form-row mt-4">
-                    <div class="col-12 col-sm-6">
+                    <div class="col">
                     {{form.province.label}}
                       {{form.province}}
                     </div>
-                    <div class="col-6 col-sm-3 mt-4 mt-sm-0">
+                    <div class="col">
                         {{form.district.label}}
                         {{form.district}}
                     </div>
-                    <div class="col-6 col-sm-3 mt-4 mt-sm-0">
-                      {##}
+                    <div class="col">
+                      {#<label for="to_province">To Province</label>#}
+                      {{form.to_province.label}}
+                      {{form.to_province}}
                     </div>
                   </div>
                   <div class="button-row d-flex mt-4">
@@ -149,14 +160,20 @@
                 <h3 class="multisteps-form__title">Subject Choice</h3>
                 <div class="multisteps-form__content">
                   <div class="row">
-                    <div class="col-12 col-md-6 mt-4">
+                    <div class="col">
                         {{form.subject.label}}
                         {{form.subject}}
                     </div>
-                    <div class="col-12 col-md-6 mt-4">
-                        {{form.position.label}}
-                        {{form.position}}
+                    <div class="col">
+                      {{form.paper.label}}
+                        {{form.paper}}
                     </div>
+                    <div class="col">
+                      {{form.position.label}}
+                      {{form.position}}
+                  </div>
+                    
+
                   </div>
                   <div class="row">
                     <div class="button-row d-flex mt-4 col-12">
@@ -200,7 +217,12 @@
                 <h4 class="multisteps-form__title">Check the box below if you are available for the 2022 marking session</h4>
                 <div class="multisteps-form__content">
                   <div class="form-row mt-4">
+                    <div class="col">
+                    
+                    </div>
+                    <div class="col">
                    check(mark) this: {{form.availability}}
+                    </div>
                   </div>
                   <div class="button-row d-flex mt-4">
                     <button class="btn btn-primary js-btn-prev" type="button" title="Prev">Prev</button>
@@ -268,6 +290,27 @@
         });
     });
 </script>
+<script>
+  $("#id_subject").change(function () {
+      const subjectID = $(this).val();  // get the selected subject ID from the HTML dropdown list 
+      $.ajax({                       // initialize an AJAX request
+          type: "POST",
+          url: '{% url "get_papernumber_ajax" %}',
+          data: {
+              'subject_id': subjectID,       // add the country id to the POST parameters
+              'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val(),
+          },
+          success: function (data) {   // `data` is from `get_topics_ajax` view function
+              let html_data = '<option value="">Choose a paper number</option>';
+              data.forEach(function (data) {
+                  html_data += `<option value="${data.paper_number}">${data.paper_name}</option>`
+              });
+              $("#id_paper").html(html_data); // replace the contents of the topic input with the data that came from the server
+          }
+      });
+  });
+</script>
+
 <script>
   $("#id_bank").change(function () {
       const bankID = $(this).val();  // get the selected  ID from the HTML dropdown list 

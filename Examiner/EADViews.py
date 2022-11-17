@@ -1,18 +1,20 @@
 from django.shortcuts import render,redirect,HttpResponseRedirect
+from django.contrib.messages.views import SuccessMessageMixin
+from django.db.models import Q
 from django.urls import reverse_lazy,reverse
 from datetime import date,datetime
 import logging
 from django.contrib import messages
 #===============local imports
-from .models import Bank, Examiner,Invitation, Staff,Subject,Position,EAD,CustomUser,Province,Session
-from . forms import EADForm,InvitationForm,ExaminerForm,ExaminerUploadForm
+from .models import Bank, Examiner,Invitation, Staff,Subject,Paper,Position,EAD,CustomUser,Province,Session ,ECZStaff
+from . forms import EADForm,InvitationForm,ExaminerForm,ExaminerUploadForm ,ECZStaffForm
 from .filters import ExaminerFilter
 #==============Views
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView,UpdateView,DeleteView
 
-
+from django.contrib.auth.forms import UserCreationForm
 #======================================
 from django.core.mail import send_mail
 from django.contrib.auth.decorators import login_required
@@ -67,6 +69,11 @@ class EADDeleteView(DeleteView):
     context_object_name='obj'
     template_name='Subject/confirm_Delete.html'
     success_url=reverse_lazy('ead-list')
+    
+class ECZStaffCreateView(CreateView):
+    form_class=ECZStaffForm
+    template_name="Staff/ECZ_Staff_create.html"
+   
 
 class SubjectCreateView(CreateView):
     model=Subject
@@ -109,8 +116,8 @@ class ExaminerCreate(LoginRequiredMixin,CreateView):
             td=str(date.today().year)
             #pre save to get id
             super().form_valid(ExaminerForm)
-            #concatenate year(2digits)+[subject code]+ [id] to make code
-            code=td[-2:]+'-'+ExaminerForm.instance.subject.subjectCode+str(self.object.id)
+            #concatenate year(2digits)+[subject code]+ [id] to make code  //td[-2:]+
+            code=ExaminerForm.instance.subject.subjectCode+'/'+ str(ExaminerForm.instance.paper.paper_number)+str(self.object.id).zfill(5)
             #Examinercode is = concatenated code 
             ExaminerForm.instance.ExaminerCode=code
             #create user for the examiner
@@ -125,7 +132,7 @@ class ExaminerCreate(LoginRequiredMixin,CreateView):
             messages.success(self.request,"Added examiner")
         except Exception as e:
             logging.getLogger("error_logger").error(repr(e))
-            messages.error(self.request,"error adding student")
+            messages.error(self.request,"error adding Examiner")
                     #return a valid form
         return super(ExaminerCreate,self).form_valid(ExaminerForm)
 
@@ -199,16 +206,18 @@ def examinerRequests(request):
     return render(request,'Examiner/examinerRequests.html',context)
         
 
-class ExaminerUpdate(LoginRequiredMixin,UpdateView):
+class ExaminerUpdate(LoginRequiredMixin,SuccessMessageMixin,UpdateView):
     model=Examiner
     form_class=ExaminerForm
     template_name='EAD/Examiner_form.html'
+    success_message="Updated Successifully"
     success_url=reverse_lazy('examiner-list')
 
-class ExaminerDelete(LoginRequiredMixin,DeleteView):
+class ExaminerDelete(LoginRequiredMixin,SuccessMessageMixin,DeleteView):
     print("Deleting view for EAD")
     model=Examiner
     context_object_name='Examiner'
+    success_message="Deleted"
     success_url=reverse_lazy('examiner-list')
     
 
@@ -363,6 +372,8 @@ def upload_csv(request):
         lines = file_data.split("\n")
         lines=lines[1:len(lines)-1]
         # loop over the lines and save them in db. If error , store as string and then display
+        
+            
         for line in lines:
             print("=======Line: ",line)
             fields = line.split(",")
@@ -370,49 +381,58 @@ def upload_csv(request):
             data_dict["first_name"] =fields[1]  # field=uploaded file column
             data_dict["middle_name"] = fields[2]
             data_dict["last_name"] = fields[3]
-            sub=Subject.objects.get(subjectName=fields[4])
-            data_dict["subject"] = sub.id   # field=uploaded file column
-            data_dict["email"] = fields[5]
-            positionData=Position.objects.get(name=fields[6])
-            data_dict["position"] =positionData.id
-            data_dict["approved"] = True
+            sub=Subject.objects.get(subjectCode=fields[4])
+            data_dict["subject"] = sub.subjectCode   # field=uploaded file column
+            paper=Paper.objects.get(Q(paper_number=fields[5]),
+                                    Q(subject=sub)
+                                    ) #& (Paper.objects.filter(subject=sub)))
+            data_dict["paper"] = paper.paper_number 
+            data_dict["email"] = fields[6]
+            obj=Position.objects.get(name=fields[7].rstrip())
+            
+            #print("Position:======",obj)
+            data_dict["position"] =obj.id
             data_dict["availability"] = True 
+            data_dict["approved"] = True
             
             try: 
                 form = ExaminerUploadForm(data_dict)
                 print("data_dict:",data_dict)
                 if form.is_valid():
-                    #form.save()
-                    td=str(date.today().year)
-                    code=td[-2:]+'-'+form.instance.subject.subjectCode+str(form.instance.pk)
-                    #print("CODE:",code)
+                    form.save()
+                    #td=str(date.today().year)
+                    code=form.instance.subject.subjectCode+'/'+ str(form.instance.paper.paper_number)+str(form.instance.pk).zfill(5)
+                    #code=td[-2:]+'-'+form.instance.subject.subjectCode+str(form.instance.pk)
+                    print("CODE:",code)
                     form.instance.ExaminerCode=code
                     first_name=form.instance.first_name
                     last_name=form.instance.last_name
                     email=form.instance.email
                     form.instance.availability=True
+                    form.instance.approved=True
                     form.instance.user=CustomUser.objects.create_user(username=code,first_name=first_name,
                                                    last_name=last_name,
                                                     email=email,
                                                     user_type=3,
                                                     password='password3')
                     form.save()
-                    messages.success(request,"successifully uploaded examiners")
+                    messages.success(request,"successifully Uploaded")
                 else:
 
                     logging.getLogger("error_logger").error(
                        form.errors.as_json())
                     messages.error(request, '{}'.format(form.errors,line))
-                   
+             
             except Exception as e:
                 logging.getLogger("error_logger").error(repr(e))
-                
-
+                messages.error(request, '{}'.format(form.errors,line))
+        
+        
     except Exception as e:
         logging.getLogger("error_logger").error(
             "Unable to upload file. "+repr(e))
         messages.error(request, "Unable to upload file. "+repr(e))
-
+    
     return HttpResponseRedirect(reverse("examiner_upload_csv"))
 
    

@@ -1,6 +1,6 @@
 {% load static%}
 
-<aside class="main-sidebar   elevation-4">
+<aside class="main-sidebar sidebar-dark-primary  elevation-4">
     <!-- Brand Logo -->
     <a href="{% url 'staff-home'%}" class="brand-link">
       <img src="{% static '/img/ECZ-Logo2.jpg'%}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
@@ -46,6 +46,17 @@
               </p>
             </a>
           </li>
+        {% if request.user.user_type == 2 %}
+          <li class="nav-item">
+            <a href="{%url 'schedule'%}" class="nav-link">
+              <i class='nav-icon far fa-address-book' style='font-size:24px'></i>
+              <p>
+                Schedule
+              
+              </p>
+            </a>
+          </li>
+          {% endif %}
           <li class="nav-item">
             <a href="{%url 'bank-list'%}" class="nav-link">
               <i class="nav-icon fas fa-th"></i>
@@ -54,6 +65,20 @@
               </p>
             </a>
           </li>
+
+{% if request.user.user_type == 4 %}
+
+<li class="nav-item">
+  <a href="{%url 'take-attendance'%}" class="nav-link">
+    <i class="nav-icon fas fa-th"></i>
+    <p>
+    Attendance Reg  
+    </p>
+  </a>
+</li>
+
+{% endif %}
+         
          
         </ul>
       </nav>

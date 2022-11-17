@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}
+
+{% endblock title %}
+
+{% block content %}
+ECZ Staff Creation from
+<form method="POST" action="">
+
+
+    {% csrf_token %}
+    {{form.as_p}}
+
+<input type="submit" value="submit">
+</form>
+
+{% endblock content %}
+
+{% block script %}
+
+{% endblock script %}

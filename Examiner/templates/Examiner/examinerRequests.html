@@ -2,6 +2,9 @@
 
 {%block content%}
 <h3>Examiners waiting approval</h3>
+
+<div class="loader"></div>
+
 <a href="{%url 'examiner-list'%}">Back to Approved Examiners</a>
 <div class="table-responsive">
 <table class="table table-hover text-nowrap">
@@ -33,7 +36,15 @@
        <td>{{item.middle_name}}</td>
        <td>{{item.last_name}}</td>
        <td>{{item.position.name}}</td>
-       <td>{{item.subject.subjectName}}</td>
+       <td>
+        
+        {{item.subject.subjectName}}
+
+        {% if item.paper %}
+        ({{item.paper.paper_number}})
+        {% endif %}
+    
+        </td>
            {% if item.availability %}
             <td>Available</td>
            {% endif %}
@@ -56,7 +67,12 @@
    <h4>no Examiners in list</h4>
        {%endfor%}
    </table>
+   
 </div>
+
+
+
+   
    <input type="button" value="approve" id="appove_multiple_btn">
 
 
@@ -74,24 +90,32 @@ $(document).ready(function(){
         $(':checkbox:checked').each(function(i){
             id[i]=$(this).val()
         })
+        $('#loader').removeClass('hidden')
         if (id.length==0){
             alert("No Examiners checked!")
         }else{
             console.log(id)
             $.ajax({
+           //     beforeSend: function () { // Before we send the request, remove the .hidden class from the spinner and default to inline-block.
+           //         $('#loader').removeClass('hidden')
+           //     },
                 url:'',
                 method:"POST",
-                data:{
-                    id,
-                    csrfmiddlewaretoken:csrf
+                data:{id,csrfmiddlewaretoken:csrf},
 
+
+                complete: function () { // Set our complete callback, adding the .hidden class and hiding the spinner.
+                    $('#loader').addClass('hidden')
                 },
+               
                 success:function(response){
-                    for(var i =0; i<= id.length; i++){
-                        $('tr#'+id[i]+'').css('background-color','#ccc');
-                        $('tr#'+id[i]+'').fadeOut('slow');
-                    }
-                }
+
+                                for(var i =0; i<= id.length; i++){
+                                    $('tr#'+id[i]+'').css('background-color','#ccc');
+                                    $('tr#'+id[i]+'').fadeOut('slow');
+                                }
+                            },
+                
             })
         }
     })
