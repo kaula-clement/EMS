@@ -27,7 +27,7 @@ All Sessions here
         <tbody>
         <tr>
             <td><input type="checkbox" value="{{ session.id }}"></td>
-            <td>{{ session.id }}</td>
+            <td>{{ forloop.counter }}</td>
             <td>{{ session.name }}</td>
             <td>{{ session.start_date }}</td>
             <td>{{ session.end_date }}</td>

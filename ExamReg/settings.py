@@ -120,6 +120,9 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LOGIN_URL='login'
 
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+SESSION_COOKIE_AGE = 10 * 60
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/

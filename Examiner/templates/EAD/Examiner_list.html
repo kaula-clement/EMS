@@ -10,8 +10,9 @@
 
 
 <div class="table-responsive overflow-auto">
-<table class="table table-hover text-nowrap">
+<table class="table table-hover text-nowrap" id="examinersTable">
  {% csrf_token %}
+ <thead>
     <tr>
       <!--  <th>id</th> -->
         <th><input type="checkbox"  id="checkAll" value="chek all"></th>
@@ -23,11 +24,12 @@
         <th>Subject</th>
         <th>Availability</th>
         <th>Status</th>
-     
+        <th></th>
         <th></th>
         <th></th>
     </tr>
-
+</thead>
+<tbody>
     {%for item in approved_examiners %} 
 <trid="{{item.id}}">
     <td> <input type="checkbox" name="examiner_id[]" value="{{item.id}}" id="delete_examiner">
@@ -68,6 +70,7 @@
 {%empty%}
 <h4>no Examiners in list</h4>
     {%endfor%}
+</tbody>
 </table>
 </div>
 
@@ -83,9 +86,12 @@
    
 $(document).ready(function(){
 
-   // $("#checkAll").click(function(){
-      //  $('input:checkbox').not(this).prop('checked', this.checked);
-   // });
+    $("#examinersTable").dataTable({
+        dom:'Bfrtip',
+        buttons:[
+        'csv','pdf','print'
+        ]
+    });
 
 
     $("#delete_multiple_btn").click(function(){

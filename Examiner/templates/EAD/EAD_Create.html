@@ -3,29 +3,65 @@
 {%block content%}
 <h3>Examinations Administrator Creation/Update Form</h3>
 <form method="POST">
-    <div class="container-fluid">
 
-        <div class="row">
-            <div class="col-md-12">
-                <!-- general form elements -->
-                <div class="card card-primary">
-                {% csrf_token%}
-                {%for field in form%}
-                <div class="card-body">
-                  <label for="exampleinputpassword" class="form-lable">{{field.label}}</label>
-                  {{field}}
-                </div>
-              {%endfor%}
-             
-                
-
-                </div>
-                <!-- /.card -->
-
-            </div>
-        </div>
-
+      {% csrf_token%}
+<div class="card card-body">
+  
+  <div class="form-row">
+    <div class="col-md-4 mb-3">
+      <label for="validationDefault01">First name</label>
+      {{form.first_name}}
     </div>
-    <input type="submit" value="SUBMIT">
+    <div class="col-md-4 mb-3">
+      <label for="validationDefault02">Middle name</label>
+      {{form.middle_name}}
+    </div>
+    <div class="col-md-4 mb-3">
+      <label for="validationDefault02">Last name</label>
+      {{form.last_name}}
+    </div>
+    <div class="col-md-4 mb-3">
+      <label for="validationDefaultUsername">Username</label>
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="inputGroupPrepend2">@</span>
+        </div>
+        {{form.UserName}}
+      </div>
+    </div>
+  </div>
+
+    <div class="form-row">
+      <div class="col-md-4 mb-3">
+        <label for="validationDefault01">NRC</label>
+        {{form.NRC}}
+      </div>
+      <div class="col-md-4 mb-3">
+        <label for="validationDefault02">Gender</label>
+        {{form.gender}}
+      </div>
+    </div>
+   
+
+
+    <div class="form-row">
+      <div class="col-md-6 mb-3">
+        <label for="validationDefault03">Address</label>
+        {{form.Address}}
+      </div>
+      <div class="col-md-3 mb-3">
+        <label for="validationDefault04">Email</label>
+        {{form.email}}
+      </div>
+      <div class="col-md-3 mb-3">
+        <label for="validationDefault05">CELL NUMBER</label>
+        {{form.cell_Number}}
+      </div>
+    </div>
+    
+
+  </div>
+  
+  <input type="submit" value="submit">
 </form>
 {%endblock%}

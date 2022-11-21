@@ -55,6 +55,8 @@ urlpatterns = [
    path('Sessions-all/',EADViews.SessionCreate.as_view(), name='sessions-all'),
    path('batch-session-delete/',EADViews.batchSessionDelete,name='batch-session-delete'),
    
+   path('subjects/marking-center/',EADViews.selectMarkingVenue,name='marking-center'),
+   
    #======================================Staff Menu
    path('Staff-home/',StaffViews.StaffHome,name='staff-home'), 
    path('staff/examiners/',StaffExaminerList.as_view(),name='staff-examiner-list'),  

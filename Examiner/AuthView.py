@@ -4,8 +4,8 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.models import Group
 from requests import request
-from .models import CustomUser,EAD,Examiner,Province,Staff,Bank
-from .forms import ChangePassword, EADForm, ExaminerForm, StaffForm, UserForm
+from .models import CustomUser,EAD,Examiner,Province,Staff,Bank,ECZStaff
+from .forms import ChangePassword, EADForm, ExaminerForm, StaffForm, UserForm,ECZStaffForm
 from django.views.generic.list import ListView
 from django.contrib.auth.views import LoginView
 from django.views.generic.detail import DetailView
@@ -69,6 +69,9 @@ def updateprofile(request,pk):
     elif request.user.user_type==2:
         User=Staff.objects.get(user=pk)
         form=StaffForm(instance=User)
+    elif request.user.user_type==4:
+        User=ECZStaff.objects.get(user=pk)
+        form=ECZStaffForm(instance=User)
     elif request.user.user_type==3:
         User=Examiner.objects.get(user=pk)
         form=ExaminerForm(instance=User)
@@ -87,6 +90,9 @@ def updateprofile(request,pk):
         elif request.user.user_type==2:
             User=Staff.objects.get(user=pk)
             form=StaffForm(request.POST,instance=User)
+        elif request.user.user_type==4:
+            User=ECZStaff.objects.get(user=pk)
+            form=ECZStaffForm(request.POST,instance=User)
         elif request.user.user_type==3:
             User=Examiner.objects.get(user=pk)
             form=ExaminerForm(request.POST,instance=User)

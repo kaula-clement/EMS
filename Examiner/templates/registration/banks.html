@@ -2,7 +2,7 @@
 
 {% block content %}
 <a href="{% url 'upload_csv'%}">Upload bank branches from csv</a>
-<table class="table">
+<table class="table table-sm" id="banksTable">
     <thead>
         <tr>
             <th>Bank </th>
@@ -13,9 +13,9 @@
     <tbody>
         {% for branch in branches %}
         <tr>
-            <td>{{branch.bank.name}}<td>
-            <td>{{branch.name}}<td>
-            <td>{{branch.sortcode}}<td>
+            <td>{{branch.bank.name}}</td>
+            <td>{{branch.name}}</td>
+            <td><input value="'" hidden>{{branch.sortcode|add:"0"|stringformat:"06d"}}</td>
         </tr>
         {% endfor %}
 
@@ -25,5 +25,17 @@
 
 
 {% endblock content %}
+{% block script %}
+<script>
+$(document).ready(function(){
+    $("#banksTable").dataTable({
+        dom:'Bfrtip',
+        buttons:[
+        'excel','pdf','print'
+        ]
+    });
 
+});
+</script>
+{% endblock script %}
 

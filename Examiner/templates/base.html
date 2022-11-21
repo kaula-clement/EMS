@@ -26,6 +26,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <!-- Theme style -->
   <link rel="stylesheet" href="{% static '/dist/css/adminlte.min.css'%}">
   <link rel="stylesheet" href="{% static '/css/style1.css'%}">
+  <!--Data tables-->
+  <link rel="stylesheet" href="{% static '/css/datatables.min.css'%}">
 
     <!-- overlayScrollbars -->
     <link rel="stylesheet" href="{% static "overlayScrollbars/css/OverlayScrollbars.min.css" %}">
@@ -118,13 +120,16 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
 <!-- jQuery -->
 <script src="{% static 'plugins/jquery/jquery.min.js'%}"></script>
+
+<!--Table to exel-->
+
 <!-- daterangepicker -->
 <script src="{% static "daterangepicker/moment.min.js"  %}"></script>
 <script src="{% static "daterangepicker/daterangepicker.js"  %}"></script>
 <!-- ChartJS -->
 <script src="{% static "js/Chart.js"  %}"></script>
 <script src="{% static "js/sweetalert2.all.js"  %}"></script>
-
+<script src="{%static "js/datatables.min.js"%}"></script>
 {% block script %}
 
 {% endblock script %}

@@ -8,6 +8,8 @@ EAD List
 {%block content%}
 <div class="container">
     <h4>Examinations Administrators List</h4>
+<div class="card card-body">
+    
     <table class="table table-sm">
         <caption>List of EADs</caption>
         <tr>
@@ -33,7 +35,8 @@ EAD List
         <h3>No Data to display</h3>
         {%endfor%}
     </table>
-    <a href="{%url 'ead-create'%}">add</a>
+</div>
+    <a href="{%url 'ead-create'%}" class="btn btn-primary">Add New</a>
     </div>
 
 {%endblock%}

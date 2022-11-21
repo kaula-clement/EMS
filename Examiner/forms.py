@@ -12,8 +12,7 @@ class ExaminerForm(forms.ModelForm):
     class Meta:
         model=Examiner 
         fields=('middle_name','last_name','first_name','gender','subject','paper','position','Address','province','district',
-                'AccountDetails','NRC','TPIN','cell_Number','email','availability','bank','branch','session',
-                'to_province')
+                'AccountDetails','NRC','TPIN','cell_Number','email','availability','bank','branch','session',)
         
         widgets = {
             'middle_name':forms.TextInput(attrs={'class':'form-control','placeholder':'Middle Name'}),
@@ -33,7 +32,6 @@ class ExaminerForm(forms.ModelForm):
             'email': forms.EmailInput(attrs={'class':'form-control','placeholder':'email@abc.abc'}),
             'bank':forms.Select(attrs={'class':'form-control','placeholder':'Province'}),
             'branch':forms.Select(attrs={'class':'form-control','placeholder':'Province'}),
-            'to_province':forms.Select(attrs={'class':'form-control'}),
             
             'approved':forms.CheckboxInput(attrs={'class':'largerCheckbox'}),
             'availability':forms.CheckboxInput(attrs={'class':'largerCheckbox'}),
@@ -193,5 +191,5 @@ class StationForm(forms.ModelForm):
 class ECZStaffForm(forms.ModelForm):
     class Meta:
         model=ECZStaff
-        fields=('username','first_name','last_name','email','to_province',)
+        fields=('username','first_name','last_name','email','paper',)
  

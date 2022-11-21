@@ -55,6 +55,11 @@ class Position(models.Model):
     name=models.CharField(max_length=50,null=True)
     def __str__(self):
        return self.name
+ 
+regions=(('LUSAKA','LUSAKA'),('COPPERBELT','COPPERBELT'),('MONZE','MONZE'),
+             ('KAPIRI','KAPIRI'),('LIVINGSTONE','LIVINGSTONE'),
+                ('CHOMA','CHOMA'),('MWANDI','MWANDI'),('LUNTE','LUNTE'),('MWENSE','MWENSE'),
+                ('KASENENGWA','KASENENGWA'),('CHISAMBA','CHISAMBA'),('CHIBOMBO','CHIBOMBO')) 
    
 class Subject(models.Model):
     subjectCode=models.CharField(max_length=5,unique=True)
@@ -75,8 +80,9 @@ class Paper(models.Model):
     def __str__(self):
         return self.paper_name
 
-    
-
+class MarkingVenue(models.Model):
+    paper=models.ForeignKey(Paper,on_delete=models.CASCADE)
+    center=models.CharField(max_length=50,choices=regions,null=True,blank=True)
 
 
 class EAD(models.Model):
@@ -114,10 +120,7 @@ class EAD(models.Model):
     objects = models.Manager()
 
 
-regions=(('LUSAKA','LUSAKA'),('COPPERBELT','COPPERBELT'),('MONZE','MONZE'),
-             ('KAPIRI','KAPIRI'),('LIVINGSTONE','LIVINGSTONE'),
-                ('CHOMA','CHOMA'),('MWANDI','MWANDI'),('LUNTE','LUNTE'),('MWENSE','MWENSE'),
-                ('KASENENGWA','KASENENGWA'),('CHISAMBA','CHISAMBA'),('CHIBOMBO','CHIBOMBO'))
+
 class Examiner(models.Model):
     user=models.OneToOneField(CustomUser,
         on_delete=models.CASCADE,null=True,blank=True)
@@ -157,7 +160,8 @@ class ECZStaff(models.Model):
     first_name=models.CharField(max_length=50)
     last_name=models.CharField(max_length=50)
     email=models.EmailField(null=True)
-    to_province =models.CharField(max_length=50,choices=regions,null=True,blank=True)
+    subject=models.ForeignKey(Subject,to_field="subjectCode",db_column="Subject_Code", on_delete=models.SET_NULL,null=True,blank=True)
+    paper =models.ForeignKey(Paper,on_delete=models.SET_NULL,null=True)
     def save(self,*args,**kwargs):
             super().save(*args,**kwargs)
             if not self.user:

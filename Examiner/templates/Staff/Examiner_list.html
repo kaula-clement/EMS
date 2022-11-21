@@ -9,6 +9,7 @@
 <div class="card card-body">
 <div class="table-responsive">
     <table class="table table-sm table-bordered" >
+        <thead>
         <tr>
         <!--  <th>id</th> -->
             <th>Examiner Number</th>
@@ -25,6 +26,8 @@
             <th>Account Number</th>
             <th></th>
         </tr>
+    </thead>
+    <tbody>
         {%for item in examiners %} 
         <tr>
         <!-- <td>{{item.id}}</td> -->
@@ -45,9 +48,11 @@
             <td><a href="{% url 'examiner-details' item.id %}"><i class="fa-sharp fa-solid fa-eye"></i>view</a></td>
 
         </tr>
+    
     {%empty%}
     <h4>no Examiners in list</h4>
         {%endfor%}
+    </tbody>
     </table>
 </div>
 </div>

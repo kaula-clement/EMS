@@ -1,6 +1,6 @@
 from django.shortcuts import render,HttpResponseRedirect,redirect
 from django.urls import reverse
-from .models import Examiner,Invitation,CustomUser,Staff,Bank,BankBranch,SchedulePay,Province,District,Payment,Attendance
+from .models import Examiner,Invitation,CustomUser,Staff,Bank,BankBranch,SchedulePay,Province,District,Payment,Attendance,ECZStaff
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView,UpdateView,DeleteView
@@ -18,16 +18,24 @@ from django.contrib import messages
 #======================================
 
 def StaffHome(request): 
-    examiners=Examiner.objects.all()
-    examiners_count=examiners.count()
+    #examiners=Examiner.objects.all()
+    #examiners_count=examiners.count()
     #branches=BankBranch.objects.all()
-    available_examiners=examiners.filter(availability=True).count()
-    context={
-            'examiners_count':examiners_count,
-            'available_examiners':available_examiners,
-          #  'branches':branches
-            }
-    return render(request, 'Staff/Staff_home.html',context)
+    if request.user.user_type == 4:
+        user=ECZStaff.objects.get(username=request.user.username)
+        print("User:",user.first_name)
+        examiners=Examiner.objects.filter(approved=True,
+                                          subject=user.subject,
+                                          paper=user.paper)
+        available_examiners=examiners.filter(availability=True).count()
+        context={
+                #'examiners_count':examiners_count,
+                'available_examiners':available_examiners,
+            #  'branches':branches
+                }
+        return render(request, 'Staff/Staff_home.html',context)
+    else:
+        return redirect('login')
 
 
 class StaffCreate(LoginRequiredMixin,CreateView):
@@ -61,7 +69,10 @@ class StaffExaminerList(LoginRequiredMixin,ListView):
     context_object_name='examiners' 
 
 def attendanceView(request):
-    examiners=Examiner.objects.filter(approved=True)
+    user=ECZStaff.objects.get(username=request.user.username)
+    examiners=Examiner.objects.filter(approved=True,
+                                        subject=user.subject,
+                                        paper=user.paper)
     for item in examiners:
         attendance=Attendance.objects.get_or_create(examiner=item)
         attendance[0].save()
@@ -73,7 +84,11 @@ def attendanceView(request):
     return redirect('take-attendance')
 
 def takeattendance(request):
-    attendance=Attendance.objects.all()
+    user=ECZStaff.objects.get(username=request.user.username)
+    examiners=Examiner.objects.filter(approved=True,
+                                        subject=user.subject,
+                                        paper=user.paper)
+    attendance=Attendance.objects.filter(examiner__in=examiners)
     context={
         'attendance':attendance
     }

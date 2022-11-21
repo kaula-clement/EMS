@@ -343,7 +343,7 @@ def export_excel(request):
     
     wb=xlwt.Workbook(encoding='utf-8')
     ws=wb.add_sheet('Examiners')
-    row_num=0
+    row_num=0 
     font_style=xlwt.XFStyle()
     font_style.font.bold=True
     

@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Select Marking center
+{% endblock title %}
+
+{% block content %}
+Subject Marking Center
+<div class="container">
+<form method="POST" action="">
+{% csrf_token %}
+
+    <Select id="id_subject" name="subject_code">
+    <option value=""> Select Subject</option>
+        {% for item in subjects %}
+        <option value="{{item.subjectCode}}"> {{item.subjectName}}</option>  
+    {% endfor %}
+    </select>
+
+    <Select id="id_paper" name="paper_number">
+        <option value=""> Select Paper Number</option>
+           
+    </select> 
+
+    <Select id="id_marking_center" name="center">
+        <option value=""> Select Marking Center</option>
+            {% for item in centers %}
+            <option value="{{item}}"> {{item}}</option>
+            
+            {% endfor %}
+    </select>
+
+    <input type="submit" venue="save">
+    </form>
+
+<div class="card">
+    <div class="card-body">
+        <table class="table">
+            <thead>
+                <tr>
+                <th>ID</th>
+                <th>SUBJECT</th>
+                <th>PAPER</th>
+                <th>VENUE</th>
+                <th>Edit</th>
+                </tr>
+            </thead>
+            <tbody>
+            
+                {% for item in venues %}
+            <tr>
+                <td>{{forloop.counter}}</td>
+                <td>{{item.paper.subject}}</td>
+                <td>{{item.paper}}</td>
+                <td>{{item.center}}</td>
+                <td><a href="#">edit</a></td>
+            </tr>
+                {% endfor %}
+            
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</div>
+
+{% endblock content %}
+
+
+{% block script %}
+<script>
+    $("#id_subject").change(function () {
+        const subjectID = $(this).val();  // get the selected subject ID from the HTML dropdown list 
+        $.ajax({                       // initialize an AJAX request
+            type: "POST",
+            url: '{% url "get_papernumber_ajax" %}',
+            data: {
+                'subject_id': subjectID,       // add the country id to the POST parameters
+                'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val(),
+            },
+            success: function (data) {   // `data` is from `get_topics_ajax` view function
+                let html_data = '<option value="">Choose a paper number</option>';
+                data.forEach(function (data) {
+                    html_data += `<option value="${data.paper_number}">${data.paper_name}</option>`
+                });
+                $("#id_paper").html(html_data); // replace the contents of the topic input with the data that came from the server
+            }
+        });
+    });
+</script>
+
+{% endblock script %}

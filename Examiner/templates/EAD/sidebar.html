@@ -66,7 +66,8 @@
               </p>
             </a>
           </li>
-          <li class="nav-item">
+          {% comment %}
+            <li class="nav-item">
             <a href="{%url 'send-email'%}" class="nav-link">
               <i class='nav-icon fas fa-mail-bulk' style='font-size:24px'></i>
               <p>
@@ -74,12 +75,22 @@
               </p>
             </a>
           </li>
+          {% endcomment %}
+          
           <li class="nav-item">
             <a href="{%url 'add-subject'%}" class="nav-link">
               <i class='nav-icon far fa-address-book' style='font-size:24px'></i>
               <p>
                 subjects
                
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{%url 'marking-center'%}" class="nav-link">
+              <i class='far fa-building' style='font-size:24px'></i
+              <p>
+              Marking Center  
               </p>
             </a>
           </li>

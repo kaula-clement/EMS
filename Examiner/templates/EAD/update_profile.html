@@ -203,9 +203,9 @@
 </script>
 <script>
     $(document).on("click", "#changepassword", function(){
-            //Disabling the Button while data is being saved in Server
-         //   $(this).attr("disabled", "disabled")
-         //   $(this).text("updating password...")
+    //Disabling the Button while data is being saved in Server
+            $(this).attr("disabled", "disabled")
+            $(this).text("updating password...")
 
             var pass1=$("#id_new_password1").val();
             var pass2=$("#id_new_password2").val();
@@ -216,46 +216,10 @@
                 type:'POST',
                 data:{'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val(),pass1:pass1, pass2:pass2},
             })
-
-/*
-            if(pass1==pass2){
-                //console.log("same")
-                // Saving Attendance Data into Database
-           $.ajax({
-                url:"{%url 'updatepassword'%}",
-                type:'POST',
-                data:{pass1:pass1, pass2:pass2},
-            })
-            . done(function(response){
-                    
-                    if(response=="True")
-                    {
-                        alert("pasword changed!")
-                    }
-                    else
-                    {
-                        alert("Failed to change password!")
-                    }
-                    location.reload()
-                    
-                    //console.log(response)
-                })
-    
-                .fail(function(){
-                    alert("Error changing password")
-                })
-            }
-            else{
-                console.log("defferent")
-            }
-            */
-
-            console.log(pass1);
-            console.log(pass2);
             
-          
-
-
+           // console.log(pass1);
+           // console.log(pass2);
+ 
         })
 
 </script>

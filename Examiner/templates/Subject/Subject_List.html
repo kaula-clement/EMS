@@ -3,18 +3,24 @@
 {%block content%}
 <h3>List of subjects</h3>
 <div class="container">
-    <table class="table table-bordered table-striped table-sm" cellspacing="0" >
+    <table class="table table-bordered table-striped table-sm" cellspacing="0" id="subjectTable">
+    <thead>
         <caption>List of Subjects</caption>
         <tr>
             <th>Id</th>
             <th>CODE</th>
             <th>NAME</th>
             <th>DESCRIPTION</th>
+            {% if request.user.user_type == "1" %}
+            <th></th>
+            <th></th>
+            {%endif%}
         </tr>
-        <tbody>
+    </thead>
+    <tbody>
        {%for subject in subjects%}
         <tr>
-            <td>{{subject.id}}</td>   
+            <td>{{forloop.counter}}</td>   
             <td>{{subject.subjectCode}}</td>
             <td>{{subject.subjectName}}</td>
             <td>{{subject.subjectDescription}}</td>
@@ -50,6 +56,11 @@ bottom: .5em;
 </style>
 <script>
 $(document).ready(function () {
+    $("#subjectTable").DataTable({
+
+    })
+
+
     $('#dtDynamicVerticalScrollExample').DataTable({
       "scrollY": "50vh",
       "scrollCollapse": true,
