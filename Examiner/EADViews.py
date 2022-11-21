@@ -6,7 +6,7 @@ from datetime import date,datetime
 import logging
 from django.contrib import messages
 #===============local imports
-from .models import Bank, Examiner,Invitation, Staff,Subject,Paper,Position,EAD,CustomUser,Province,Session ,ECZStaff
+from .models import Bank, Examiner,Invitation, Staff,Subject,Paper,Position,EAD,CustomUser,Province,Session ,ECZStaff,MarkingVenue
 from . forms import EADForm,InvitationForm,ExaminerForm,ExaminerUploadForm ,ECZStaffForm
 from .filters import ExaminerFilter
 #==============Views
@@ -60,7 +60,8 @@ class EADListView(ListView):
 
 class EADUpdateView(UpdateView):
     model=EAD
-    fields=('firstName','LastName','UserName')
+    form_class=EADForm
+    #fields=('first_name','middle_name','last_name','email','Address','gender','UserName','NRC','cell_Number')
     template_name='EAD/EAD_Create.html'
     success_url = reverse_lazy('subject-list')
 
@@ -97,6 +98,47 @@ class SubjectDeleteView(DeleteView):
     context_object_name='subject'
     template_name='Subject/confirm_Delete.html'
     success_url=reverse_lazy('subject-list')
+    
+def selectMarkingVenue(request):
+    centers=['LUSAKA','COPPERBELT','MONZE','KAPIRI','LIVINGSTONE','CHOMA',
+     'MWANDI','LUNTE','MWENSE','KASENENGWA','KASENENGWA','CHISAMBA',
+     'CHIBOMBO']
+    
+    venues=MarkingVenue.objects.all()
+    codelist=[]
+    for item in venues:
+        print("SUB CODE:",item.paper.subject.subjectCode)
+        codelist.append(item.paper.subject.subjectCode)
+    
+    subjects=Subject.objects.exclude(subjectCode__in=codelist)
+    context={
+        'subjects':subjects,
+        'centers':centers,
+        'venues':venues,
+    }
+    
+    if request.method=="POST":
+        sub_code=request.POST.get('subject_code')
+        paper_number=request.POST.get('paper_number')
+        paper=Paper.objects.get(Q(paper_number=paper_number),
+                                    Q(subject=sub_code)
+                                    )
+        center=request.POST.get('center')
+        venue=MarkingVenue.objects.create(
+            paper=paper,
+            center=center,
+        )
+        venue.save()
+        examiners=Examiner.objects.filter(Q(subject=sub_code),
+                                    Q(paper=paper.paper_number))
+        for examiner in examiners:
+            #print("sub_code",sub_code)
+            #print("paper_number",paper_number)
+           # print("Examiner:" ,examiner.first_name)
+            examiner.to_province=center
+            examiner.save()
+        return redirect('marking-center')
+    return render(request,'Subject/selectvenue.html',context)
 
 
 class ExaminerCreate(LoginRequiredMixin,CreateView):
