@@ -2,7 +2,7 @@ from django.shortcuts import render,redirect,HttpResponseRedirect
 from django.contrib.messages.views import SuccessMessageMixin
 from django.db.models import Q
 from django.urls import reverse_lazy,reverse
-from datetime import date,datetime
+from datetime import date, datetime
 import logging
 from django.contrib import messages
 #===============local imports
@@ -23,15 +23,14 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from . decorators import unauthenticated_user
 #======================================
 
-#@login_required()
-@ unauthenticated_user
+@login_required()
 def EADHome(request): 
     examiners=Examiner.objects.all()
     examiner_list=[]
     approved_examiners_list=[]
     examiner_list.append(examiners)
     examiners_count=examiners.count()
-    staffs=Staff.objects.all()
+    staffs=CustomUser.objects.exclude(user_type=3)
     staffs_count=staffs.count()
     approved_examiners=examiners.filter(approved=True).count()
     approved_examiners_list.append(approved_examiners)
@@ -47,7 +46,7 @@ def EADHome(request):
             }
     return render(request, 'EAD/EAD_home.html',context)
 
-class EADCreateView(CreateView):
+class EADCreateView(LoginRequiredMixin,CreateView):
     model=EAD
     form_class=EADForm
     template_name='EAD/EAD_Create.html'
@@ -58,56 +57,63 @@ class EADListView(ListView):
     context_object_name='EADs'
     template_name='EAD/EAD_List.html'
 
-class EADUpdateView(UpdateView):
+class EADUpdateView(LoginRequiredMixin,UpdateView):
     model=EAD
     form_class=EADForm
     #fields=('first_name','middle_name','last_name','email','Address','gender','UserName','NRC','cell_Number')
     template_name='EAD/EAD_Create.html'
     success_url = reverse_lazy('subject-list')
 
-class EADDeleteView(DeleteView):
+class EADDeleteView(LoginRequiredMixin,DeleteView):
     model=EAD
     context_object_name='obj'
     template_name='Subject/confirm_Delete.html'
     success_url=reverse_lazy('ead-list')
     
-class ECZStaffCreateView(CreateView):
+class ECZStaffCreateView(LoginRequiredMixin,CreateView):
     form_class=ECZStaffForm
     template_name="Staff/ECZ_Staff_create.html"
    
 
-class SubjectCreateView(CreateView):
+class SubjectCreateView(LoginRequiredMixin,CreateView):
     model=Subject
     fields='__all__'
     template_name='Subject/Subject_Create.html'
     success_url=reverse_lazy('subject-list')
 
-class SubjectListView(ListView):
+class SubjectListView(LoginRequiredMixin,ListView):
     model=Subject
     context_object_name='subjects'
     template_name='Subject/Subject_List.html'
 
-class SubjectUpdateView(UpdateView):
+class SubjectUpdateView(LoginRequiredMixin,UpdateView):
     model=Subject
     fields='__all__'
     template_name='Subject/Subject_Create.html'
     success_url = reverse_lazy('subject-list')
 
-class SubjectDeleteView(DeleteView):
+class SubjectDeleteView(LoginRequiredMixin,DeleteView):
     model=Subject
     context_object_name='subject'
     template_name='Subject/confirm_Delete.html'
     success_url=reverse_lazy('subject-list')
-    
+
+@login_required()  
 def selectMarkingVenue(request):
+    papers=Paper.objects.all()
     centers=['LUSAKA','COPPERBELT','MONZE','KAPIRI','LIVINGSTONE','CHOMA',
-     'MWANDI','LUNTE','MWENSE','KASENENGWA','KASENENGWA','CHISAMBA',
+     'MWANDI','LUNTE','MWENSE','KASENENGWA','CHISAMBA',
      'CHIBOMBO']
+    
+    for item in papers:
+        venue=MarkingVenue.objects.get_or_create(paper=item)
+        
+       # print("Paper SUB",item.subject.subjectCode,item.subject.subjectName)
     
     venues=MarkingVenue.objects.all()
     codelist=[]
     for item in venues:
-        print("SUB CODE:",item.paper.subject.subjectCode)
+        #print("SUB CODE:",item.paper.subject.subjectCode)
         codelist.append(item.paper.subject.subjectCode)
     
     subjects=Subject.objects.exclude(subjectCode__in=codelist)
@@ -118,27 +124,29 @@ def selectMarkingVenue(request):
     }
     
     if request.method=="POST":
-        sub_code=request.POST.get('subject_code')
-        paper_number=request.POST.get('paper_number')
-        paper=Paper.objects.get(Q(paper_number=paper_number),
-                                    Q(subject=sub_code)
-                                    )
-        center=request.POST.get('center')
-        venue=MarkingVenue.objects.create(
-            paper=paper,
-            center=center,
-        )
-        venue.save()
+        marking_venue_id=request.POST.get('id')
+        venue_name=request.POST.get('venue')
+        
+        marking_venue=MarkingVenue.objects.get(id=marking_venue_id)
+        marking_venue.center=venue_name
+        marking_venue.save()
+        
+        paper=marking_venue.paper
+        sub_code=paper.subject.subjectCode
+        
+        
         examiners=Examiner.objects.filter(Q(subject=sub_code),
                                     Q(paper=paper.paper_number))
         for examiner in examiners:
-            #print("sub_code",sub_code)
-            #print("paper_number",paper_number)
-           # print("Examiner:" ,examiner.first_name)
-            examiner.to_province=center
+           # print("sub_code",sub_code)
+           # print("paper_number",paper_number)
+            print("Examiner:" ,examiner.first_name)
+            examiner.to_province=venue_name
             examiner.save()
+        
         return redirect('marking-center')
     return render(request,'Subject/selectvenue.html',context)
+
 
 
 class ExaminerCreate(LoginRequiredMixin,CreateView):
@@ -187,8 +195,10 @@ class ExaminerList(LoginRequiredMixin,ListView):
     def get_context_data(self,**kwargs):
         context=super().get_context_data(**kwargs)
         context['available_examiners']=Examiner.objects.filter(availability=True)
-        context['approved_examiners']=context['available_examiners'].filter(approved=True)
+        context['approved_examiners']=context['available_examiners'].filter(approved=True).order_by('-updated_at')
         context['myFilter']=ExaminerFilter(queryset=Examiner.objects.all())
+        context['not_approved_examiners']=Examiner.objects.filter(approved=False)
+        context['not_approved_examiners_count']=context['not_approved_examiners'].count()
         #context['myFilter']=ExaminerFilter(self.request.GET, queryset=Examiner.objects.all())
         return context
          
@@ -197,34 +207,44 @@ class ExaminerList(LoginRequiredMixin,ListView):
             Examiner.objects.filter(id__in=request.POST.getlist('id[]')).delete()
         return redirect('examiner-list')
 
+@login_required()
 def batchmailExaminer(request):
     if request.method=="POST":
         toMail=request.POST.getlist('id[]')
         maillist=[]
         for item in toMail:
-            examiner=Examiner.objects.get(pk=item)
-            maillist.append(examiner.email)
-            
-        try:
-            if maillist:
-                print("mail List :",maillist)
-                send_mail(
-                    'ECZ Examiner application approval',
-                    'Hellow Examiner,Your application has been approved.Thank you',
-                    'microvich@zohomail.com',
-                    maillist,
-                    fail_silently=False,
-                )
-                messages.success(request,"Batch Emails Sent")
+            if item =='on':
+                pass
             else:
-                logging.getLogger("error_logger").error()
-                messages.error(request,"error sending emails")
-        except Exception as e:
-            logging.getLogger("error_logger").error(repr(e))
+                try:
+                    examiner=Examiner.objects.get(pk=item)
+                    maillist.append(examiner.email)
+                    send_mail(
+                        'ECZ Examiner application approval',
+                        'Hellow Examiner,Your application has been approved.Thank you.Please use credentials username:{} and password:{}',
+                        
+                        'microvich@zohomail.com',
+                        (examiner.email,),
+                        fail_silently=False,
+                    )
+                    examiner.mail_count+=1
+                    examiner.save()
+                    messages.success(request,"Batch Emails Sent")
+                except Exception as e:
+                    logging.getLogger("error_logger").error(repr(e))
+        return redirect('examiner-list')
             
     return redirect('examiner-list')
+
+@login_required()
+def mailList(request):
+    mail_list=Examiner.objects.filter(mail_count__gte=0)
+    context={
+        'mail_list':mail_list,
+    }
+    return render(request, 'EAD/mailedList.html',context)
             
-                
+@login_required()            
 def examinerRequests(request):
     examiners=Examiner.objects.filter(approved=False)
     ead=EAD.objects.get(user=request.user)
@@ -268,14 +288,14 @@ class ExaminerDetail(LoginRequiredMixin,DetailView):
     form_class=ExaminerForm
     context_object_name='Examiner'      
     
-class EADUpdate(UpdateView):
+class EADUpdate(LoginRequiredMixin,UpdateView):
     model=CustomUser
     fields="__all__"
     context_object_name='ead'
     template_name='EAD/update_profile.html'
     success_url=reverse_lazy('ead-list')
     
-class SessionCreate(ListView):
+class SessionCreate(LoginRequiredMixin,ListView):
     model=Session
     context_object_name='sessions'
     template_name='sessions/sessions.html'
@@ -301,13 +321,14 @@ class SessionCreate(ListView):
         return redirect('sessions-all')
         #return render(request,'sessions/sessions.html',context)
 
+@login_required()
 def batchSessionDelete(request):
     if request.method=="POST":
         Session.objects.filter(id__in=request.POST.getlist('id[]')).delete()
     messages.success(request,"Deleted")   
     return redirect('sessions-all')
 
-
+@login_required()
 def updateprofilesave(request):
     print("Im in saving method =============")
     if request.method=="POST":
@@ -394,6 +415,7 @@ def invitation_reject(request, inv_id):
 
 
 #Upload Examiner (while creating Users)
+@login_required()
 def upload_csv(request): 
     data = {}
     if "GET" == request.method:
