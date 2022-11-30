@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'multiselectfield',
     'Examiner',
     'django_filters',
+    
 ]
 
 MIDDLEWARE = [
@@ -62,8 +63,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
-   #  'Examiner.LoginCheckMiddleWare.LoginCheckMiddleWare',
+    
 
 ]
 
@@ -121,7 +121,7 @@ AUTH_PASSWORD_VALIDATORS = [
 LOGIN_URL='login'
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
-SESSION_COOKIE_AGE = 10 * 60
+SESSION_COOKIE_AGE = 30 * 60
 
 
 # Internationalization

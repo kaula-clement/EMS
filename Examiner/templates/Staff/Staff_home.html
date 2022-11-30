@@ -1,71 +1,202 @@
 {% extends 'base.html'%}
 {%block content%}
-Staff Home Page
+<div class="pl-5 ml-0 mr-0 mb-1 mt-0  ">
+  <h4>WELLCOME</h4>
+</div>
+{% if request.user.user_type == 2 %}
 <div class="container-fluid">
+
     <div class="row">
-      <div class="col-lg-6">
-        <div class="card card-success card-outline">
+      <div class="col">
+        <div class="card bg-light card-outline">
           <div class="card-body">
-            <h5 class="card-title"> Stats </h5>
-
-            <p class="card-text">
-              <p>available_examiners:{{available_examiners}}</p>
-             
-            </p>
-
-            <a href="#" class="card-link">Card link</a>
-            <a href="#" class="card-link">Another link</a>
+        EXAMINERS SCHEDULE  {{examiners_count}}
+        <table class="table table-sm table-bordered" id="table2excel" >
+          <thead>
+            <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>BANK</th>
+            <th>BRANCH</th>
+            </tr>
+          </thead>
+          
+          <tbody>
+            {% for item in examiners|slice:":3" %}
+            <tr> 
+              <td>{{item.examiner.first_name}}</td>
+              <td>{{item.examiner.last_name}}</td>
+              <td>{{item.examiner.bank}}</td>
+              <td>{{item.examiner.branch}}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
           </div>
-        </div>
-<!--card-primary card-outline-->
-        <div class="card card-success card-outline">
-          <div class="card-body">
-            <h5 class="card-title">Card title</h5>
-
-            <p class="card-text">
-              Examinations council of zambia news /updats to the examinations marker or 
-              some general information in here
-              <p>Examinations council of zambia news /updats to the examinations marker or some general information in here</p>
-            </p>
-            <a href="#" class="card-link">Card link</a>
-            <a href="#" class="card-link">Another link</a>
-          </div>  
-        </div>  <!-- /.card -->
-      </div>
-      <!-- /.col-md-6 -->
-      <div class="col-lg-6">
-        <div class="card">
-          <div class="card-header">
-            <h5 class="m-0">Featured</h5>
-          </div>
-          <div class="card-body">
-            <h6 class="card-title">Special title treatment</h6>
-
-            <p class="card-text">go to some additional content.</p>
-            <a href="#" class="btn btn-success">Go somewhere</a>
-          </div>
-        </div>
-
-        <div class="card card-success card-outline">
-          <div class="card-header">
-            <h5 class="m-0">Featured</h5>
-          </div>
-          <div class="card-body">
-            <h6 class="card-title">Special title treatment</h6>
-
-            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-            <a href="#" class="btn btn-success">Go somewhere</a>
-          </div>
+          <a href="{%url 'schedule'%}" class="card-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
         </div>
       </div>
-      <!-- /.col-md-6 -->
+      <div class="col">
+        <div class="card card-success card-outline">
+          <div class="card-body bg-gradient-info">
+        BANKS
+        <table class="table table-sm table-bordered" id="table2excel" >
+          <thead>
+            <th>Bank </th>
+            <th>Bank Branch</th>
+            <th>sort code</th>
+          </thead>
+          <tbody>
+            {% for item in branches|slice:"3" %}
+            <tr>
+              <td>{{item.bank}}</td>
+              <td>{{item.name}}</td>
+              <td>{{item.sortcode}}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+
+          </div>
+          <a href="{%url 'bank-list'%}" class="card-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+        </div>
+      </div>
     </div>
-    <!-- /.row -->
+
+    <div class="row">
+      <div class="col">
+        <div class="card bg-gradient-light card-outline">
+         <div class="card-body">
+        SCHEDULE DATA TABLE
+        <table class="table table-sm" id="table2excel" >
+          <thead>
+            <th>DISTRICT</th>
+            <th>LUSAKA</th>
+            <th>C/BELT</th>
+            <th>MONZE</th>
+            <th>KAPIRI</th>
+            <th>L/STONE</th>
+            <th>CHOMA</th>
+          </thead>
+          <tbody>
+            {% for item in scheduleTable|slice:"2" %}
+            <tr>
+              <td><b>{{item.FromDistrict}}</b></td>
+              <td>{{item.LUSAKA}}Nights</td>
+              <td>{{item.COPPERBELT}}Nights</td>
+              <td>{{item.MONZE}}Nights</td>
+              <td>{{item.KAPIRI}}Nights</td>
+              <td>{{item.LIVINGSTONE}}Nights</td>
+              <td>{{item.CHOMA}}Nights</td>
+ 
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+          </div>
+          <a href="{%url 'schedule_table'%}" class="card-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+        </div>
+      </div>
+      <div class="col">
+        <div class="card card-success card-outline">
+          <div class="card-body">
+        SUBJECTS
+
+        <table class="table table-sm" id="table2excel" >
+          <thead>
+            <th>CODE</th>
+            <th>NAME</th>
+            <th>DESCRIPTION</th>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+
+          </div>
+          <a href="#" class="card-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+{% endif %}
+{% if request.user.user_type == 4 %}
+<div class="container">
+<div class="row">
+  <div class="col">
+    <!-- small box -->
+    <div class="small-box bg-info">
+      <div class="inner">
+
+        <p>Total Examiners {{approved.count}}</p>
+        <p>Present {{examiners.count}}</p>
+        <p>Absent {{absent.count}}</p>
+        <p>Pending {{pending.count}}</p>
+
+      </div>
+      <div class="icon">
+        <i class="ion ion-stats-bars"></i>
+      </div>
+      <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+    </div>
+  </div>
+  <!-- ./col -->
+  <div class="col">
+    <!-- small box -->
+    <div class="small-box bg-danger">
+      <div class="inner">
+        <h3>{{ staffs_count }}</h3>
+
+        <p>Staff Users</p>
+      </div>
+      <div class="icon">
+        <i class="ion ion-stats-bars"></i>
+      </div>
+      <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+    </div>
+  </div>
+  <!-- ./col -->
+</div>
+
+
+<div class="row">  
+  <div class="col">
+    <!-- small box -->
+    <div class="small-box bg-warning">
+      <div class="inner">
+        <h3>{{ approved_examiners }}</h3>
+
+        <p>Approved Examiners</p>
+      </div>
+      <div class="icon">
+        <i class="ion ion-stats-bars"></i>
+      </div>
+      <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+    </div>
+  </div>
+  <!-- ./col -->
+  <div class="col">
+    <!-- small box -->
+    <div class="small-box bg-success">
+      <div class="inner">
+        <h3>{{ subject_count }}</h3>
+
+        <p>Total Subjects</p>
+      </div>
+      <div class="icon">
+        <i class="ion ion-stats-bars"></i>
+      </div>
+      <a href="{%url 'subject-bord'%}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+    </div>
   </div>
 
- 
-<hr>
+</div>
+</div>
+{% endif %}
 
-<h1>{{request.user.user_type}}</h1>
 
 {%endblock content%}
+

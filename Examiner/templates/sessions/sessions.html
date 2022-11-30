@@ -25,7 +25,7 @@ All Sessions here
 
         {% for session in sessions %}
         <tbody>
-        <tr>
+        <tr id="{{session.id}}">
             <td><input type="checkbox" value="{{ session.id }}"></td>
             <td>{{ forloop.counter }}</td>
             <td>{{ session.name }}</td>
@@ -113,7 +113,7 @@ All Sessions here
     if (id.length==0){
         alert("No items checked!")
     }else{
-        console.log(id)
+        //console.log(id)
         $.ajax({
             url:"{%url 'batch-session-delete'%}",
             method:"POST",
@@ -123,9 +123,14 @@ All Sessions here
 
             },
             success:function(response){
+              
               console.log(id)
               console.log("deleted")
+              for(var i =0; i<= id.length; i++){
+                $('tr#'+id[i]+'').css('background-color','#ccc');
+                $('tr#'+id[i]+'').fadeOut('slow');
             }
+            },
         })
     }
 })

@@ -10,20 +10,26 @@ EAD List
     <h4>Examinations Administrators List</h4>
 <div class="card card-body">
     
-    <table class="table table-sm">
-        <caption>List of EADs</caption>
+    <table class="table table-sm" id="eadTable">
+    <thead>
+        {#<caption>List of EADs</caption>#}
         <tr>
             <th>Id</th>
             <th>First Name</th>
             <th>Lask Name</th>
             <th>User Name</th>
+            <th>Detail</th>
+            <th>Delete</th>
+            <th>Update</th>
         </tr>
+    </thead>
+    <tbody>
        {%for EAD in EADs%}
         <tr>
             <td>{{EAD.id}}</td>
             <td>{{EAD.first_name}}</td>
             <td>{{EAD.last_name}}</td>
-            <td>{{EAD.UserName}}</td>
+            <td>{{EAD.username}}</td>
        
             <td><a href="{%url 'ead-details' EAD.id%}">Details</a></td>
             <td><a href="{%url 'ead-delete' EAD.id%}">Delete</a></td>
@@ -34,9 +40,20 @@ EAD List
         {%empty%}
         <h3>No Data to display</h3>
         {%endfor%}
+    </tbody>
     </table>
 </div>
-    <a href="{%url 'ead-create'%}" class="btn btn-primary">Add New</a>
     </div>
 
 {%endblock%}
+
+{% block script %}
+<script>
+    $(document).ready(function(){
+        $("#eadTable").dataTable({
+
+        })
+    });
+</script>
+{% endblock script %}
+

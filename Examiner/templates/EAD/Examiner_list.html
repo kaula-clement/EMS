@@ -1,25 +1,33 @@
 {%extends 'index.html' %}
-
+{% load static %}
 
 {%block content%}
+<div class="container">
+
 <h3>Examiners</h3>
-<span><a class="btn btn-info" href="#" id='batchmail-btn'> Email selected<a/> </span>
-  <span>  <a class="btn btn-success" href="{%url 'examiner_upload_csv'%}">Upload CSV</a><span>
-<hr> 
-<a href="{%url 'examiner-requests'%}">see unaproved requests</a> 
+<div id="preload" style="color:blue; width:100%; height:100%; position:absolute; display:none;"  >
+    <img src="{% static '/img/preloaders/mailloader.gif' %}" style="margin-right:25%; margin-left:25%; margin-top:10%;">
+</div>
 
+<span><a class="btn btn-info btn-sm float-right" href="#" id='batchmail-btn'> Email selected<a/> </span>
+  <span>  <a class="btn btn-success btn-sm float-right" href="{%url 'examiner_upload_csv'%}">Upload CSV</a><span>
+<span  ><a href="{%url 'examiner-requests'%}" class="btn btn-info btn-sm">unaproved Examiners 
+    <span class="badge badge-light"> {{not_approved_examiners_count}} </span></a> </span>
+<hr>
 
-<div class="table-responsive overflow-auto">
-<table class="table table-hover text-nowrap" id="examinersTable">
+<div class="table-responsive overflow-auto card card-body">
+<table class="table table-hover text-nowrap table-sm" id="examinersTable">
  {% csrf_token %}
  <thead>
     <tr>
       <!--  <th>id</th> -->
-        <th><input type="checkbox"  id="checkAll" value="chek all"></th>
+      <th></th>
+        <th><input type="checkbox"  id="checkAll" ></th>
         <th>Examiner Number</th>
         <th>First Name</th>
         <th>Middle Name</th>
         <th>Last Name</th>
+        <th>Email</th>
         <th>position</th>
         <th>Subject</th>
         <th>Availability</th>
@@ -31,14 +39,16 @@
 </thead>
 <tbody>
     {%for item in approved_examiners %} 
-<trid="{{item.id}}">
-    <td> <input type="checkbox" name="examiner_id[]" value="{{item.id}}" id="delete_examiner">
+<tr>
+    <td></td>
+    <td> <input type="checkbox" name="examiner_id[]" value="{{item.id}}" id="examiner_item">
     </td>
    <!-- <td>{{item.id}}</td> -->
     <td>{{item.ExaminerCode}}</td>
     <td>{{item.first_name}}</td>
     <td>{{item.middle_name}}</td>
     <td>{{item.last_name}}</td>
+    <td>{{item.email}}</td>
     <td>{{item.position.name}}</td>
     <td>
         
@@ -80,80 +90,89 @@
 
 <input type="submit" value="Delete selected" id="delete_multiple_btn">
 
+</div>
+{%endblock content%}
 
-<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+{% block script %}
 <script>
    
-$(document).ready(function(){
+    $(document).ready(function(){
+        $("#checkAll").click(function(){
+            $('input:checkbox').not(this).prop('checked', this.checked);
+         });
+     $("#examinersTable").dataTable({
+        "scrollY": "55vh",
+        "scrollCollapse": true,
+        "paging": false
 
-    $("#examinersTable").dataTable({
-        dom:'Bfrtip',
-        buttons:[
-        'csv','pdf','print'
-        ]
-    });
-
-
-    $("#delete_multiple_btn").click(function(){
-        if (confirm('are you sure you whant to delete these items?'))
-        var id=[];
-        var csrf=$('input[name=csrfmiddlewaretoken]').val();
-        $(':checkbox:checked').each(function(i){
-            id[i]=$(this).val()
-        })
-        if (id.length==0){
-            alert("No items checked!")
-        }else{
-            console.log(id)
-            $.ajax({
-                url:'',
-                method:"POST",
-                data:{
-                    id,
-                    csrfmiddlewaretoken:csrf
-
-                },
-                success:function(response){
-                    for(var i =0; i<= id.length; i++){
-                        $('tr#'+id[i]+'').css('background-color','#ccc');
-                        $('tr#'+id[i]+'').fadeOut('slow');
+        });
+       
+        $("#delete_multiple_btn").click(function(){
+            if (confirm('are you sure you whant to delete these items?'))
+            var id=[];
+            var csrf=$('input[name=csrfmiddlewaretoken]').val();
+            $(':checkbox:checked').each(function(i){
+                id[i]=$(this).val()
+            })
+            if (id.length==0){
+                alert("No items checked!")
+            }else{
+                console.log(id)
+                $.ajax({
+                    url:'',
+                    method:"POST",
+                    data:{
+                        id,
+                        csrfmiddlewaretoken:csrf
+    
+                    },
+                    success:function(response){
+                        for(var i =0; i<= id.length; i++){
+                            $('tr#'+id[i]+'').css('background-color','#ccc');
+                            $('tr#'+id[i]+'').fadeOut('slow');
+                        }
                     }
-                }
-            })
-        }
+                })
+            }
+        });
+    
+        $("#batchmail-btn").click(function(){
+            if (confirm('are you sure you whant to Email the selected Examiners?'))
+            var id=[];
+            var csrf=$('input[name=csrfmiddlewaretoken]').val();
+            $(':checkbox:checked').each(function(i){
+                id[i]=$(this).val()
+             })
+            if (id.length==0){
+                alert("No items checked!")
+            }else{
+                console.log(id)
+                $('#preload').css('display','block')
+                $.ajax({
+                    url:"{%url 'batch-mail'%}",
+                    method:"POST",
+                    data:{
+                        id,
+                        csrfmiddlewaretoken:csrf
+    
+                    },
+                    done:function(response){
+                        $('#preload').css('display','none')
+                    },
+                    success:function(response){
+                        $('#preload').css('display','none');
+                        Swal.fire(
+                            'Done!',
+                            'Batch Email sent!',
+                            'success'
+                          )
+                    }
+                })
+            }
+        });
     })
-
-    $("#batchmail-btn").click(function(){
-        if (confirm('are you sure you whant to Email the selected Examiners?'))
-        var id=[];
-        var csrf=$('input[name=csrfmiddlewaretoken]').val();
-        $(':checkbox:checked').each(function(i){
-            id[i]=$(this).val()
-        })
-        if (id.length==0){
-            alert("No items checked!")
-        }else{
-            console.log(id)
-            $.ajax({
-                url:"{%url 'batch-mail'%}",
-                method:"POST",
-                data:{
-                    id,
-                    csrfmiddlewaretoken:csrf
-
-                },
-                success:function(response){
-                    Swal.fire(
-                        'Done!',
-                        'Batch Email sent!',
-                        'success'
-                      )
-                }
-            })
-        }
-    })
-})
-
-</script>
-
-{%endblock content%}
+    
+    </script>
+    
+    </div>
+{% endblock script %}

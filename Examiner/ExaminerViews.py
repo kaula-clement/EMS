@@ -30,25 +30,15 @@ class CustomLoginView(LoginView):
         return reverse_lazy('home')
         #return reverse_lazy('examiner-list')
 
-"""
-class Home(LoginRequiredMixin,ListView):
-    template_name='index.html'
-    model=Examiner
-    context_object_name='examiner'
-
-    #to view only the examiner whose the user is loged 
-    def get_context_data(self,**kwargs):
-        context = super().get_context_data(**kwargs)
-        context['examiner',]= context['examiner'].filter(user=self.request.user)
-        return context
- 
-"""
 @login_required()
 def ExaminerHome(request):
-    #examiner_obj=Examiner.objects.get(ExaminerCode=request.user.user_id)
+    examiner_obj=Examiner.objects.get(ExaminerCode=request.user.username)
     notifications=Invitation.objects.filter(toAddress=request.user.id)
     T_nots=notifications.count()
-    context={'notifications':notifications,'T_nots':T_nots}
+    context={'notifications':notifications,
+             'T_nots':T_nots,
+             'examiner':examiner_obj,
+             }
     return render(request, 'Examiner/Examiner_home.html',context)
 
 
@@ -120,6 +110,7 @@ def examinerComment(request):
     
     return render(request, 'Examiner/comments.html', context)
 
+@login_required()
 def letter2pdf(request):
     pass
 """ response=HttpResponse(content_type='application/pdf')

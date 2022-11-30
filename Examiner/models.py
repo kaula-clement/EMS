@@ -4,9 +4,10 @@ from django.contrib.auth.models import AbstractUser
 from datetime import date
 
 class CustomUser(AbstractUser):
-    user_type_data = ((1, "EAD"), (2, "Staff"), (3, "Examiner"),(4,"ECZ-Staff"))
+    user_type_data = ((0, "ADMIN"),(1, "EAD"), (2, "FAD"), (3, "Examiner"),(4,"Station-Admin"))
     user_type = models.IntegerField(default=1, choices=user_type_data)
     is_admin=models.BooleanField(default=False)
+    #email= models.EmailField(unique=True)
 
     
     
@@ -86,29 +87,17 @@ class MarkingVenue(models.Model):
 
 
 class EAD(models.Model):
-    gender_data = ((0,"SELECT GENDER"),(1, "MALE"), (2, "FEMALE"))
-    gender = models.IntegerField(default=0, choices=gender_data)
-    user = models.OneToOneField(CustomUser, on_delete = models.SET_NULL,null=True,blank=True)
+    user = models.OneToOneField(CustomUser, on_delete = models.CASCADE,null=True,blank=True)
     first_name=models.CharField(max_length=50,null=True)
-    middle_name=models.CharField(max_length=50,null=True,blank=True)
     last_name=models.CharField(max_length=50,null=True)
-    UserName=models.CharField(max_length=50,null=True)
-    #bank=models.ForeignKey(Bank,on_delete=models.SET_NULL,null=True,blank=True)
-    #branch=models.ForeignKey(BankBranch,on_delete=models.SET_NULL,null=True,blank=True)
-    #AccountDetails=models.CharField(max_length=150,null=True)
-    NRC=models.CharField(max_length=11,null=True)
-    #TPIN=models.CharField(max_length=10,null=True)
-    cell_Number=models.CharField(max_length=10,null=True)
+    username=models.CharField(max_length=50,null=True)
     email=models.EmailField(null=True)
-    Address=models.CharField(max_length=50,null=True,blank=True)
-    #province=models.ForeignKey(Province, on_delete=models.SET_NULL,null=True,blank=True)
-    #district=models.ForeignKey(District, on_delete=models.SET_NULL,null=True,blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     def save(self,*args,**kwargs):
             super().save(*args,**kwargs)
             if not self.user:
-                self.user= CustomUser.objects.create_user(username=self.UserName,
+                self.user= CustomUser.objects.create_user(username=self.username,
                                                          first_name=self.first_name,
                                                          last_name=self.last_name,
                                                          password='password3', email=self.email,
@@ -150,7 +139,7 @@ class Examiner(models.Model):
     approved=models.BooleanField(default=False)
     availability=models.BooleanField(default=False) 
     session=models.ForeignKey(Session,on_delete=models.CASCADE,null=True,blank=True)
-
+    mail_count=models.IntegerField(default=0)
     objects = models.Manager()
       
 class ECZStaff(models.Model):
@@ -159,9 +148,9 @@ class ECZStaff(models.Model):
     username=models.CharField(max_length=50)
     first_name=models.CharField(max_length=50)
     last_name=models.CharField(max_length=50)
-    email=models.EmailField(null=True)
+    email=models.EmailField(unique=True)
     subject=models.ForeignKey(Subject,to_field="subjectCode",db_column="Subject_Code", on_delete=models.SET_NULL,null=True,blank=True)
-    paper =models.ForeignKey(Paper,on_delete=models.SET_NULL,null=True)
+    paper =models.ForeignKey(Paper,on_delete=models.SET_NULL,null=True,blank=True)
     def save(self,*args,**kwargs):
             super().save(*args,**kwargs)
             if not self.user:
@@ -189,28 +178,16 @@ class Invitation(models.Model):
 class Staff(models.Model):
     user=models.OneToOneField(CustomUser,
         on_delete=models.CASCADE,null=True,blank=True)
-    gender_data = ((0,"SELECT GENDER"),(1, "MALE"), (2, "FEMALE"))
-    gender = models.IntegerField(default=0, choices=gender_data)
-    first_name=models.CharField(max_length=50,null=True)
-    middle_name=models.CharField(max_length=50,null=True,blank=True)
+    first_name=models.CharField(max_length=50,null=True)    
     last_name=models.CharField(max_length=50,null=True)
-    UserName=models.CharField(max_length=50,null=True)
-    #bank=models.ForeignKey(Bank,on_delete=models.SET_NULL,null=True,blank=True)
-    #branch=models.ForeignKey(BankBranch,on_delete=models.SET_NULL,null=True,blank=True)
-    #AccountDetails=models.CharField(max_length=150,null=True)
-    NRC=models.CharField(max_length=11,null=True)
-    #TPIN=models.CharField(max_length=10,null=True)
-    cell_Number=models.CharField(max_length=10,null=True)
-    email=models.EmailField(null=True)
-    Address=models.CharField(max_length=50,null=True,blank=True)
-    #province=models.ForeignKey(Province, on_delete=models.SET_NULL,null=True,blank=True)
-    #district=models.ForeignKey(District, on_delete=models.SET_NULL,null=True,blank=True)
+    username=models.CharField(max_length=50,null=True)
+    email=models.EmailField(null=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     def save(self,*args,**kwargs):
             super().save(*args,**kwargs)
             if not self.user:
-                self.user= CustomUser.objects.create_user(username=self.UserName,
+                self.user= CustomUser.objects.create_user(username=self.username,
                                                          first_name=self.first_name,
                                                          last_name=self.last_name,
                                                          password='password3', email=self.email,
@@ -271,13 +248,18 @@ def handle_deleted_examiner(sender, instance, **kwargs):
     if instance.user:
         instance.user.delete()
         
-@receiver(models.signals.post_delete, sender=Staff)
-def handle_deleted_staff(sender, instance, **kwargs):
-    if instance.user:
-        instance.user.delete()
+#@receiver(models.signals.post_delete, sender=Staff)
+#def handle_deleted_staff(sender, instance, **kwargs):
+#    if instance.user:
+#        instance.user.delete()
         
-@receiver(models.signals.post_delete, sender=EAD)
-def handle_deleted_ead(sender, instance, **kwargs):
-    if instance.user:
-        instance.user.delete()
+#@receiver(models.signals.post_delete, sender=EAD)
+#def handle_deleted_ead(sender, instance, **kwargs):
+#    if instance.user:
+#        instance.user.delete()
+        
+#@receiver(models.signals.post_delete, sender=ECZStaff)
+#def handle_deleted_eczstaff(sender, instance, **kwargs):
+#    if instance.user:
+#        instance.user.delete()
    

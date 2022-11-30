@@ -15,8 +15,8 @@ class PositionAdmin(admin.ModelAdmin):
     list_display=('id','name')
     
 class StaffAdmin(admin.ModelAdmin):
-    fields=('first_name','UserName')
-    list_display=('id','first_name','UserName')
+    fields=('first_name','username')
+    list_display=('id','first_name','username')
 
 class InvitationAdmin(admin.ModelAdmin):
     list_display=('title','StatusConfirm')

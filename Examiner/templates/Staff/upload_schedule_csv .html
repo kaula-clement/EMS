@@ -1,6 +1,11 @@
 {% extends 'base.html'%}
+{% load static %}
+
 
 {%block content%}
+<div id="preload" style=" color:blue; width:100%; height:100%; position:absolute; display:none;"  >
+    <img src="{% static '/img/preloader.gif' %}" style="margin-right:25%; margin-left:25%; margin-top:10%;">
+</div>
 <form action= "{%url 'upload_schedule_csv'%}" method="POST" enctype="multipart/form-data" class="form-horizontal"> 
     {% csrf_token %}
     <div class="form-group">
@@ -10,18 +15,61 @@
         </div>                    
     </div>
 
-    {% if messages %}
-    <ul class="messages">
-        {% for message in messages %}
-        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }} :{{form.field.error}}</li>
-        {% endfor %}
-    </ul>
-    {% endif %}
-
     <div class="form-group">                    
         <div class="col-md-3 col-sm-3 col-xs-12 col-md-offset-3" style="margin-bottom:10px;">
-             <button class="btn btn-primary"> <span class="glyphicon glyphicon-upload" style="margin-right:5px;"></span>Upload file</button>
+             <button class="btn btn-primary" id="upload_btn"> <span class="glyphicon glyphicon-upload" style="margin-right:5px;"></span>Upload file</button>
         </div> 
     </div>
     </form>
+
+<div class="container">
+    <h5>The template<h5>
+<div class="table-responsive">    
+<table class="table table-sm">
+    <thead>
+        <tr>
+          <th>FromDistrict</th>  
+          <th>LUSAKA</th>
+          <th>COPPERBELT</th>
+          <th>MONZE</th>
+          <th>KAPIRI</th>
+          <th>LIVINGSTONE</th>
+          <th>CHOMA</th>
+          <th>MWANDI</th>
+          <th>LUNTE</th>
+          <th>KASENENGWA</th>
+          <th>CHISAMBA</th>
+          <th>CHIBOMBO</th>
+          
+        </tr>
+    </thead>
+    <tbody>
+        <td>name</td>
+        <td>Amount</td>
+        <td>Amount</td>
+        <td>Amount</td>
+        <td>Amount</td>
+        <td>Amount</td>
+        <td>Amount</td>
+        <td>Amount</td>
+        <td>Amount</td>
+        <td>Amount</td>
+        <td>Amount</td>
+        <td>Amount</td>
+    </tbody>
+</table>
+</div>
+</div>
+
 {%endblock%}
+
+{% block script %}
+<script>
+$("#upload_btn").click(function(){
+    $('#preload').css('display','block')
+    .done(function(response){
+        $('#preload').css('display','none')
+    })
+})
+</script>
+{% endblock script %}

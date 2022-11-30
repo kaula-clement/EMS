@@ -1,4 +1,5 @@
 import logging
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render,redirect,HttpResponse
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
@@ -13,6 +14,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.views.generic.edit import CreateView,UpdateView,DeleteView
 from django.urls import reverse_lazy
+from django.db.models import Q
 
 
 class CustomLoginView(LoginView):
@@ -22,6 +24,8 @@ class CustomLoginView(LoginView):
 
     def get_success_url(self):
         user = self.request.user.user_type
+        if user == 0:
+            return reverse_lazy('ead-home')
         if user == 1:
             return reverse_lazy('ead-home')
         if user == 2:
@@ -39,8 +43,12 @@ class CustomGroupList(LoginRequiredMixin,ListView):
 
 class CustomUserList(LoginRequiredMixin,ListView):
     model=CustomUser
-    context_object_name='Users'
+    #context_object_name='staff_users'
     template_name='EAD/userList.html'
+    def get_context_data(self,**kwargs):
+        context=super().get_context_data(**kwargs)
+        context['staff_users']=CustomUser.objects.exclude(Q(user_type=3)|Q(is_superuser=True))
+        return context
 
 class CustomUserUpdate(LoginRequiredMixin,UpdateView):
     model=CustomUser
@@ -48,6 +56,19 @@ class CustomUserUpdate(LoginRequiredMixin,UpdateView):
     context_object_name= 'User'
     template_name='EAD/userManager.html' 
     success_url=reverse_lazy('userlist') 
+ 
+@login_required()    
+def deleteCustomUser(request,pk):
+    user=CustomUser.objects.get(id=pk)
+    print('USER ID:',user.username)
+    if user:
+        try:
+            user.delete()
+            messages.success(request,"User Deleted successifully")
+        except Exception as e:
+             messages.error(request, "Delete user failed "+repr(e))
+            
+    return redirect('userlist')
     
 class ProfileUpdate(UpdateView):
     model=EAD
@@ -60,8 +81,59 @@ class ProfileUpdate(UpdateView):
         context['provinces']=Province.objects.all()
         context['banks']=Bank.objects.all()
         return context
-
     
+@login_required()
+def createUserView(request):
+    usertypes=((0, "ADMIN"),(1, "EAD"), (2, "FAD"),(4,"Station-Admin"))
+    form=UserForm()
+    context={
+        'form':form,
+        'usertypes':usertypes,
+    }
+    if request.method=="POST":
+        username=request.POST.get('username')
+        email=request.POST.get('email')
+        first_name=request.POST.get('first_name')
+        last_name=request.POST.get('last_name')
+        user_type=request.POST.get('user_type')
+        
+        try:
+            
+            if user_type == '0':
+                    user=CustomUser.objects.create_user(username=username,email=email,password='password3',
+                      first_name=first_name,last_name=last_name,user_type=user_type,is_active=True,is_admin=True)
+                    if not user:
+                        messages.error(request,'user creation failed')
+
+                    else:
+                        messages.success(request, 'Admin user created')
+                        return redirect('userlist')
+                    
+            elif user_type == '1':
+                form=EADForm(request.POST)
+            elif user_type == '2':
+                form=StaffForm(request.POST)
+            elif user_type == '3':
+                pass
+            elif user_type == '4':
+                form=ECZStaffForm(request.POST)
+
+            
+            if form.is_valid():
+                    form.save()
+                    messages.success(request,"added user ")
+                    return redirect('userlist')
+            else:
+                error=str(form.errors)
+                messages.error(request,error)
+        except Exception as e:
+            messages.error(request, "Add user failed "+repr(e))
+            
+        #user.save()
+        
+    return render(request,'registration/new_user.html',context)
+
+@login_required()  
 def updateprofile(request,pk): 
     if request.user.user_type==1:
         User=EAD.objects.get(user=pk)
@@ -110,7 +182,7 @@ def updateprofile(request,pk):
     return render(request,'EAD/update_profile.html',context)
 
 
-
+@login_required()
 def updatepassword(request):
     form=ChangePassword(request.user)
     context={

@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block content %}
+User Creation Form
+<div class="card card-body">
+<form method="POST" action="">
+    {% csrf_token %}
+    <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="username">User Name</label>
+          {{form.username}}
+        </div>
+        <div class="form-group col-md-6">
+            <label for="inputPassword4">Email</label>
+            {{form.email}}
+          </div>   
+      </div>
+
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="username">First Name</label>
+          {{form.first_name}}
+        </div>
+        <div class="form-group col-md-6">
+            <label for="inputPassword4">Last Name</label>
+            {{form.last_name}}
+          </div>   
+      </div>
+{% comment %}
+  <div class="form-group col-md-4">
+        <label for="user_type">User Type</label>
+        {{form.user_type}}
+      </div>
+{% endcomment %}
+      
+      <div class="form-group col-md-4">
+        <label for="user_type">User Type</label>
+        <select name="user_type" class="form-control " id="id_user_type">
+          <option value="" disabled selected >User Type</option>
+          {% for item in usertypes %}
+          <option value="{{item.0}}">{{item.1}}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <input type="submit" class="btn btn-primary" value="submit">
+    {#  {{form.as_p}} #} 
+</form>
+</div>
+{% endblock content %}
+
+{% block script %}
+
+{% endblock script %}
+

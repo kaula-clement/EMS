@@ -30,15 +30,16 @@ Subject Marking Center
             {% endfor %}
     </select>
 
-    <input type="submit" venue="save">
+    {#<input type="submit" venue="save"> #}
     </form>
 
 <div class="card">
     <div class="card-body">
-        <table class="table">
+        <table class="table" id ="venueTable">
             <thead>
                 <tr>
-                <th>ID</th>
+                <th hidden></th>
+                <th>S/No#</th>
                 <th>SUBJECT</th>
                 <th>PAPER</th>
                 <th>VENUE</th>
@@ -48,17 +49,76 @@ Subject Marking Center
             <tbody>
             
                 {% for item in venues %}
-            <tr>
+            <tr id="{{item.id}}">
+                <td hidden>{{item.id}}</td>
                 <td>{{forloop.counter}}</td>
                 <td>{{item.paper.subject}}</td>
                 <td>{{item.paper}}</td>
-                <td>{{item.center}}</td>
-                <td><a href="#">edit</a></td>
+                <td>
+                    {% if item.center|length > 1 %}
+                    {{item.center}}
+                    {%else%}
+              <span class="badge badge-pill badge-danger" >NOT SET</span>
+              </button></span>     
+                    {% endif %}
+                </td>
+                <td><span class="badge badge-pill badge-info setVenue" data-toggle="modal" id="{{item.id}}" data-target="#venueModal" >EDIT/SET</span></td>
             </tr>
                 {% endfor %}
             
             </tbody>
         </table>
+
+        <div class="modal fade" id="venueModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLongTitle">SET / UPDATE VENUE</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" action="">
+                        {% csrf_token %}
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col">
+                                    <input type="hidden" name="marking_venue_id" id="marking_venue_id"> 
+                                <label>SUBJECT NAME </label>
+                                <input type="text" class="form-control" name="Subject_set" id="Subject_set" readonly>
+                                </div>
+                                <div class="col">
+                                    <label>PAPER </label>
+                                    <input type="text" class="form-control" name="Paper_set" id="Paper_set" readonly>
+                                </div>
+                            </div>
+                            <div class="row">
+                            
+                            <div class="col">
+                                <label>VENUE </label>
+                                <select class="form-control" id="venue" required>
+                                    <option id="myVenue"></option>
+                                    {% for item in centers %}
+                                    <option value="{{item}}"> {{item}}</option>
+                                    
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary" id="save">Save</button>
+                          </div>
+                        
+                        </div>
+                    </form>
+                </div>
+                
+              </div>
+            </div>
+          </div>
+
     </div>
 </div>
 
@@ -68,6 +128,13 @@ Subject Marking Center
 
 
 {% block script %}
+<script>
+    $(document).ready(function(){
+        $("#venueTable").dataTable({
+            
+        })
+    });
+</script>
 <script>
     $("#id_subject").change(function () {
         const subjectID = $(this).val();  // get the selected subject ID from the HTML dropdown list 
@@ -87,6 +154,60 @@ Subject Marking Center
             }
         });
     });
+</script>
+
+<script>
+    $(".setVenue").click(function(){
+        var id = $(this).parents("tr").children("td:eq(0)").text();
+        var subject = $(this).parents("tr").children("td:eq(2)").text();
+        var paper = $(this).parents("tr").children("td:eq(3)").text();
+        var venue1=$(this).parents("tr").children("td:eq(4)").text();
+        var no_val="-"
+        console.log(venue1)
+        // console.log(name)
+        let html_data='<option value="">Choose a paper number</option>';
+        
+        if ($.trim(venue1) == 'NOT SET') {
+            html_data =`<option value="${no_val}">select venue</option>`
+          } else {
+            html_data =`<option value="${venue1}">${venue1}</option>`
+          }
+
+        //let html_data =`<option value="${venue1}">${venue1}</option>`
+        $("#myVenue").html(html_data)
+        $("#marking_venue_id").val(id)
+        $("#Subject_set").val(subject)
+        $("#Paper_set").val(paper)
+        
+    })
+</script>
+
+<script>
+    
+    $("#save").click(function(){
+        $(this).attr("disabled", "disabled")
+        $(this).text("Updating...")
+
+        var id=$("#marking_venue_id").val();
+        var venue=$("#venue").val();
+
+        console.log(id)
+        console.log(venue)
+
+        $.ajax({
+            type: "POST",
+            url: '{% url "marking-center" %}',
+            data:{
+                id:id ,
+                'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val(),
+                venue:venue,
+            }
+        })
+        .done(function(response){
+            location.reload()
+        })
+
+    })
 </script>
 
 {% endblock script %}

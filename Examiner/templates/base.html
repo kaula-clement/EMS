@@ -36,10 +36,17 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <div class="wrapper">
 
   <!-- Navbar -->
+  {% if request.user.is_authenticated %}
   
-  {% if request.user.user_type == 1 %}
+  {% endif %}
+  
+  {% if request.user.user_type == 0 %}
   {% include 'EAD/nav.html' %}
   {%endif%}
+  {% if request.user.user_type == 1 %}
+  {% include 'EAD/nav.html' %}
+  {%endif%} 
+
   {% if request.user.user_type == 2 %}
   {% include 'Staff/nav.html' %}
   {%endif%}
@@ -54,9 +61,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <!-- /.navbar -->
 
   <!-- Main Sidebar Container  //sidebar-dark-primary -->
+  {% if request.user.user_type == 0 %}
+  {% include 'EAD/sidebar.html' %}
+  {%endif%}
   {% if request.user.user_type == 1 %}
   {% include 'EAD/sidebar.html' %}
   {%endif%}
+
   {% if request.user.user_type == 2 %}
   {% include 'Staff/sidebar.html' %}
   {%endif%}
@@ -126,10 +137,42 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <!-- daterangepicker -->
 <script src="{% static "daterangepicker/moment.min.js"  %}"></script>
 <script src="{% static "daterangepicker/daterangepicker.js"  %}"></script>
-<!-- ChartJS -->
-<script src="{% static "js/Chart.js"  %}"></script>
+
 <script src="{% static "js/sweetalert2.all.js"  %}"></script>
 <script src="{%static "js/datatables.min.js"%}"></script>
+<script src="{%static 'js/dataTables.select.min.js'%}"></script>
+<script src="{% static '/dist/js/adminlte.min.js'%}"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function(){
+    document.querySelectorAll('.sidebar .nav-link').forEach(function(element){
+      
+      element.addEventListener('click', function (e) {
+  
+        let nextEl = element.nextElementSibling;
+        let parentEl  = element.parentElement;	
+  
+          if(nextEl) {
+              e.preventDefault();	
+              let mycollapse = new bootstrap.Collapse(nextEl);
+              
+              if(nextEl.classList.contains('show')){
+                mycollapse.hide();
+              } else {
+                  mycollapse.show();
+                  // find other submenus with class=show
+                  var opened_submenu = parentEl.parentElement.querySelector('.submenu.show');
+                  // if it exists, then close all of them
+                  if(opened_submenu){
+                   new bootstrap.Collapse(opened_submenu);
+                  }
+              }
+          }
+      }); // addEventListener
+    }) // forEach
+  }); 
+  // DOMContentLoaded  end
+  
+</script>
 {% block script %}
 
 {% endblock script %}
@@ -138,10 +181,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <!-- overlayScrollbars -->
 <script src="{% static "overlayScrollbars/js/jquery.overlayScrollbars.min.js"  %}"></script>
 
-<!-- Bootstrap 4 -->
-<script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js'%}"></script>
+<!-- Bootstrap 4 
+<script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js'%}"></script> -->
 <!-- AdminLTE App -->
-<script src="{% static '/dist/js/adminlte.min.js'%}"></script>
+
 <!-- Table style -->
 
 </body>

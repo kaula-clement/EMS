@@ -1,6 +1,7 @@
 from django.shortcuts import render,HttpResponseRedirect,redirect
 from django.urls import reverse
-from .models import Examiner,Invitation,CustomUser,Staff,Bank,BankBranch,SchedulePay,Province,District,Payment,Attendance,ECZStaff
+from django.db.models import Q
+from .models import Examiner,Invitation,CustomUser,Staff,Bank,BankBranch,SchedulePay,Province,District,Payment,Attendance,ECZStaff,Subject
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView,UpdateView,DeleteView
@@ -16,26 +17,31 @@ import logging
 from django.contrib import messages
 
 #======================================
-
+@login_required()
 def StaffHome(request): 
-    #examiners=Examiner.objects.all()
-    #examiners_count=examiners.count()
-    #branches=BankBranch.objects.all()
     if request.user.user_type == 4:
         user=ECZStaff.objects.get(username=request.user.username)
-        print("User:",user.first_name)
-        examiners=Examiner.objects.filter(approved=True,
-                                          subject=user.subject,
-                                          paper=user.paper)
-        available_examiners=examiners.filter(availability=True).count()
-        context={
-                #'examiners_count':examiners_count,
-                'available_examiners':available_examiners,
-            #  'branches':branches
-                }
-        return render(request, 'Staff/Staff_home.html',context)
-    else:
-        return redirect('login')
+    elif request.user.user_type == 2:
+        user=Staff.objects.get(username=request.user.username)
+    print("User:",user.first_name)
+    approved=Examiner.objects.filter(approved=True)
+    examiners=Attendance.objects.filter(status=2)
+    absent=Attendance.objects.filter(status=3)
+    pending=Attendance.objects.filter(status=1)
+    
+    examiners_count=examiners.count()
+    branches=BankBranch.objects.all
+    scheduleTable=SchedulePay.objects.all()
+    context={
+            'examiners_count':examiners_count,
+            'examiners':examiners,
+          'branches':branches,
+          'scheduleTable':scheduleTable,
+          'approved':approved,
+          'absent':absent,
+          'pending':pending,
+            }
+    return render(request, 'Staff/Staff_home.html',context)
 
 
 class StaffCreate(LoginRequiredMixin,CreateView):
@@ -83,14 +89,28 @@ def attendanceView(request):
     messages.success(request,"Updated examiner list Successifuly")
     return redirect('take-attendance')
 
+
+@login_required()
 def takeattendance(request):
-    user=ECZStaff.objects.get(username=request.user.username)
-    examiners=Examiner.objects.filter(approved=True,
-                                        subject=user.subject,
-                                        paper=user.paper)
+    #user=ECZStaff.objects.get(username=request.user.username)
+    subjects=Subject.objects.all()
+    examiners=Examiner.objects.filter(approved=0)#,
+                                       # subject=user.subject,
+                                        #paper=user.paper)
     attendance=Attendance.objects.filter(examiner__in=examiners)
+    
+    if request.method=="POST":
+        subcode=request.POST.get('subject')    
+        paper_number=request.POST.get('paper')
+        
+        examiners=Examiner.objects.filter(Q(subject=subcode)&
+                                          Q(paper=paper_number))
+        attendance=Attendance.objects.filter(examiner__in=examiners)
+       # redirect('take-attendance')
     context={
-        'attendance':attendance
+        'subjects':subjects,
+        'attendance':attendance,
+        'examiners':examiners,
     }
     return render(request,"Staff/takeattendancesheet.html",context)
 def present(request,pk):
@@ -115,11 +135,12 @@ class NotificationList(LoginRequiredMixin,ListView):
     context_object_name='invitations'
     template_name='Examiner/notifications_list.html'
     
-class ScheduleTableList(ListView):
+class ScheduleTableList(LoginRequiredMixin,ListView):
     model= SchedulePay
     context_object_name='schedule'
     template_name='Staff/ScheduleTable.html'
-    
+
+@login_required()
 def schedule(request):
     present_examiners=Attendance.objects.filter(status=2)
     examiners=Examiner.objects.filter(attendance_examiner__in=present_examiners)
@@ -129,21 +150,21 @@ def schedule(request):
         fromStation=item.district
         toStation=item.to_province
         payment=Payment.objects.get_or_create(examiner=item)
-        print("==================")
-        print("Payment:",payment[0].transport)
-        print("Name:",item.first_name)
-        print("Province:",item.province)
-        print("From",fromStation)
-        print("To",toStation)
+       # print("==================")
+        #print("Payment:",payment[0].transport)
+        #print("Name:",item.first_name)
+        #print("Province:",item.province)
+        #print("From",fromStation)
+        #print("To",toStation)
         try: 
-            print("Pay1:",payment[0].transport)
+            #print("Pay1:",payment[0].transport)
             nights=SchedulePay.objects.get(FromDistrict=fromStation)
-            print("Night Row",nights)
+            #print("Night Row",nights)
             nights=getattr(nights,toStation)
-            print("Nights2",nights)
+            #print("Nights2",nights)
             payment[0].transport=int(nights)*ratePerNight
             payment[0].save()
-            print("Pay:",payment[0].transport)
+            #print("Pay:",payment[0].transport)
         except Exception as e:
             logging.getLogger("error_logger").error(repr(e))
         
@@ -182,7 +203,8 @@ def calculatePay(request):
     
 
 
-#Upload SCHEDULE
+#Upload SCHEDULE DATA
+@login_required()
 def upload_schedule_csv(request): 
     data = {}
     if "GET" == request.method:
@@ -208,7 +230,7 @@ def upload_schedule_csv(request):
             fields = line.split(",")
             data_dict = {}
             
-            data_dict["FromDistrict"] =fields[1]  # field=uploaded file column
+            data_dict["FromDistrict"] =fields[1] 
             data_dict["LUSAKA"] = fields[2]
             data_dict["COPPERBELT"] = fields[3]
             data_dict["MONZE"] = fields[4]
@@ -223,7 +245,7 @@ def upload_schedule_csv(request):
             data_dict["CHIBOMBO"] = fields[13]
             
             
-            try: 
+            try : 
                 form = ScheduleForm(data_dict)
                 print("data_dict:",data_dict)
                 if form.is_valid():

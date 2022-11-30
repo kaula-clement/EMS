@@ -8,6 +8,7 @@ Users
 {%block content%}
 
 <strong>/USERS</strong>
+<a href="{%url 'add-user'%}" class="btn btn-primary btn-sm">ADD USER</a>
 
 <div  class="card card-body">
 <table class="table table-sm" id="usersTable">
@@ -20,34 +21,42 @@ Users
             <th>User Type</th>
             <th>Is Active</th>
                 <th></th>
+                <th></th>
         </tr>
     </thead>
     <tbody>
 
-        {%for user in Users%}
+        {%for user in staff_users%}
     <tr>
+        
         <td>{{user.username}}</td>
         <td>{{user.first_name}}</td>
         <td>{{user.last_name}}</td>
         <td>{{user.email}}</td>
         <td>
+            {% if user.user_type == 0 %}
+            ADMIN
+            {% endif %}
             {% if user.user_type == 1 %}
             EAD
             {% endif %}
             {% if user.user_type == 2 %}
-            Accounts Staff
+            FAD
             {% endif %}
             {% if user.user_type == 3 %}
             EXAMINER
             {% endif %}
             {% if user.user_type == 4 %}
-            ECZ Staff
+            STATION ADMIN
             {% endif %}
           
 
         </td>
         <td>{{user.is_active}}</td>
-        <td><a href="{%url 'update-user' user.id %}">update-user</a></td>        
+        <td><a href="{%url 'update-user' user.id %}">update-user</a></td> 
+        {% if request.user.is_admin %}
+        <td><a href="{%url 'delete-user' user.id %}">delete-user</a></td>  
+        {% endif %}     
     </tr>
         {% endfor %}
     </tbody>

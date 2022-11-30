@@ -47,23 +47,12 @@ class ExaminerForm(forms.ModelForm):
 class EADForm(forms.ModelForm):
     class Meta:
         model=EAD
-        fields=('first_name','last_name','gender','UserName','middle_name','NRC','cell_Number','email','Address',)
+        fields=('username','first_name','last_name','email',)
         widgets = {
-            'UserName':forms.TextInput(attrs={'class':'form-control','placeholder':'User Name'}),
+            'username':forms.TextInput(attrs={'class':'form-control','placeholder':'User Name'}),
             'first_name': forms.TextInput(attrs={'class':'form-control','placeholder':'firstName'}),
             'last_name': forms.TextInput(attrs={'class':'form-control','placeholder':'LastName'}),
-            'middle_name': forms.TextInput(attrs={'class':'form-control','placeholder':'UserName'}),
-            'bank': forms.Select(attrs={'class':'form-control '}),
-            'branch': forms.Select(attrs={'class':'form-control '}),
-            'AccountDetails':forms.TextInput(attrs={'class':'form-control','placeholder':'firstName'}),
-            'NRC':forms.TextInput(attrs={'class':'form-control','placeholder':'firstName'}),
-            'TPIN':forms.TextInput(attrs={'class':'form-control','placeholder':'firstName'}),
-            'cell_Number':forms.TextInput(attrs={'class':'form-control','placeholder':'firstName'}),
             'email': forms.EmailInput(attrs={'class':'form-control','placeholder':'email@abc.abc'}),
-            'Address':forms.TextInput(attrs={'class':'form-control','placeholder':'firstName'}), 
-            'province':forms.Select(attrs={'class':'form-control '}),
-            'gender':forms.Select(attrs={'class':'form-control '}),
-            'district':forms.Select(attrs={'class':'form-control '}),
             
         }
     
@@ -109,32 +98,22 @@ class BankForm(forms.ModelForm):
 class StaffForm(forms.ModelForm):
     class Meta:
         model=Staff
-        fields=('first_name','last_name','gender','UserName','middle_name','NRC','cell_Number','email','Address',)
+        fields=('username','first_name','last_name','email',)
         widgets = {
-            'UserName':forms.TextInput(attrs={'class':'form-control','placeholder':'User Name'}),
+            'username':forms.TextInput(attrs={'class':'form-control','placeholder':'User Name'}),
             'first_name': forms.TextInput(attrs={'class':'form-control','placeholder':'firstName'}),
             'last_name': forms.TextInput(attrs={'class':'form-control','placeholder':'LastName'}),
-            'middle_name': forms.TextInput(attrs={'class':'form-control','placeholder':'UserName'}),
-            'bank': forms.Select(attrs={'class':'form-control '}),
-            'branch': forms.Select(attrs={'class':'form-control '}),
-            'gender':forms.Select(attrs={'class':'form-control '}),
-            'AccountDetails':forms.TextInput(attrs={'class':'form-control','placeholder':'firstName'}),
-            'NRC':forms.TextInput(attrs={'class':'form-control','placeholder':'firstName'}),
-            'TPIN':forms.TextInput(attrs={'class':'form-control','placeholder':'firstName'}),
-            'cell_Number':forms.TextInput(attrs={'class':'form-control','placeholder':'firstName'}),
             'email': forms.EmailInput(attrs={'class':'form-control','placeholder':'email@abc.abc'}),
-            'Address':forms.TextInput(attrs={'class':'form-control','placeholder':'firstName'}), 
-            'province':forms.Select(attrs={'class':'form-control '}),
-            'district':forms.Select(attrs={'class':'form-control '}),
             
         }
         
         
-class UserForm(forms.ModelForm):
+class UserForm(UserCreationForm):
     class Meta:
         model= CustomUser
-        fields=('first_name','last_name','email','user_type','password','is_active','is_admin') 
+        fields=('username','first_name','last_name','email','user_type','is_active','is_admin') 
         widgets = {
+            'username': forms.TextInput(attrs={'class':'form-control','placeholder':'firstName'}),
             'first_name': forms.TextInput(attrs={'class':'form-control','placeholder':'firstName'}),
             'last_name': forms.TextInput(attrs={'class':'form-control','placeholder':'lastName'}),
             'email': forms.EmailInput(attrs={'class':'form-control','placeholder':'email'}),

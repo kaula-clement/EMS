@@ -16,13 +16,7 @@ List of staff members
                 <th>Middle Name</th>
                 <th>Last Name</th>
                 <th>Email</th>
-                <th>Address</th>
-                <th>Phone</th>
-                <th>Province</th>
-                <th>District</th>
-                <th>Bank</th>
-                <th>Branch</th>
-                <th>Sort Code</th>
+                
                 <th><th>
             </tr>
         </thead>
@@ -30,18 +24,12 @@ List of staff members
         {% for item in staffs %}
         <tr>
             <td>{{item.id}}</td>
-            <td>{{item.UserName}}</td>
+            <td>{{item.username}}</td>
             <td>{{item.first_name}}</td>
             <td>{{item.middle_name}}</td>
             <td>{{item.last_name}}</td>
             <td>{{item.email}}</td>
-            <td>{{item.Address}}</td>
-            <td>{{item.cell_number}}</td>
-            <td>{{item.province}}</td>
-            <td>{{item.district}}</td>
-            <td>{{item.bank}}</td>
-            <td>{{item.branch}}</td>
-            <td>{{item.branch.sortcode}}</td>
+            
         </tr>
         {% endfor %}
         

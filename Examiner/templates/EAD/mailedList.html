@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}Emailed Examiners{% endblock title %}
+
+{% block content %}
+Emaild Examiner List
+<div class="card card-body">
+<table id="mailTable" class="table table-sm">
+    <thead>
+        <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Number</th>
+            <th>Email Address</th>
+            <th>Mail count</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in mail_list %}
+        <tr>
+            <td>{{item.first_name}}</td>
+            <td>{{item.last_name}}</td>
+            <td>{{item.ExaminerCode}}</td>
+            <td>{{item.email}}</td>
+            <td>{{item.mail_count}}</td>
+        </tr>
+        
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+{% endblock content %}
+
+{% block script %}
+<script>
+    $("#mailTable").dataTable({
+
+    });
+</script>
+{% endblock script %}

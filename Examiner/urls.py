@@ -23,6 +23,8 @@ urlpatterns = [
    path('update-user/<int:pk>/',CustomUserUpdate.as_view(),name='update-user'),
    path('group-list',CustomGroupList.as_view(),name='group-list'),
    
+   path('new-user/',AuthView.createUserView,name='add-user'),
+   path('delete-user/<str:pk>',AuthView.deleteCustomUser,name='delete-user'),
    
    
    #====================================EAD Menu
@@ -38,7 +40,8 @@ urlpatterns = [
    path('add-ead/',EADCreateView.as_view(),name='ead-create'),
    path('ead-list/',EADListView.as_view(),name='ead-list'),
    
-    path('batchmail/',EADViews.batchmailExaminer,name='batch-mail'),
+   path('maillist/',EADViews.mailList,name='mail-list'),
+   path('batchmail/',EADViews.batchmailExaminer,name='batch-mail'),
    path('ead/<int:pk>',EADListView.as_view(),name='ead-details'),
    path('ead-delete/<int:pk>',EADDeleteView.as_view(),name='ead-delete'),
    path('ead/<int:pk>/',EADUpdateView.as_view(),name='update-ead'),
@@ -128,3 +131,6 @@ urlpatterns = [
    #============Analytics
     path('Subject/Examiner/bord',EADViews.examiners_per_subject,name='subject-bord'),
    ] 
+
+#===========TO DELETE==============
+# name='send-email' and co views

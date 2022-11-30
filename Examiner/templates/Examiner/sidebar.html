@@ -42,25 +42,16 @@
               
             </ul>
           </li>
-          <li class="nav-item">
+          <li class="nav-item ">
             <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-th"></i>
+              <i class='nav-icon far fa-address-book' style='font-size:24px'></i>
               <p>
-                Simple Link
+               Update Details
               
               </p>
             </a>
           </li>
-
-          <li class="nav-item">
-            <a href="{%url 'notifications-list'%}" class="nav-link">
-              <i class="nav-icon fas fa-th"></i>
-              <p>
-              All  Invitations
-              
-              </p>
-            </a>
-          </li>
+          {% if examiner.position.name == "Chief Examiner" %}
           <li class="nav-item">
             <a href="{%url 'comments-list'%}" class="nav-link">
               <i class="nav-icon fas fa-th"></i>
@@ -70,7 +61,7 @@
               </p>
             </a>
           </li>
-          
+          {% endif %}
         </ul>
       </nav>
       <!-- /.sidebar-menu -->

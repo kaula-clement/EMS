@@ -15,22 +15,11 @@
           <img src="{% static 'dist/img/user.png'%}" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
-          <a href="{%url 'updateprofile' request.user.id %}" class="d-block">{{ request.user}}</a>
+          <a href="#" class="d-block">{{ request.user}}</a>
         </div>
       </div>
 
-      <!-- SidebarSearch Form 
-      <div class="form-inline">
-        <div class="input-group" data-widget="sidebar-search">
-          <input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search">
-          <div class="input-group-append">
-            <button class="btn btn-sidebar">
-              <i class="fas fa-search fa-fw"></i>
-            </button>
-          </div>
-        </div>
-      </div>
--->
+  
       <!-- Sidebar Menu -->
       <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
@@ -49,15 +38,20 @@
 {% endcomment %}
          
         {% if request.user.user_type == 2 %}
-          <li class="nav-item">
-            <a href="{%url 'schedule'%}" class="nav-link">
-              <i class='nav-icon far fa-address-book' style='font-size:24px'></i>
-              <p>
-                Schedule
-              
-              </p>
-            </a>
-          </li>
+        <li class="nav-item has-submenu">
+          <a href="#" class="nav-link">
+            <i class='nav-icon far fa-address-book' style='font-size:24px'></i>
+            <p>
+              Schedule
+            
+            </p>
+          </a>
+          <ul class="submenu collapse">
+            <li><a class="nav-link" href="{%url 'schedule_table'%}"><p>Schedule Table</p></a></li>
+            <li><a class="nav-link" href="{%url 'schedule'%}"> <p>Examiners Schedule</p></a> </li>
+            <li><a class="nav-link" href="{%url 'upload_stations'%}"> <p>Upload Station</p></a> </li>
+          </ul>
+        </li>
           {% endif %}
           <li class="nav-item">
             <a href="{%url 'bank-list'%}" class="nav-link">
@@ -70,13 +64,18 @@
 
 {% if request.user.user_type == 4 %}
 
-<li class="nav-item">
-  <a href="{%url 'take-attendance'%}" class="nav-link">
+<li class="nav-item has-submenu">
+  <a href="#" class="nav-link"> 
     <i class="nav-icon fas fa-th"></i>
     <p>
-    Attendance Reg  
+    Examiners  
     </p>
   </a>
+  <ul class="submenu collapse">
+    <li><a class="nav-link" href="{%url 'take-attendance'%}"><p>Take addendance</p></a></li>
+    <li><a class="nav-link" href="{% url 'attendance'%}"><p>update my list</p></a></li>
+    <li><a class="nav-link" href="#"><p>update details#</p></a></li>  
+  </ul>
 </li>
 
 {% endif %}

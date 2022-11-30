@@ -9,7 +9,25 @@ Take Attendance
 <div class="container">
    <span> <a  href="{% url 'attendance'%}" class="btn btn-primary float-right">Update List</a></span>
 </div>
+<div class="container">
+    <form method="POST" >
+        {% csrf_token %}
+    <label for="subject">Select Subject</label>
+    <select name="subject" id="id_subject">
+        <option value="" selected>-------</option>
+        {% for item in subjects %}
+        <option value="{{item.subjectCode}}">{{item.subjectName}}</option>
+        {% endfor %}
+        
+    </select>
 
+    <label for="paper">Select paper</label>
+    <select name="paper" id="id_paper">
+        <option value="" selected>-------</option>
+    </select>
+    <input type="submit" class="btn btn-primary btn-sm" value="submit">
+</form>
+</div>
 <table class="table table-responsive" id="attendanceTable">
 <thead>
     <tr>
@@ -45,7 +63,7 @@ Take Attendance
        <button class="btn btn-warning" disabled="disabled">Absent</button>
        {% endif %}
         </td>
-        <td></td>
+        <td><a href="#">update {{item.examiner.id}}</a></td>
         <td></td>
     </tr>
     {% endfor %}
@@ -65,10 +83,35 @@ Take Attendance
 <script>
     $(document).ready(function(){
         $("#attendanceTable").dataTable({
-
+            dom:'Bfrtip',
+            buttons:[
+            
+            ]
+            
         })
 
     });
+</script>
+<script>
+    $("#id_subject").change(function(){
+        sub_code=$(this).val()
+       // console.log(sub_code)
+       $.ajax({
+        type: "POST",
+        url: '{% url "get_papernumber_ajax" %}',
+        data: {
+            'subject_id': sub_code,       // add the country id to the POST parameters
+            'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val(),
+        },
+        success: function (data) {   // `data` is from `get_topics_ajax` view function
+            let html_data = '<option value="">Choose a paper number</option>';
+            data.forEach(function (data) {
+                html_data += `<option value="${data.paper_number}">${data.paper_name}</option>`
+            });
+            $("#id_paper").html(html_data); // replace the contents of the topic input with the data that came from the server
+        }
+       });
+    })
 </script>
 
 {% endblock script %}

@@ -1,7 +1,7 @@
 
 
 .main-sidebar{
-    background-color:#0b5e28
+   background-color:#0b5e28
 }
 .main-header{
     background-color: #47b471;
@@ -16,6 +16,18 @@
 }
 .content-wrapper{
     background-color: #bcdbcde8;
+}
+
+
+/** 
+drop down on nav style
+**/
+.sidebar li .submenu{ 
+	list-style: none; 
+	margin: 0; 
+	padding: 0; 
+	padding-left: 1rem; 
+	padding-right: 1rem;
 }
 
 /**text #ffffff BG:#00b04c 

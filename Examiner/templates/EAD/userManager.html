@@ -45,13 +45,17 @@
         
         <span class="helptext">Designates whether this user should be treated as active. Unselect this instead of deleting accounts.</span>
       </div>
-      <div class="form-check">
+
+      {% comment %}
+        <div class="form-check">
         <label>
             Is Admin
           </label>
         {{form.is_admin}}
         
       </div>
+      {% endcomment %}
+      
     </div>
     
     <input type="submit" class="btn btn-primary" value="Submit">
