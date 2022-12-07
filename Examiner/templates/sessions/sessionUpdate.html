@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Update session
+{% endblock title %}
+
+{% block content %}
+
+
+<div class="container-fluid">
+
+  <div class="row">
+      <div class="col-lg-8 ml-5 mt-5 mr-0 ">
+          <!-- general form elements -->
+          <div class="card card-light">
+          <div class="card-header">
+              <h3 class="card-title">Edit Session</h3>
+          </div>
+          <!-- /.card-header -->
+          <!-- form start -->
+          <form  method="POST" action=" ">
+              {% csrf_token %}
+
+              <div class="card-body">
+                <div class="form-group col-md-12">
+                  <label>Session Name </label>
+                  <input type="text" class="form-control" name="name" value="{{ session.name}}">
+              </div>
+              <div class="row">
+                  <div class="form-group col-md-6">
+                      <label>Session Start Date </label>
+                      <input type="date" class="form-control" name="start_date" value="{{ session.start_date|date:'Y-m-d' }}">
+                  </div>
+
+                  <div class="form-group col-md-6">
+                      <label>Session End Date </label>
+                      <input type="date" class="form-control" name="end_date" value="{{ session.end_date|date:'Y-m-d' }}">
+                  </div>
+                </div>
+              </div>
+              <!-- /.card-body -->
+
+              <div class="card-footer">
+              <input type="hidden" name="session_id" value="{{ session_year.id }}" />
+              <button type="button"><i class="fa fa-times" aria-hidden="true"></i> </button>
+              <button type="submit" class="btn btn-primary float-right">Update Session</button>
+              </div>
+          </form>
+          </div>
+          <!-- /.card -->
+
+      </div>
+  </div>
+
+</div><!-- /.container-fluid -->
+
+
+
+{% endblock content %}
+
+{% block script %}
+<script>
+  $(".edit-session").click(function(){
+      var id = $(this).parents("tr").children("td:eq(0)").text();
+      var id2 = $(this).parents("tr").children("td:eq(0)").text();
+        var start_date = $(this).parents("tr").children("td:eq(2)").text();
+        var end_date = $(this).parents("tr").children("td:eq(3)").text();
+        var name = $(this).parents("tr").children("td:eq(1)").text();
+        
+      console.log(id2)
+      console.log(name)
+      console.log(start_date)
+      console.log(end_date)
+
+        //let html_data =`<option value="${venue1}">${venue1}</option>`
+        
+        //$("#name").val(name)
+        //$("#start_date").val(start_date)
+        //$("#end_date").val(end_date)
+        
+  })
+</script>
+{% endblock script %}
+
+

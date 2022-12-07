@@ -1,9 +1,13 @@
 
 
 .main-sidebar{
-   background-color:#0b5e28
+   background-color:#0b5e28; 
+  /**background-color:#C4D4C4;
+  background-color: #00A85A; From [as heavy green font]**/
+  font-size: medium;
 }
 .main-header{
+ /** background-color:#C4DFC4; From [as light bg]**/
     background-color: #47b471;
    /** background-color: #4db66d;**/
 }
@@ -30,13 +34,6 @@ drop down on nav style
 	padding-right: 1rem;
 }
 
-/**text #ffffff BG:#00b04c 
-
-**/
-
-
-
-
 .loader {
     border: 16px solid #f3f3f3;
     border-radius: 50%;
@@ -46,9 +43,6 @@ drop down on nav style
     -webkit-animation: spin 2s linear infinite; /* Safari */
     animation: spin 2s linear infinite;
 
-
-
-    
   }
   
   /* Safari */

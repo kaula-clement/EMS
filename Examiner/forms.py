@@ -7,6 +7,32 @@ class ExaminerUploadForm(forms.ModelForm):
     class Meta:
         model=Examiner
         fields=('middle_name','last_name','first_name','position','email','subject','paper',)
+    
+class ExaminerUpdateForm(forms.ModelForm):
+    class Meta:
+        model=Examiner
+        fields=('middle_name','last_name','first_name','gender','subject','paper','position','Address','province','district',
+                'AccountDetails','NRC','TPIN','cell_Number','email','bank','branch',)
+        widgets = {
+        'middle_name':forms.TextInput(attrs={'class':'form-control','placeholder':'Middle Name'}),
+        'last_name':forms.TextInput(attrs={'class':'form-control','placeholder':'Last Name'}),
+        'first_name': forms.TextInput(attrs={'class':'form-control','placeholder':'First Name'}),
+        'gender':forms.Select(attrs={'class':'form-control '}),
+        'subject': forms.Select(attrs={'class':'form-control '}),
+        'paper': forms.Select(attrs={'class':'form-control '}),
+        'position': forms.Select(attrs={'class':'form-control','placeholder':'Select Position'}),
+        'Address': forms.TextInput(attrs={'class':'form-control','placeholder':'Address'}),
+        'province': forms.Select(attrs={'class':'form-control','placeholder':'Province'}),
+        'district': forms.Select(attrs={'class':'form-control','placeholder':'District'}),
+        'AccountDetails': forms.TextInput(attrs={'class':'form-control','placeholder':'Account Number'}),
+        'NRC': forms.TextInput(attrs={'class':'form-control','placeholder':'NRC Number'}),
+        'TPIN': forms.TextInput(attrs={'class':'form-control','placeholder':'T Pin'}),
+        'cell_Number': forms.TextInput(attrs={'class':'form-control','placeholder':'cell phone number'}),
+        'email': forms.EmailInput(attrs={'class':'form-control','placeholder':'email@abc.abc'}),
+        'bank':forms.Select(attrs={'class':'form-control','placeholder':'Province'}),
+        'branch':forms.Select(attrs={'class':'form-control','placeholder':'Province'}),
+        
+    }
 
 class ExaminerForm(forms.ModelForm):
     class Meta:
@@ -108,10 +134,10 @@ class StaffForm(forms.ModelForm):
         }
         
         
-class UserForm(UserCreationForm):
+class UserForm(forms.ModelForm):
     class Meta:
         model= CustomUser
-        fields=('username','first_name','last_name','email','user_type','is_active','is_admin') 
+        fields=('username','first_name','last_name','email','user_type','is_active') 
         widgets = {
             'username': forms.TextInput(attrs={'class':'form-control','placeholder':'firstName'}),
             'first_name': forms.TextInput(attrs={'class':'form-control','placeholder':'firstName'}),
@@ -120,9 +146,31 @@ class UserForm(UserCreationForm):
             'password': forms.TextInput(attrs={'class':'form-control','placeholder':'password'}),
             'user_type': forms.Select(attrs={'class':'form-control '}),  
             'is_active':forms.CheckboxInput(),
-            'is_admin':forms.CheckboxInput(),
+            
         } 
-        
+
+class UpdateUserForm(forms.ModelForm):
+    class Meta:
+        model=CustomUser
+        fields=('first_name','last_name','email',)
+        widgets = {
+           # 'username': forms.TextInput(attrs={'class':'form-control','placeholder':'UserName'}),
+            'first_name': forms.TextInput(attrs={'class':'form-control','placeholder':'firstName'}),
+            'last_name': forms.TextInput(attrs={'class':'form-control','placeholder':'lastName'}),
+            'email': forms.EmailInput(attrs={'class':'form-control','placeholder':'email'}),
+            
+        } 
+class UpdateExaminerUserForm(forms.ModelForm):
+    class Meta:
+        model=CustomUser
+        fields=('first_name','last_name','email','is_active')
+        widgets = {
+           # 'username': forms.TextInput(attrs={'class':'form-control','placeholder':'UserName'}),
+            'first_name': forms.TextInput(attrs={'class':'form-control','placeholder':'firstName'}),
+            'last_name': forms.TextInput(attrs={'class':'form-control','placeholder':'lastName'}),
+            'email': forms.EmailInput(attrs={'class':'form-control','placeholder':'email'}),
+            
+        } 
     
 class CommentForm(forms.ModelForm):
     class Meta:
@@ -170,5 +218,16 @@ class StationForm(forms.ModelForm):
 class ECZStaffForm(forms.ModelForm):
     class Meta:
         model=ECZStaff
-        fields=('username','first_name','last_name','email','paper',)
- 
+        fields=('username','first_name','last_name','email',)
+        widgets = {
+            'username': forms.TextInput(attrs={'class':'form-control','placeholder':'UserName'}),
+            'first_name': forms.TextInput(attrs={'class':'form-control','placeholder':'firstName'}),
+            'last_name': forms.TextInput(attrs={'class':'form-control','placeholder':'lastName'}),
+            'email': forms.EmailInput(attrs={'class':'form-control','placeholder':'email'}),
+            
+        } 
+        
+class SessionForm(forms.Form):
+    name=forms.TextInput(attrs={'class':'form-control','placeholder':'Session Name'}),
+    start_date=forms.DateInput()
+    end_date=forms.DateInput()

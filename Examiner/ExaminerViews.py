@@ -2,14 +2,14 @@ import datetime
 from unittest import result
 from django.shortcuts import render,redirect,HttpResponse
 from django.views.decorators.csrf import csrf_exempt
-#import weasyprint
-#from weasyprint import HTML
+from django.contrib import messages
+import logging
 from .models import CustomUser, Examiner,Invitation , comment
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView,UpdateView,DeleteView
 from django.urls import reverse_lazy
-from . forms import CommentForm
+from . forms import CommentForm,UpdateUserForm,ExaminerForm
 #======================================
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.models import User
@@ -41,6 +41,50 @@ def ExaminerHome(request):
              }
     return render(request, 'Examiner/Examiner_home.html',context)
 
+@login_required()
+def examinerProfileUpdate(request,pk):
+    user=request.user
+    form=UpdateUserForm(instance=user)
+    context={
+        'form':form,
+    }
+    if request.method=="POST":
+        form=UpdateUserForm(request.POST,instance=user)
+        if form.is_valid():
+            examiner=Examiner.objects.get(user=user)
+            examiner.first_name=form.instance.first_name
+            examiner.last_name=form.instance.last_name
+            examiner.save()
+            form.save()
+            messages.success(request, "Your profile was successfully updated!")
+            return redirect('login')
+        else:
+            logging.getLogger("error_logger").error(
+                       form.errors.as_json())
+            messages.error(request, '{}'.format(form.errors))
+    return render(request,'Auth/update_profile.html',context)
+
+@login_required()
+def examinerDetailsUpdate(request,pk):
+    user=request.user
+    examiner=Examiner.objects.get(user=user)
+    form=ExaminerForm(instance=examiner)
+    context={
+        "form":form,
+    }
+    if request.method=="POST":
+        form=ExaminerForm(request.POST,instance=examiner)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Your profile was successfully updated!")
+            return redirect('login')
+        else:
+            logging.getLogger("error_logger").error(
+                       form.errors.as_json())
+            messages.error(request, '{}'.format(form.errors))
+    return render(request,'Examiner/updateDetails.html',context)
+        
+        
 
 class NotificationList(LoginRequiredMixin,ListView):
     model=Invitation

@@ -1,6 +1,6 @@
 
 from django.urls import path
-from . import views,EADViews,ExaminerViews,StaffViews,AuthView
+from . import views,EADViews,ExaminerViews,StaffViews,AuthView,AdminViews
 from .views import Home,BankListView
 from django.contrib.auth.views import LogoutView
 from . EADViews import NotificationList,SubjectCreateView,SubjectListView,SubjectUpdateView,SubjectDeleteView,EADCreateView,EADListView,EADDeleteView,EADUpdateView,InviteView,ExaminerCreate,ExaminerList,ExaminerDetail,ExaminerUpdate,ExaminerDelete,EADUpdate
@@ -20,18 +20,22 @@ urlpatterns = [
    path('register-confirm/',views.confirmRegDetails,name='register-confirm'),
    
    path('logout/',LogoutView.as_view(next_page='login'),name='logout'), 
-   path('update-user/<int:pk>/',CustomUserUpdate.as_view(),name='update-user'),
+   path('update-user/<int:pk>/',AuthView.CustomUserUpdate,name='update-user'),
    path('group-list',CustomGroupList.as_view(),name='group-list'),
    
    path('new-user/',AuthView.createUserView,name='add-user'),
    path('delete-user/<str:pk>',AuthView.deleteCustomUser,name='delete-user'),
    
    
+   #===================================ADMIN UTILS======================
+   path('audit-logs/',AdminViews.logEntries,name='log-entries'),
+   
    #====================================EAD Menu
    path('ead-home/',EADViews.EADHome,name='ead-home'),
    path('examiner/<int:pk>',ExaminerDetail.as_view(),name='examiner-details'),
    path('examiner/requests',EADViews.examinerRequests,name='examiner-requests'),
    path('examiner-edit/<int:pk>',ExaminerUpdate.as_view(),name='examiner-edit'),
+   path('confirmed-examiners-list',EADViews.confirmedExaminers,name='confirmed-list'),
    path('examiner-delete/<int:pk>',ExaminerDelete.as_view(),name='examiner-delete'),
    path('create/',ExaminerCreate.as_view(),name='add-examiner'),
     
@@ -50,12 +54,14 @@ urlpatterns = [
    path('password-update',AuthView.updatepassword,name='updatepassword'),
    path('staff/create',StaffViews.StaffCreate.as_view(),name='staff-create'),
    path('staff/list',StaffViews.StaffListView.as_view(),name='staff-list'),
+   path('stationadmins/',StaffViews.stationAdminUpdate,name='station-admin-list'),
    
    
    
    path('create-staff',EADViews.ECZStaffCreateView.as_view(),name='ECZStaff-create'),
    
    path('Sessions-all/',EADViews.SessionCreate.as_view(), name='sessions-all'),
+   path('Session/update/<int:pk>',EADViews.SessionUpdate,name='session-update'),
    path('batch-session-delete/',EADViews.batchSessionDelete,name='batch-session-delete'),
    
    path('subjects/marking-center/',EADViews.selectMarkingVenue,name='marking-center'),
@@ -68,14 +74,13 @@ urlpatterns = [
    path('Examiner/take-attendance/',StaffViews.takeattendance,name='take-attendance'),
    path('Examiner/present/<int:pk>',StaffViews.present,name='present-link'),
     path('Examiner/absent/<int:pk>',StaffViews.absent,name='absent-link'),
+    path('reset/attendance/<int:pk>',StaffViews.resetAttendance,name="reset-link"),
    
    path('Examiner/schedule/',StaffViews.schedule,name='schedule'),
    path('schedule/',StaffViews.ScheduleTableList.as_view(), name='schedule_table'),
    path('paycalc/',StaffViews.calculatePay, name='calculate-pay'),
    path('Upload/stations/',StaffViews.upload_stations_csv,name='upload_stations'),
-   
-   
-   
+   path('update/examiner/<int:pk>',StaffViews.updateExaminer,name='update-examiner-SAD'),
    
       
    #=====================================Examiner menu
@@ -86,6 +91,9 @@ urlpatterns = [
    path('notifications/',ExaminerViews.NotificationList.as_view(),name='notifications-list'),
    path('download/invitation-letter',ExaminerViews.letter2pdf,name='download-letter'),
    path('comments/list',ExaminerViews.examinerComment,name='comments-list'),
+   
+   path('updatemyprofile/<str:pk>',ExaminerViews.examinerProfileUpdate,name='updatemyprofile'),
+   path('updatemydetails/<str:pk>',ExaminerViews.examinerDetailsUpdate,name='updatemyDetails'),
    
 
    #=================================
@@ -134,3 +142,4 @@ urlpatterns = [
 
 #===========TO DELETE==============
 # name='send-email' and co views
+#,name='ECZStaff-create/list,/..

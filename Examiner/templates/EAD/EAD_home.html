@@ -7,6 +7,7 @@ EAD Home Page
 {%block content%}
 <div class="container-fluid">
           <!-- Small boxes (Stat box) -->
+          {#Examiners Dashbord ROW#}
           <div class="row">
             <div class="col-lg-3 col-6">
               <!-- small box -->
@@ -14,7 +15,107 @@ EAD Home Page
                 <div class="inner">
                   <h3>{{ examiners_count }}</h3>
 
-                  <p>Total Examiners</p>
+                  <p><h4>Total Examiners</h4></p>
+                  
+                </div>
+                <div class="icon">
+                  <i class="ion ion-stats-bars"></i>
+                </div>
+                <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              </div>
+            </div>
+            <!-- ./col -->
+            <div class="col-lg-3 col-6">
+              <!-- small box -->
+              <div class="small-box bg-danger">
+                <div class="inner">
+                  <h3>{{ not_available.count }}</h3>
+
+                  <p><h5>NOT AVAILABLE</h5></p>
+                </div>
+                <div class="icon">
+                  <i class="ion ion-stats-bars"></i>
+                </div>
+                <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              </div>
+            </div>
+            <!-- ./col -->
+            
+            <div class="col-lg-3 col-6">
+              <!-- small box -->
+              <div class="small-box bg-warning">
+                <div class="inner">
+                  <h3>{{ not_approved_examiners }}</h3>
+
+                  <p>NOT APPROVED</p>
+                </div>
+                <div class="icon">
+                  <i class="ion ion-stats-bars"></i>
+                </div>
+                <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              </div>
+            </div>
+            <!-- ./col -->
+            <div class="col-lg-3 col-6">
+              <!-- small box -->
+              <div class="small-box bg-success">
+                <div class="inner">
+                  <h3>{{ available_examiners}}</h3>
+                  <p><h5>AVAILABLE</h5></p>
+                </div>
+                <div class="icon">
+                  <i class="ion ion-stats-bars"></i>
+                </div>
+                <a href="{%url 'subject-bord'%}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              </div>
+            </div>            
+          </div>
+        
+
+
+{#SUBJECTS Dashbord ROW#}
+<div class="row">
+  <div class="col-lg-3 col-6">
+    <!-- small box -->
+    <div class="small-box bg-info">
+      <div class="inner">
+        <h3>{{ subject_count }}</h3>
+
+        <p><h4>Total SUBJECTS</h4></p>
+      </div>
+      <div class="icon">
+        <i class="ion ion-stats-bars"></i>
+      </div>
+      <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+    </div>
+  </div>
+
+  <div class="col-lg-9 col-6">
+    <!-- small box -->
+    <div class="small-box bg-gradient-light">
+      <div class="inner">
+        
+        <p><h5>SUBJECTS</h5></p>
+      </div>
+      <div class="icon">
+        <i class="ion ion-stats-bars"></i>
+      </div>
+      <a href="{%url 'subject-bord'%}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+    </div>
+  </div>            
+</div>
+
+{% if request.user.user_type == 0 %}
+{#USERS DASHBORD ROW#}
+          <div class="row">
+            <div class="col-lg-3 col-6">
+              <!-- small box -->
+              <div class="small-box bg-info">
+                <div class="inner">
+                  <h3>{{ examiners_count }}</h3>
+
+                  <p><h4>USERS</h4></p>
+                  
                 </div>
                 <div class="icon">
                   <i class="ion ion-stats-bars"></i>
@@ -45,7 +146,7 @@ EAD Home Page
                 <div class="inner">
                   <h3>{{ approved_examiners }}</h3>
 
-                  <p>Approved Examiners</p>
+                  <p>Examiner accounts</p>
                 </div>
                 <div class="icon">
                   <i class="ion ion-stats-bars"></i>
@@ -60,7 +161,7 @@ EAD Home Page
                 <div class="inner">
                   <h3>{{ subject_count }}</h3>
 
-                  <p>Total Subjects</p>
+                  <p>deactivate accounts</p>
                 </div>
                 <div class="icon">
                   <i class="ion ion-stats-bars"></i>
@@ -72,68 +173,11 @@ EAD Home Page
             
           </div>
 
-
-    <div class="row">
-      <div class="col-lg-6">
-        <div class="card card-success card-outline">
-          <div class="card-body">
-            <h5 class="card-title"> Stats </h5>
-
-            <p class="card-text">
-              <p>Total Examiners:{{examiners_count}}</p>
-              <p>Total Subjects:{{subject_count}}</p>
-              <p>available_examiners:{{available_examiners}}</p>
-              <p>Approved Examiners:{{approved_examiners}}
-             
-            </p>
-
-            <a href="#" class="card-link">Card link</a>
-            <a href="#" class="card-link">Another link</a>
-          </div>
-        </div>
-<!--card-primary card-outline-->
-        <div class="card card-success card-outline">
-          <div class="card-body">
-            <h5 class="card-title">Card title</h5>
-
-            <p class="card-text">
-              Examinations council of zambia news /updats to the examinations marker or 
-              some general information in here
-              <p>Examinations council of zambia news /updats to the examinations marker or some general information in here</p>
-            </p>
-            <a href="#" class="card-link">Card link</a>
-            <a href="#" class="card-link">Another link</a>
-          </div>  
-        </div>  <!-- /.card -->
-      </div>
-      <!-- /.col-md-6 -->
-      <div class="col-lg-6">
-        <div class="card">
-          <div class="card-header">
-            <h5 class="m-0">Featured</h5>
-          </div>
-          <div class="card-body">
-            <h6 class="card-title">Special title treatment</h6>
-
-            <p class="card-text">go to some additional content.</p>
-            <a href="#" class="btn btn-success">Go somewhere</a>
-          </div>
-        </div>
-
-        <div class="card card-success card-outline">
-          <div class="card-header">
-            <h5 class="m-0">Featured</h5>
-          </div>
-          <div class="card-body">
-            <h6 class="card-title">Special title treatment</h6>
-
-            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-            <a href="#" class="btn btn-success">Go somewhere</a>
-          </div>
-        </div>
-      </div>
+          
+ 
       <!-- /.col-md-6 -->
     </div>
+    {% endif %}
     <!-- /.row -->
     <div class="row">
       <div class="col-lg-12">
@@ -176,31 +220,7 @@ EAD Home Page
 
 {% block script %}
 
-<script>
-  //var xValues = ["Italy", "France", "Spain", "USA", "Argentina"];
-  //var yValues = [55, 49, 44, 24, 15];
-  var xValues ={{examiner_list}}
-  var yValues = [55, 49, 44, 24, 15,55, 49, 44, 24, 15, 49, 44, 24, 15];
-  var barColors = ["red", "green","blue","orange","brown"];
-  
-  new Chart("myChart", {
-    type: "bar",
-    data: {
-      labels: xValues,
-      datasets: [{
-        backgroundColor: barColors,
-        data: yValues
-      }]
-    },
-    options: {
-      legend: {display: false},
-      title: {
-        display: true,
-        text: "World Wine Production 2018"
-      }
-    }
-  });
-  </script>
+
 
 {% endblock script %}
 

@@ -7,7 +7,7 @@ import logging
 from django.contrib import messages
 #===============local imports
 from .models import Bank, Examiner,Invitation, Staff,Subject,Paper,Position,EAD,CustomUser,Province,Session ,ECZStaff,MarkingVenue
-from . forms import EADForm,InvitationForm,ExaminerForm,ExaminerUploadForm ,ECZStaffForm
+from . forms import EADForm,InvitationForm,ExaminerForm,ExaminerUploadForm ,ECZStaffForm,SessionForm
 from .filters import ExaminerFilter
 #==============Views
 from django.views.generic.list import ListView
@@ -32,17 +32,19 @@ def EADHome(request):
     examiners_count=examiners.count()
     staffs=CustomUser.objects.exclude(user_type=3)
     staffs_count=staffs.count()
-    approved_examiners=examiners.filter(approved=True).count()
-    approved_examiners_list.append(approved_examiners)
-    available_examiners=examiners.filter(availability=True).count()
-    subject_count=Subject.objects.all().count()
+    not_approved_examiners=examiners.filter(approved=False).count()
+    #approved_examiners_list.append(approved_examiners)
+    available_examiners=examiners.filter(approved=True,availability=True).count()
+    not_available=Examiner.objects.filter(approved=True,availability=False)
+    subject_count=Paper.objects.all().count()
     context={
         'examiner_list':examiner_list,
+        'not_available':not_available,
             'examiners_count':examiners_count,
             'subject_count':subject_count,
             'staffs_count':staffs_count,
             'available_examiners':available_examiners,
-            'approved_examiners':approved_examiners
+            'not_approved_examiners':not_approved_examiners
             }
     return render(request, 'EAD/EAD_home.html',context)
 
@@ -116,18 +118,21 @@ def selectMarkingVenue(request):
         #print("SUB CODE:",item.paper.subject.subjectCode)
         codelist.append(item.paper.subject.subjectCode)
     
-    subjects=Subject.objects.exclude(subjectCode__in=codelist)
+    
     context={
-        'subjects':subjects,
+       # 'subjects':subjects,
         'centers':centers,
         'venues':venues,
     }
     
     if request.method=="POST":
-        marking_venue_id=request.POST.get('id')
+        marking_venueid=request.POST.get('marking_venue_id')
         venue_name=request.POST.get('venue')
         
-        marking_venue=MarkingVenue.objects.get(id=marking_venue_id)
+        print("ID IS:",marking_venueid)
+        print("SET TO:",venue_name)
+        
+        marking_venue=MarkingVenue.objects.get(id=marking_venueid)
         marking_venue.center=venue_name
         marking_venue.save()
         
@@ -140,7 +145,7 @@ def selectMarkingVenue(request):
         for examiner in examiners:
            # print("sub_code",sub_code)
            # print("paper_number",paper_number)
-            print("Examiner:" ,examiner.first_name)
+           # print("Examiner:" ,examiner.first_name)
             examiner.to_province=venue_name
             examiner.save()
         
@@ -194,8 +199,9 @@ class ExaminerList(LoginRequiredMixin,ListView):
     context_object_name='examiners'
     def get_context_data(self,**kwargs):
         context=super().get_context_data(**kwargs)
-        context['available_examiners']=Examiner.objects.filter(availability=True)
-        context['approved_examiners']=context['available_examiners'].filter(approved=True).order_by('-updated_at')
+        context['available_examiners']=Examiner.objects.filter(approved=True,availability=True)
+        context['not_available_examiners']=Examiner.objects.filter(availability=False)
+        context['approved_examiners']=Examiner.objects.filter(approved=True).order_by('-updated_at')
         context['myFilter']=ExaminerFilter(queryset=Examiner.objects.all())
         context['not_approved_examiners']=Examiner.objects.filter(approved=False)
         context['not_approved_examiners_count']=context['not_approved_examiners'].count()
@@ -219,11 +225,14 @@ def batchmailExaminer(request):
                 try:
                     examiner=Examiner.objects.get(pk=item)
                     maillist.append(examiner.email)
+                    username=examiner.ExaminerCode
+                    name=str(examiner.first_name)+' '+str(examiner.last_name)
+                    msg="Hello "+name+". You have been invited to the forthcoming marking session.Please use credentials username:"+str(username)+" and password: password3 to confirm availability. Please remember to reset your password and update your details on the portal.Thank you"
                     send_mail(
                         'ECZ Examiner application approval',
-                        'Hellow Examiner,Your application has been approved.Thank you.Please use credentials username:{} and password:{}',
+                        msg,
                         
-                        'microvich@zohomail.com',
+                        'infomail.main@zohomail.com',
                         (examiner.email,),
                         fail_silently=False,
                     )
@@ -238,16 +247,26 @@ def batchmailExaminer(request):
 
 @login_required()
 def mailList(request):
-    mail_list=Examiner.objects.filter(mail_count__gte=0)
+    mail_list=Examiner.objects.filter(mail_count__gte=1)
     context={
         'mail_list':mail_list,
     }
     return render(request, 'EAD/mailedList.html',context)
             
+
+@login_required()
+def confirmedExaminers(request):
+    examiners=Examiner.objects.filter(approved=True,availability=True)
+    context={
+        'examiners':examiners,
+    }
+    
+    return render(request, 'Examiner/confirmed_examiners.html',context)
+            
 @login_required()            
 def examinerRequests(request):
     examiners=Examiner.objects.filter(approved=False)
-    ead=EAD.objects.get(user=request.user)
+    #ead=EAD.objects.get(user=request.user)
     context={
         'examiners':examiners
     }
@@ -294,9 +313,38 @@ class EADUpdate(LoginRequiredMixin,UpdateView):
     context_object_name='ead'
     template_name='EAD/update_profile.html'
     success_url=reverse_lazy('ead-list')
+
+@login_required()  
+def SessionUpdate(request,pk):
+    session=Session.objects.get(id=pk)
+    print("++++++++++++++++++++++")
+    print("Session: ",session.name)
+    context={
+        'session':session
+    }
+    if request.method=="POST":
+        try:
+            name=request.POST.get('name')
+            start_date=request.POST.get('start_date')
+            end_date=request.POST.get('end_date')
+            
+            session.name=name
+            session.start_date=start_date
+            session.end_date=end_date
+            session.save()
+            messages.success(request,"updated session successifuly")
+            updatesession()
+            return redirect('sessions-all')
+        except Exception as e:
+            logging.getLogger("error_logger").error(
+            "Unable to upload file. "+repr(e))
+            messages.error(request, "update failed")
+                
+    return render(request,'sessions/sessionUpdate.html',context)
     
 class SessionCreate(LoginRequiredMixin,ListView):
     model=Session
+    form_class=SessionForm
     context_object_name='sessions'
     template_name='sessions/sessions.html'
     def get_context_data(self, **kwargs):
@@ -306,7 +354,12 @@ class SessionCreate(LoginRequiredMixin,ListView):
             if item.end_date<= date.today():
                 item.active=False
                 item.save()
+            if item.end_date > date.today():
+                item.active=True
+                item.save()
+       # context['form']=SessionForm()
         context['sessions']=Session.objects.all()
+        context['session']=Session.objects.get(id=16)
         return context
     def post(self, request, *args, **kwargs):
         name=self.request.POST.get('session_name')
@@ -320,6 +373,17 @@ class SessionCreate(LoginRequiredMixin,ListView):
         messages.success(request,"Session Created")
         return redirect('sessions-all')
         #return render(request,'sessions/sessions.html',context)
+        
+def updatesession():
+    sessions=Session.objects.all()
+    for item in sessions:
+            if item.end_date<= date.today():
+                item.active=False
+                item.save()
+            if item.end_date > date.today():
+                item.active=True
+                item.save()
+    return None
 
 @login_required()
 def batchSessionDelete(request):
@@ -368,12 +432,29 @@ def updateprofilesave(request):
             pass
             #messages.error(request, "Failed to Update Profile")
             return redirect('profile')
-
+@login_required()
 def examiners_per_subject(request):
     subjects=Subject.objects.all()
+    papers=Paper.objects.all()
+    dataList=[]
+    for item in papers:
+        examiners=Examiner.objects.filter(Q(subject=item.subject.subjectCode) & Q(paper=item.paper_number) & Q(approved=True))
+        print("==================")
+        for a in examiners:
+            ex1={"Name:":a.first_name," L_name":a.last_name,"Aproved:":a.approved,"SUB:":a.paper.paper_description}
+            print(ex1)
+            
+        numb=examiners.count()
+        data={"Paper":item.paper_description,"Examiners":numb}
+        dataList.append(data)
+        print(data)
+       
+    
     examiners=Examiner.objects.all()
+    
     subject_count=subjects.count()
     context={
+        'data':dataList,
         'subjects':subjects,
         'examiners':examiners,
         'subject_count':subject_count,

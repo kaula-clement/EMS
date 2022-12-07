@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Data Entry Co-ordinators
+{% endblock title %}
+
+{% block content %}
+Station Admins list
+<div class="table table-responsive">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>User Name</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+                <th>Marking Center</th>
+                
+                <th>Update<th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for item in stationAdmin %}
+        <tr>
+            <td>{{item.id}}</td>
+            <td>{{item.username}}</td>
+            <td>{{item.first_name}}</td>
+            <td>{{item.last_name}}</td>
+            <td>{{item.email}}</td>
+            {% if item.center%}
+            <td>{{item.center}}</td>
+            {%else%}
+            <td><span class="badge badge-pill badge-danger" >NOT SET</span></td>
+            {% endif %}
+            <td><span class="badge badge-pill badge-info setVenue" data-toggle="modal" data-target="#setcenter" >EDIT/SET</span></td>
+            
+            
+        </tr>
+        {% endfor %}
+        
+        </tbody>
+    </table>
+
+    <div class="modal fade" id="setcenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLongTitle">SET / UPDATE VENUE</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" action="">
+                    {% csrf_token %}
+                    <div class="card-body">
+
+                        <div class="row">
+                            <div class="col">
+                                <label>USER NAME </label>
+                                <input type="text" class="form-control" name="u_name" id="u_name" readonly>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col">
+                                <input type="hidden" name="marking_venue_id" id="#user_id"> 
+                            <label>FIRST NAME </label>
+                            <input type="text" class="form-control" name="f_name" id="f_name" readonly>
+                            </div>
+                            <div class="col">
+                                <label>LAST NAME</label>
+                                <input type="text" class="form-control" name="l_name" id="l_name" readonly>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                        <div class="col">
+                            <label>VENUE </label>
+                            <select class="form-control" id="venue" required>
+                                <option id="myVenue"></option>
+                                {% for item in Stations %}
+                                <option value="{{item}}"> {{item}}</option>
+                                
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" id="save">Save</button>
+                      </div>
+                    
+                    </div>
+                </form>
+            </div>
+            
+          </div>
+        </div>
+      </div>
+</div>
+
+{#<a href="{%url 'staff-create'%}" class="btn btn-primary">Add Staff</a>#}
+{% endblock content %}
+
+{% block script %}
+<script>
+    $(".setVenue").click(function(){
+        var id = $(this).parents("tr").children("td:eq(0)").text();
+        var u_name = $(this).parents("tr").children("td:eq(1)").text();
+        var f_name = $(this).parents("tr").children("td:eq(2)").text();
+        var l_name = $(this).parents("tr").children("td:eq(3)").text();
+        var venue1=$(this).parents("tr").children("td:eq(5)").text();
+        var no_val="-"
+    
+        let html_data='<option value="">Choose center</option>';
+        
+        if ($.trim(venue1) == 'NOT SET') {
+            html_data =`<option value="${no_val}">select venue</option>`
+          } else {
+            html_data =`<option value="${venue1}">${venue1}</option>`
+          }
+
+        //let html_data =`<option value="${venue1}">${venue1}</option>`
+        $("#myVenue").html(html_data)
+        $("#user_id").val(id)
+        $("#f_name").val(f_name)
+        $("#l_name").val(l_name)
+        $("#u_name").val(u_name)
+        
+    })
+
+</script>
+
+<script>
+    
+    $("#save").click(function(){
+        $(this).attr("disabled", "disabled")
+        $(this).text("Updating...")
+
+        var u_name=$("#u_name").val();
+        var venue=$("#venue").val();
+
+      //  console.log(u_name)
+      //  console.log(venue)
+
+        $.ajax({
+            type: "POST",
+            url: "",
+            data:{
+                u_name:u_name ,
+                'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val(),
+                venue:venue,
+            }
+        })
+        .done(function(response){
+            location.reload()
+        })
+
+    })
+</script>
+
+{% endblock script %}

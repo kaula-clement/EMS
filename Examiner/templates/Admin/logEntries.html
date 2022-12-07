@@ -1,0 +1,74 @@
+{%extends 'base.html'%}
+
+{% block title %}
+Audit Trail
+{% endblock title %}
+
+
+{%block content%}
+Logs
+
+<div  class="card card-body">
+<table class="table table-sm" id="usersTable">
+    <thead>
+        <tr>
+            
+            <th >object_id</th>
+            
+            <th>object_repr</th>
+            <th>action</th>
+            <th>changes</th>
+            <th>actor_id</th>
+            <th>content_type_id</th>
+            <th>remote_addr</th>
+            {#<th>additional_data</th>#}
+            <th>timestamp</th>
+            {#<th>serialised_data</th>#}
+            <th></th>
+            <th></th>
+                
+        </tr>
+    </thead>
+    <tbody>
+
+        {%for item in logs%}
+    <tr>
+        
+        
+        <td>{{item.object_id}}</td>
+        
+        <td>{{item.object_repr}}</td>
+        <td>{{item.action}}</td>
+        <td>{{item.changes}}</td>
+        <td>{{item.actor_id}}</td>
+        <td>{{item.content_type_id}}</td>
+        <td>{{item.remote_addr}}</td>
+        {#<td>{{item.additional_data}}</td>#}
+        <td>{{item.timestamp}}</td>
+        {#<td>{{item.serialised_data}}</td>#}
+        
+
+
+        <td><a href="#">update</a></td> 
+        {% if request.user.is_admin %}
+        <td><a href="#">delete</a></td>  
+        {% endif %}     
+    </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+<a href="#" class="btn btn-primary btn-sm">ADD</a>
+{%endblock%}
+
+{% block script %}
+<script>
+$(document).ready(function(){
+    $("#usersTable").dataTable({
+        "scrollY":250,
+        "paging":false,
+        "scrollX":true,
+    });
+});
+</script>
+{% endblock script %}

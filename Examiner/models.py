@@ -2,6 +2,8 @@ from email.policy import default
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from datetime import date
+from auditlog.registry import auditlog
+
 
 class CustomUser(AbstractUser):
     user_type_data = ((0, "ADMIN"),(1, "EAD"), (2, "FAD"), (3, "Examiner"),(4,"Station-Admin"))
@@ -84,6 +86,9 @@ class Paper(models.Model):
 class MarkingVenue(models.Model):
     paper=models.ForeignKey(Paper,on_delete=models.CASCADE)
     center=models.CharField(max_length=50,choices=regions,null=True,blank=True)
+    
+   
+    
 
 
 class EAD(models.Model):
@@ -107,6 +112,8 @@ class EAD(models.Model):
                 self.save()
 
     objects = models.Manager()
+    def __str__(self):
+        return self.username
 
 
 
@@ -141,6 +148,8 @@ class Examiner(models.Model):
     session=models.ForeignKey(Session,on_delete=models.CASCADE,null=True,blank=True)
     mail_count=models.IntegerField(default=0)
     objects = models.Manager()
+    def __str__(self):
+        return self.first_name +' '+ self.last_name
       
 class ECZStaff(models.Model):
     user=models.OneToOneField(CustomUser,
@@ -149,8 +158,9 @@ class ECZStaff(models.Model):
     first_name=models.CharField(max_length=50)
     last_name=models.CharField(max_length=50)
     email=models.EmailField(unique=True)
-    subject=models.ForeignKey(Subject,to_field="subjectCode",db_column="Subject_Code", on_delete=models.SET_NULL,null=True,blank=True)
-    paper =models.ForeignKey(Paper,on_delete=models.SET_NULL,null=True,blank=True)
+    #subject=models.ForeignKey(Subject,to_field="subjectCode",db_column="Subject_Code", on_delete=models.SET_NULL,null=True,blank=True)
+    #paper =models.ForeignKey(Paper,on_delete=models.SET_NULL,null=True,blank=True)
+    center=models.CharField(max_length=50,choices=regions,null=True,blank=True)
     def save(self,*args,**kwargs):
             super().save(*args,**kwargs)
             if not self.user:
@@ -162,7 +172,8 @@ class ECZStaff(models.Model):
                                                          user_type=4
                                                         )
                 self.save()
-
+    def __str__(self):
+        return self.username
 
 class Invitation(models.Model):
     fromAddress=models.ForeignKey(EAD, on_delete = models.CASCADE,null=True,blank=True)
@@ -247,19 +258,22 @@ from django.dispatch import receiver
 def handle_deleted_examiner(sender, instance, **kwargs):
     if instance.user:
         instance.user.delete()
-        
-#@receiver(models.signals.post_delete, sender=Staff)
-#def handle_deleted_staff(sender, instance, **kwargs):
-#    if instance.user:
-#        instance.user.delete()
-        
-#@receiver(models.signals.post_delete, sender=EAD)
-#def handle_deleted_ead(sender, instance, **kwargs):
-#    if instance.user:
-#        instance.user.delete()
-        
-#@receiver(models.signals.post_delete, sender=ECZStaff)
-#def handle_deleted_eczstaff(sender, instance, **kwargs):
-#    if instance.user:
-#        instance.user.delete()
-   
+
+
+
+auditlog.register(CustomUser)
+auditlog.register(Bank)
+auditlog.register(BankBranch)
+auditlog.register(Province)
+auditlog.register(District)
+auditlog.register(Station)
+auditlog.register(Session)
+auditlog.register(Position)
+auditlog.register(Subject)
+auditlog.register(Paper)
+auditlog.register(Examiner)
+auditlog.register(ECZStaff)
+auditlog.register(Staff)
+auditlog.register(SchedulePay)
+auditlog.register(Payment)
+auditlog.register(Attendance)

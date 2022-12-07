@@ -12,16 +12,17 @@
                 <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="inputText">UserName</label>
-                    {% if request.user.user_type is 3 %}
+                    {# {% if request.user.user_type is 3 %} #}
                     <input type="text" class="form-control" id="UserName" value="{{request.user.username}}" placeholder="UserName" disabled>
-                    {% else %}
-                    {{form.username}}
+                    {# {% else %} #}
+        
 
-                    {% endif %}
+                   {#  {% endif %}  #}
                    <!--
                      <input type="text" class="form-control" id="UserName" value="{{request.user.username}}" placeholder="UserName" disabled>
                 -->
                     <span><a href="{%url 'updatepassword'%}"  >change password</a></span>
+                    
                 </div>
             </div>
 
@@ -32,11 +33,7 @@
                        <!-- <input type="text" class="form-control" id="id_name" name="name"  placeholder="First Name" > -->
                     </div>
                 
-                    <div class="col ">
-                        <label for="inputText">Middle Name</label>
-                            {{form.middle_name}}
-                       <!-- <input type="text" class="form-control" id="name"  placeholder="Middle Name" > -->
-                    </div>
+                
                     <div class="col">
                         <label for="inputText">Last Name</label>
                         {{form.last_name}}
@@ -45,20 +42,6 @@
                     
         
                 </div>
-               
-                    <div class="row">
-                       
-                    <div class="col ">
-                        <label for="inputEmail4">Email</label>
-                        {{form.email}}
-        
-                    </div>
-                </div>
-                   
-
-                    
-                
-                        
                 
                 
                 <button type="submit" class="btn btn-primary">Update</button>
@@ -75,7 +58,6 @@
     </div>
 </div>
 <!--=================modal=======================================-->
-
 
 <!--===================================close mdal======================================-->
 

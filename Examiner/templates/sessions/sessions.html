@@ -20,16 +20,21 @@ All Sessions here
             <th>Session Start-Date</th>
             <th>Session End-Date</th>
             <th>Session status</th>
+            <th>Update</th>
         </tr>
         </thead>
 
         {% for session in sessions %}
         <tbody>
         <tr id="{{session.id}}">
-            <td><input type="checkbox" value="{{ session.id }}"></td>
+            <td><input type="checkbox" class="session_value" value="{{ session.id }}">
+            <formset hidden>
+              {{session.id}}
+            </formset>
+            </td>
             <td>{{ forloop.counter }}</td>
             <td>{{ session.name }}</td>
-            <td>{{ session.start_date }}</td>
+            <td>{{ session.start_date}}</td>
             <td>{{ session.end_date }}</td>
             <td>
                 {% if session.active %}
@@ -39,16 +44,16 @@ All Sessions here
                 {% endif %}
                 
             </td>
-        </tr>
+            <td> <a href="{%url 'session-update' session.id %}" > <i class="fas fa-edit" style='color:blue'></i> </a> </td>
+            
+        
+          </tr>
         </tbody>
         {% endfor %}
 
     </table>
+    {{form.as_p}}
 </div>
-
-
-
-
 
 
 
@@ -68,17 +73,17 @@ All Sessions here
                     <div class="row">
                         <div class="col">
                         <label>Session Name </label>
-                        <input type="text" class="form-control" name="session_name" maxlength=20>
+                        <input type="text" class="form-control" id="session_name" name="session_name" maxlength=20>
                         </div>
                     </div>
                     <div class="row">
                     <div class="col">
                         <label>Session Start Year </label>
-                        <input type="date" class="form-control" name="start_date">
+                        <input type="date" class="form-control" id="start_date"  name="start_date">
                     </div>
                     <div class="col">
                         <label>Session End Year </label>
-                        <input type="date" class="form-control" name="end_date">
+                        <input type="date" class="form-control" id="end_date" value="end_date" name="end_date">
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -87,13 +92,14 @@ All Sessions here
                   </div>
                 
                 </div>
-                {{form.as_p}}
+               
             </form>
         </div>
         
       </div>
     </div>
   </div>
+
 
 
 

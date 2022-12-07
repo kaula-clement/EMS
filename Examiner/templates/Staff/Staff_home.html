@@ -125,17 +125,28 @@
 {% endif %}
 {% if request.user.user_type == 4 %}
 <div class="container">
+  <div class="row "> 
+    <div class="col-lg-12">
+    <div class="small-box bg-info">
+      <div class="inner text-center">
+        {% if station  %}
+       <b> MY Station Stats: [{{station}}] station</b>
+       {% else %}
+       <b> NO STATION ASSIGNED</b>
+       {% endif %}
+      </div>
+    </div>
+  </div>
+  </div>
 <div class="row">
   <div class="col">
     <!-- small box -->
     <div class="small-box bg-info">
       <div class="inner">
-
-        <p>Total Examiners {{approved.count}}</p>
-        <p>Present {{examiners.count}}</p>
-        <p>Absent {{absent.count}}</p>
-        <p>Pending {{pending.count}}</p>
-
+      
+        <p><h4>Total Examiners {{examiners.count}} </h4></p>
+      
+    
       </div>
       <div class="icon">
         <i class="ion ion-stats-bars"></i>
@@ -146,11 +157,13 @@
   <!-- ./col -->
   <div class="col">
     <!-- small box -->
-    <div class="small-box bg-danger">
+    <div class="small-box bg-warning  ">
       <div class="inner">
-        <h3>{{ staffs_count }}</h3>
+        <h3></h3>
 
-        <p>Staff Users</p>
+        
+        <p><h4>Total Papers {{papers.count}}</h4></p>
+        
       </div>
       <div class="icon">
         <i class="ion ion-stats-bars"></i>
@@ -165,11 +178,11 @@
 <div class="row">  
   <div class="col">
     <!-- small box -->
-    <div class="small-box bg-warning">
+    <div class="small-box  bg-success">
       <div class="inner">
-        <h3>{{ approved_examiners }}</h3>
-
-        <p>Approved Examiners</p>
+        <h3></h3>
+        <p><h4>Examiners Present {{present.count}}</h4></p>
+        
       </div>
       <div class="icon">
         <i class="ion ion-stats-bars"></i>
@@ -180,16 +193,17 @@
   <!-- ./col -->
   <div class="col">
     <!-- small box -->
-    <div class="small-box bg-success">
+    <div class="small-box bg-danger  ">
       <div class="inner">
-        <h3>{{ subject_count }}</h3>
+        <h3></h3>
 
-        <p>Total Subjects</p>
+        <p><h4>Examiners Absent {{absent.count}}</h4></p>
+
       </div>
       <div class="icon">
         <i class="ion ion-stats-bars"></i>
       </div>
-      <a href="{%url 'subject-bord'%}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+      <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
     </div>
   </div>
 

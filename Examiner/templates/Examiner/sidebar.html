@@ -15,7 +15,7 @@
           <img src="{% static 'dist/img/user.png'%}" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
-          <a href="{%url 'updateprofile' request.user.id %}" class="d-block">{{ request.user}}</a>
+          <a href="#" class="d-block">{{ request.user}}</a>
         </div>
       </div>
 
@@ -43,13 +43,16 @@
             </ul>
           </li>
           <li class="nav-item ">
-            <a href="#" class="nav-link">
+            <a href="#" class="nav-link has-submenue">
               <i class='nav-icon far fa-address-book' style='font-size:24px'></i>
               <p>
-               Update Details
+               My Details
               
               </p>
             </a>
+            <ul class="submenu collapse">
+              <li><a class="nav-link" href="{%url 'updatemyDetails' request.user.id %}">Update details</a></li>
+            </ul>
           </li>
           {% if examiner.position.name == "Chief Examiner" %}
           <li class="nav-item">

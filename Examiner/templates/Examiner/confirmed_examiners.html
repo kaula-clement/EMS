@@ -2,23 +2,12 @@
 {% load static %}
 
 {% block title %}
-Approved Examiners List
-{% endblock title  %}
+Confirmed Examiners
+{% endblock title %}
 
 {%block content%}
 <div class="container">
-
-<h3>Approved Examiners</h3>
-<div id="preload" style="color:blue; width:100%; height:100%; position:absolute; display:none;"  >
-    <img src="{% static '/img/preloaders/mailloader.gif' %}" style="margin-right:25%; margin-left:25%; margin-top:10%;">
-</div>
-
-<span><a class="btn btn-info btn-sm float-right" href="#" id='batchmail-btn'> Email selected<a/> </span>
-  <span>  <a class="btn btn-success btn-sm float-right" href="{%url 'examiner_upload_csv'%}">Upload CSV</a><span>
-<span  ><a href="{%url 'examiner-requests'%}" class="btn btn-info btn-sm">Pending Approvals 
-    <span class="badge badge-light"> {{not_approved_examiners_count}} </span></a> </span>
-<span  ><a href="#" class="btn btn-success btn-sm">Confirmed Examiners 
-    <span class="badge badge-light"> {{not_approved_examiners_count}} </span></a> </span>
+EXAMINERS THAT HAVE CONFIRMED AVAILABILITY FOR THE YEAR'S MARKING SESSION
 <hr>
 
 <div class="table-responsive overflow-auto card card-body">
@@ -36,15 +25,14 @@ Approved Examiners List
         <th>Email</th>
         <th>position</th>
         <th>Subject</th>
-        <th>Availability</th>
-        <th>Status</th>
+        
         <th></th>
         <th></th>
         <th></th>
     </tr>
 </thead>
 <tbody>
-    {%for item in approved_examiners %} 
+    {%for item in examiners %} 
 <tr>
     <td></td>
     <td> <input type="checkbox" name="examiner_id[]" value="{{item.id}}" id="examiner_item">
@@ -65,19 +53,9 @@ Approved Examiners List
         {% endif %}
     
     </td>
-        {% if item.availability %}
-         <td>Available</td>
-        {% endif %}
-        {% if not item.availability %}
-        <td>Not Available</td>
-        {% endif %}
+       
 
-        {% if item.approved %}
-         <td>Apoved</td>
-        {% endif %}
-        {% if not item.approved %}
-        <td>Not Approved</td>
-        {% endif %}
+        
     
     <td><a href="{% url 'examiner-details' item.id %}"><i class='fas fa-eye'></i></a></td>
     <td><a href="{% url 'examiner-edit' item.id %}"><i class='fas fa-pencil-alt'></i></a></td>
@@ -106,12 +84,14 @@ Approved Examiners List
         $("#checkAll").click(function(){
             $('input:checkbox').not(this).prop('checked', this.checked);
          });
-     $("#examinersTable").dataTable({
-        "scrollY": "55vh",
+    $("#examinersTable").dataTable({
+        "scrollY": "70vh",
+        "scrollX":true,
         "scrollCollapse": true,
         "paging": false
-
+       
         });
+    
        
         $("#delete_multiple_btn").click(function(){
             if (confirm('are you sure you whant to delete these items?'))

@@ -34,9 +34,9 @@
               </p>
             </a>
             <ul class="submenu collapse">
-              <li><a class="nav-link" href="{%url 'add-examiner'%}"><p>Add New </p></a></li>
+              <li><a class="nav-link" href="{%url 'confirmed-list'%}">Confirmed Examiners </a> </li>
+              <li><a class="nav-link" href="{%url 'add-examiner'%}"><p>Add New Examiner </p></a></li>
               <li><a class="nav-link" href="{%url 'examiner-list'%}"> <p>Approved List</p></a> </li>
-              
               <li><a class="nav-link" href="{%url 'examiner-requests'%}">Pending List </a> </li>
             </ul>
           </li>
@@ -137,21 +137,34 @@
             </p>
           </a>
           <ul class="submenu collapse">
-            <li><a class="nav-link" href="{%url 'add-user'%}"><p>Add New </p></a></li>
+            <li><a class="nav-link" href="{%url 'add-user'%}"><p>Add New User </p></a></li>
             <li><a class="nav-link" href="{%url 'userlist'%}"> <p>List</p></a> </li>
             
           </ul>
         </li>
-        {% endif %}
-{% comment %}
         <li class="nav-item">
-          <a href="{%url 'ECZStaff-create'%}" class="nav-link">
-            <i class='nav-icon fas fa-users' style='font-size:24px'></i>
+          <a href="{%url 'log-entries'%}" class="nav-link">
+            <i class="fa fa-clock-o" style="font-size:24px"></i>
             <p>
-              ECZStaff-create
+            Audit Logs 
             </p>
           </a>
         </li>
+        {% endif %}
+
+        <li class="nav-item has-submenu">
+          <a href="{%url 'ECZStaff-create'%}" class="nav-link">
+            <i class="fa fa-user-o" style="font-size:24px"></i>
+            <p>
+              Manage Data Entry Cord..
+            </p>
+          </a>
+          <ul class="submenu collapse">
+            <li > <a class="nav-link"  href="{%url 'station-admin-list'%}">D.E Cordinators</a></li>
+            
+          </ul>
+        </li>
+{% comment %}
         <li class="nav-item">
           <a href="{%url 'staff-list'%}" class="nav-link">
             <i class='nav-icon fas fa-chalkboard-teacher'  style='font-size:24px'></i>

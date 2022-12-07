@@ -7,31 +7,7 @@ Select Marking center
 {% block content %}
 Subject Marking Center
 <div class="container">
-<form method="POST" action="">
-{% csrf_token %}
 
-    <Select id="id_subject" name="subject_code">
-    <option value=""> Select Subject</option>
-        {% for item in subjects %}
-        <option value="{{item.subjectCode}}"> {{item.subjectName}}</option>  
-    {% endfor %}
-    </select>
-
-    <Select id="id_paper" name="paper_number">
-        <option value=""> Select Paper Number</option>
-           
-    </select> 
-
-    <Select id="id_marking_center" name="center">
-        <option value=""> Select Marking Center</option>
-            {% for item in centers %}
-            <option value="{{item}}"> {{item}}</option>
-            
-            {% endfor %}
-    </select>
-
-    {#<input type="submit" venue="save"> #}
-    </form>
 
 <div class="card">
     <div class="card-body">
@@ -84,7 +60,7 @@ Subject Marking Center
                         <div class="card-body">
                             <div class="row">
                                 <div class="col">
-                                    <input type="hidden" name="marking_venue_id" id="marking_venue_id"> 
+                                    <input type="hidden" name="marking_venue_id" id="marking_venue_id" class="marking_venue"> 
                                 <label>SUBJECT NAME </label>
                                 <input type="text" class="form-control" name="Subject_set" id="Subject_set" readonly>
                                 </div>
@@ -108,7 +84,7 @@ Subject Marking Center
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary" id="save">Save</button>
+                            <button type="btn" class="btn btn-primary" id="save">Save</button>
                           </div>
                         
                         </div>
@@ -176,6 +152,7 @@ Subject Marking Center
         //let html_data =`<option value="${venue1}">${venue1}</option>`
         $("#myVenue").html(html_data)
         $("#marking_venue_id").val(id)
+
         $("#Subject_set").val(subject)
         $("#Paper_set").val(paper)
         
@@ -188,17 +165,18 @@ Subject Marking Center
         $(this).attr("disabled", "disabled")
         $(this).text("Updating...")
 
-        var id=$("#marking_venue_id").val();
-        var venue=$("#venue").val();
+        var marking_venue_id=$(".marking_venue").val()
+        var venue=$("#venue").val()
 
-        console.log(id)
+        
         console.log(venue)
+        console.log(marking_venue_id)
 
         $.ajax({
             type: "POST",
-            url: '{% url "marking-center" %}',
+            url: "",
             data:{
-                id:id ,
+                marking_venue_id:marking_venue_id ,
                 'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val(),
                 venue:venue,
             }

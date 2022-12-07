@@ -1,7 +1,7 @@
 from django.shortcuts import render,HttpResponseRedirect,redirect
 from django.urls import reverse
 from django.db.models import Q
-from .models import Examiner,Invitation,CustomUser,Staff,Bank,BankBranch,SchedulePay,Province,District,Payment,Attendance,ECZStaff,Subject
+from .models import Examiner,Invitation,CustomUser,Staff,Bank,BankBranch,SchedulePay,Province,District,Payment,Attendance,ECZStaff,Subject,MarkingVenue
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView,UpdateView,DeleteView
@@ -11,7 +11,7 @@ from django.contrib.auth.views import LoginView
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .forms import StaffForm,ScheduleForm,StationForm
+from .forms import StaffForm,ScheduleForm,StationForm,ExaminerUpdateForm
 
 import logging
 from django.contrib import messages
@@ -19,28 +19,45 @@ from django.contrib import messages
 #======================================
 @login_required()
 def StaffHome(request): 
+    #===========Station Admin========================#
     if request.user.user_type == 4:
-        user=ECZStaff.objects.get(username=request.user.username)
+        user=ECZStaff.objects.get(user=request.user)
+        examiners=Examiner.objects.filter(Q(to_province=user.center)&
+                                          Q(approved=True)&
+                                          ~Q(to_province=None))
+        absent=Attendance.objects.filter(examiner__in=examiners,status=3)
+        present=Attendance.objects.filter(examiner__in=examiners,status=2)
+        pending=Attendance.objects.filter(examiner__in=examiners,status=1)
+        
+        papers=MarkingVenue.objects.filter(Q(center=user.center)&
+                                          ~Q(center=None))
+        context={
+                'absent':absent,
+                'pending':pending,
+                'papers':papers,
+                'present':present,
+                'station':user.center,
+        }
+        #===========FAD Staff========================#
     elif request.user.user_type == 2:
         user=Staff.objects.get(username=request.user.username)
-    print("User:",user.first_name)
-    approved=Examiner.objects.filter(approved=True)
-    examiners=Attendance.objects.filter(status=2)
-    absent=Attendance.objects.filter(status=3)
-    pending=Attendance.objects.filter(status=1)
+        examiners=Attendance.objects.filter(status=2)
     
-    examiners_count=examiners.count()
-    branches=BankBranch.objects.all
-    scheduleTable=SchedulePay.objects.all()
-    context={
+        approved=Examiner.objects.filter(approved=True)
+        
+        
+        
+        examiners_count=examiners.count()
+        branches=BankBranch.objects.all
+        scheduleTable=SchedulePay.objects.all()
+        context={
             'examiners_count':examiners_count,
-            'examiners':examiners,
-          'branches':branches,
-          'scheduleTable':scheduleTable,
-          'approved':approved,
-          'absent':absent,
-          'pending':pending,
-            }
+            
+            'branches':branches,
+            'scheduleTable':scheduleTable,
+            'approved':approved,
+                }
+    context.update({'examiners':examiners,})
     return render(request, 'Staff/Staff_home.html',context)
 
 
@@ -63,6 +80,29 @@ class StaffCreate(LoginRequiredMixin,CreateView):
         print("Usename: ",)
         return super(StaffForm,self).form_valid(StaffForm)
 
+
+@login_required() 
+def stationAdminUpdate(request):
+    stationAdmin=ECZStaff.objects.all()
+    Stations=['LUSAKA','COPPERBELT','MONZE','KAPIRI','LIVINGSTONE',
+                'CHOMA','MWANDI','LUNTE','MWENSE','KASENENGWA','CHISAMBA','CHIBOMBO',]
+    if request.method=="POST":
+        username=request.POST.get('u_name')
+        venue=request.POST.get('venue')
+        stationAdmin=ECZStaff.objects.get(username=username)
+        stationAdmin.center=venue
+        stationAdmin.save()
+       # print("done")
+       # print("Station got",venue)
+       # print("Station set",stationAdmin.center)
+       # print("Station old",)
+        return redirect('station-admin-list')
+    context={
+        'stationAdmin':stationAdmin,
+        'Stations':Stations,
+    }
+    return render(request, 'EAD/stationAdmins.html',context)
+
 class StaffListView(ListView):
     model=Staff
     template_name='EAD/Stafflist.html'
@@ -76,9 +116,8 @@ class StaffExaminerList(LoginRequiredMixin,ListView):
 
 def attendanceView(request):
     user=ECZStaff.objects.get(username=request.user.username)
-    examiners=Examiner.objects.filter(approved=True,
-                                        subject=user.subject,
-                                        paper=user.paper)
+    examiners=Examiner.objects.filter(Q(approved=True)&
+                                      Q(to_province=user.center) & ~Q(to_province=None) )
     for item in examiners:
         attendance=Attendance.objects.get_or_create(examiner=item)
         attendance[0].save()
@@ -92,10 +131,10 @@ def attendanceView(request):
 
 @login_required()
 def takeattendance(request):
-    #user=ECZStaff.objects.get(username=request.user.username)
+    user=ECZStaff.objects.get(user=request.user)
     subjects=Subject.objects.all()
-    examiners=Examiner.objects.filter(approved=0)#,
-                                       # subject=user.subject,
+    examiners=Examiner.objects.filter(Q(to_province=user.center) & ~Q(to_province=None))#,
+    myStation=user.center
                                         #paper=user.paper)
     attendance=Attendance.objects.filter(examiner__in=examiners)
     
@@ -106,8 +145,9 @@ def takeattendance(request):
         examiners=Examiner.objects.filter(Q(subject=subcode)&
                                           Q(paper=paper_number))
         attendance=Attendance.objects.filter(examiner__in=examiners)
-       # redirect('take-attendance')
+       
     context={
+        'myStation':myStation,
         'subjects':subjects,
         'attendance':attendance,
         'examiners':examiners,
@@ -123,7 +163,29 @@ def absent(request,pk):
     attendance=Attendance.objects.get(id=pk)
     attendance.status=3
     attendance.save()
-    return redirect('take-attendance')    
+    return redirect('take-attendance')  
+
+def resetAttendance(request,pk):
+    attendance=Attendance.objects.get(id=pk)
+    attendance.status=1
+    attendance.save()
+    return redirect('take-attendance')
+
+@login_required()
+def updateExaminer(request,pk):
+    examiner=Examiner.objects.get(id=pk)
+    form=ExaminerUpdateForm(instance=examiner)
+    
+    if request.method=="POST":
+        form=ExaminerUpdateForm(request.POST,instance=examiner)
+        if form.is_valid():
+            form.save()
+            messages.success(request,'Details Updated')
+        return redirect('take-attendance')
+    context={
+        'form':form,
+    }
+    return render(request, 'Staff/updateExaminer.html',context)
     
 class ExaminerDetail(LoginRequiredMixin,DetailView):
     model=Examiner
