@@ -1,15 +1,21 @@
 
 
 .main-sidebar{
-   background-color:#0b5e28; 
+  background-color: #137034;
+  /* background-color:#0b5e28; /*current*/
   /**background-color:#C4D4C4;
   background-color: #00A85A; From [as heavy green font]**/
-  font-size: medium;
+  font-size: 15px;
+  line-height: 13px;
 }
 .main-header{
- /** background-color:#C4DFC4; From [as light bg]**/
-    background-color: #47b471;
+  /*background-color:#C4DFC4;                     /*From [as light bg]*/
+  /**  background-color: #47b471;**/
    /** background-color: #4db66d;**/
+   background-color: #00A85A;
+   font-size: medium;
+   font-weight:normal;
+   
 }
 
 .card-link{
@@ -19,7 +25,8 @@
     outline-color: #000cb0;
 }
 .content-wrapper{
-    background-color: #bcdbcde8;
+    background-color: #cae0d5;
+    font-size: 15px;
 }
 
 
@@ -44,6 +51,18 @@ drop down on nav style
     animation: spin 2s linear infinite;
 
   }
+
+  .form-control{
+    -webkit-border-radius: 0;
+       -moz-border-radius: 0;
+            border-radius: 0;
+  }
+  .form-select{
+    -webkit-border-radius: 0;
+       -moz-border-radius: 0;
+            border-radius: 0;
+  }
+
   
   /* Safari */
   @-webkit-keyframes spin {

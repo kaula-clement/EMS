@@ -1,18 +1,19 @@
 {% load static%}
 
-<aside class="main-sidebar sidebar-dark-primary  elevation-4">
+<aside class="main-sidebar sidebar-dark-primary">
     <!-- Brand Logo -->
     <a href="{% url 'staff-home'%}" class="brand-link">
-      <img src="{% static '/img/ECZ-Logo2.jpg'%}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-      <span class="brand-text font-weight-heavy"><strong>ECZ</strong></span>
+      <img src="{% static '/img/ECZ-Logo2.jpg'%}" alt="AdminLTE Logo" class="brand-image img-circle " style="opacity: .8">
+      <span class="brand-text font-weight-heavy"><strong>ECZ</strong></span></br>
+      <span class="brand-text font-weight-light float-bottom"><p>Examiner Register</p></span>
     </a>
-
+   
     <!-- Sidebar -->
     <div class="sidebar ">
       <!-- Sidebar user panel (optional) -->
-      <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+      <div class="user-panel mt-1 pb-2 mb-1 d-flex">
         <div class="image">
-          <img src="{% static 'dist/img/user.png'%}" class="img-circle elevation-2" alt="User Image">
+          <img src="{% static 'dist/img/user.png'%}" class="img-circle " alt="User Image">
         </div>
         <div class="info">
           <a href="#" class="d-block">{{ request.user}}</a>
@@ -42,25 +43,27 @@
           <a href="#" class="nav-link">
             <i class='nav-icon far fa-address-book' style='font-size:24px'></i>
             <p>
-              Schedule
+              Pay Schedule
             
             </p>
           </a>
           <ul class="submenu collapse">
-            <li><a class="nav-link" href="{%url 'schedule_table'%}"><p>Schedule Table</p></a></li>
-            <li><a class="nav-link" href="{%url 'schedule'%}"> <p>Examiners Schedule</p></a> </li>
+            <li><a class="nav-link" href="{%url 'schedule_table'%}"><p>Pay Schedule Table</p></a></li>
+            <li><a class="nav-link" href="{%url 'schedule'%}"> <p>Examiners Pay Schedule</p></a> </li>
             <li><a class="nav-link" href="{%url 'upload_stations'%}"> <p>Upload Station</p></a> </li>
           </ul>
         </li>
+
+        <li class="nav-item">
+          <a href="{%url 'bank-list'%}" class="nav-link">
+            <i class="nav-icon fas fa-th"></i>
+            <p>
+            Banks  
+            </p>
+          </a>
+        </li>
           {% endif %}
-          <li class="nav-item">
-            <a href="{%url 'bank-list'%}" class="nav-link">
-              <i class="nav-icon fas fa-th"></i>
-              <p>
-              Banks  
-              </p>
-            </a>
-          </li>
+          
 
 {% if request.user.user_type == 4 %}
 
@@ -68,13 +71,12 @@
   <a href="#" class="nav-link"> 
     <i class="nav-icon fas fa-th"></i>
     <p>
-    Examiners  
+    Examiner Attendance 
     </p>
   </a>
   <ul class="submenu collapse">
     <li><a class="nav-link" href="{%url 'take-attendance'%}"><p>Take addendance</p></a></li>
-    <li><a class="nav-link" href="{% url 'attendance'%}"><p>update my list</p></a></li>
-    <li><a class="nav-link" href="#"><p>update details#</p></a></li>  
+    <li><a class="nav-link" href="{% url 'attendance'%}"><p>update my list</p></a></li>  
   </ul>
 </li>
 

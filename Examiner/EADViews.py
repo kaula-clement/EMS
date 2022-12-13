@@ -30,6 +30,10 @@ def EADHome(request):
     approved_examiners_list=[]
     examiner_list.append(examiners)
     examiners_count=examiners.count()
+    #users=CustomUser.objects.exclude(is_superuser=True)
+    users=CustomUser.objects.all()
+    inactive=users.filter(is_active=False)
+    examiner_users=users.filter(user_type=3)
     staffs=CustomUser.objects.exclude(user_type=3)
     staffs_count=staffs.count()
     not_approved_examiners=examiners.filter(approved=False).count()
@@ -38,6 +42,9 @@ def EADHome(request):
     not_available=Examiner.objects.filter(approved=True,availability=False)
     subject_count=Paper.objects.all().count()
     context={
+        'examiner_users':examiner_users,
+            'users':users,
+            'inactive':inactive,
         'examiner_list':examiner_list,
         'not_available':not_available,
             'examiners_count':examiners_count,
@@ -201,7 +208,7 @@ class ExaminerList(LoginRequiredMixin,ListView):
         context=super().get_context_data(**kwargs)
         context['available_examiners']=Examiner.objects.filter(approved=True,availability=True)
         context['not_available_examiners']=Examiner.objects.filter(availability=False)
-        context['approved_examiners']=Examiner.objects.filter(approved=True).order_by('-updated_at')
+        context['approved_examiners']=Examiner.objects.filter(Q(approved=True) & Q(mail_count = 0)).order_by('-updated_at')
         context['myFilter']=ExaminerFilter(queryset=Examiner.objects.all())
         context['not_approved_examiners']=Examiner.objects.filter(approved=False)
         context['not_approved_examiners_count']=context['not_approved_examiners'].count()
@@ -229,7 +236,7 @@ def batchmailExaminer(request):
                     name=str(examiner.first_name)+' '+str(examiner.last_name)
                     msg="Hello "+name+". You have been invited to the forthcoming marking session.Please use credentials username:"+str(username)+" and password: password3 to confirm availability. Please remember to reset your password and update your details on the portal.Thank you"
                     send_mail(
-                        'ECZ Examiner application approval',
+                        'ECZ Examiner Invitation',
                         msg,
                         
                         'infomail.main@zohomail.com',
@@ -275,11 +282,13 @@ def examinerRequests(request):
         for item in toApprove:
             examiner=Examiner.objects.get(pk=item)
             try:
-                if examiner.availability==True: 
-                    examiner.approved=True
-                    examiner.save()
-                else:
-                    messages.warning(request,"Examiner whose status is unavailable will not be approved")
+                examiner.approved=True
+                examiner.save()
+                #if examiner.availability==True: 
+                #    examiner.approved=True
+                #    examiner.save()
+                #else:
+                #    messages.warning(request,"Examiner whose status is unavailable will not be approved")
             except Exception as e:
                 logging.getLogger("error_logger").error(repr(e))
           
@@ -524,16 +533,15 @@ def upload_csv(request):
             fields = line.split(",")
             data_dict = {}
             data_dict["first_name"] =fields[1]  # field=uploaded file column
-            data_dict["middle_name"] = fields[2]
-            data_dict["last_name"] = fields[3]
-            sub=Subject.objects.get(subjectCode=fields[4])
+            data_dict["last_name"] = fields[2]
+            sub=Subject.objects.get(subjectCode=fields[3])
             data_dict["subject"] = sub.subjectCode   # field=uploaded file column
-            paper=Paper.objects.get(Q(paper_number=fields[5]),
+            paper=Paper.objects.get(Q(paper_number=fields[4]),
                                     Q(subject=sub)
                                     ) #& (Paper.objects.filter(subject=sub)))
             data_dict["paper"] = paper.paper_number 
-            data_dict["email"] = fields[6]
-            obj=Position.objects.get(name=fields[7].rstrip())
+            data_dict["email"] = fields[5]
+            obj=Position.objects.get(name=fields[6].rstrip())
             
             #print("Position:======",obj)
             data_dict["position"] =obj.id

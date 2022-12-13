@@ -3,8 +3,8 @@ from .models import Examiner,Subject,Position,Invitation,Province,District,EAD,C
 
 
 class ExaminerAdmin(admin.ModelAdmin):
-    fields=('email','first_name','last_name','middle_name','province','district','subject','position',)
-    list_display=('user','email','province','district','ExaminerCode','id','subject','position','first_name','last_name','middle_name',)
+    fields=('email','first_name','last_name','province','district','subject','position',)
+    list_display=('user','email','province','district','ExaminerCode','id','subject','position','first_name','last_name',)
 class CustomUserAdmin(admin.ModelAdmin):
     list_display=('username','email','user_type','is_active')
 

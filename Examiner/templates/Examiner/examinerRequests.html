@@ -10,18 +10,21 @@
     <img src="{% static '/img/preloader.gif' %}" style="margin-right:25%; margin-left:25%; margin-top:10%;">
 </div>
 
-<a href="{%url 'examiner-list'%}">Back to Approved Examiners</a>
+{#Approve btn#}
+<span class="float-right" ><a href="#" class="btn btn-success btn-sm" id="appove_multiple_btn">Approve 
+    <span class="badge badge-light"> <i class="fa fa-check" aria-hidden="true"></i> </span></a> </span>
+
 <div class="table-responsive">
-<table class="table table-hover text-nowrap" id="examinersTable">
+<table class="table table-hover text-nowrap .table-striped" id="examinersTable">
   <thead>
   
     {% csrf_token %}
        <tr>
          <!--  <th>id</th> -->
          <th></th>
+         <th>S.NO</th>
            <th>Examiner Number</th>
            <th>First Name</th>
-           <th>Middle Name</th>
            <th>Last Name</th>
            <th>position</th>
            <th>Subject</th>
@@ -36,11 +39,10 @@
        {%for item in examiners %} 
    <tr id="{{item.id}}">
       <!-- <td>{{item.id}}</td> -->
-      <td> <input type="checkbox" name="examiner_id[]" value="{{item.id}}" id="approve_examiner">
-      </td>
+      <td><input type="checkbox" name="examiner_id[]" value="{{item.id}}" id="approve_examiner"> </td>
+      <td>{{forloop.counter}}</td>
        <td>{{item.ExaminerCode}}</td>
        <td>{{item.first_name}}</td>
-       <td>{{item.middle_name}}</td>
        <td>{{item.last_name}}</td>
        <td>{{item.position.name}}</td>
        <td>
@@ -53,10 +55,10 @@
     
         </td>
            {% if item.availability %}
-            <td>Available</td>
+            <td><span class="badge badge-pill badge-success" >Available</span></td>
            {% endif %}
            {% if not item.availability %}
-           <span class="badge badge-pill badge-danger" >NOT AVAILABLE</span>
+           <td><span class="badge badge-pill badge-danger" >NOT AVAILABLE</span></td>
            {% endif %}
       
        <td><a href="{% url 'examiner-details' item.id %}"><i class='fas fa-eye'></i></a></td>
@@ -75,7 +77,7 @@
 
 
    
-   <input type="button" value="approve" id="appove_multiple_btn">
+   
 
 
 
@@ -88,8 +90,28 @@ $(document).ready(function(){
     $("#examinersTable").dataTable({
         dom:'Bfrtip',
         buttons:[
-        'csv','pdf','print'
-        ]
+                    {
+                        extend: 'excelHtml5',
+                        className:'btn btn-success',
+                        exportOptions: {
+                            columns: [1,2,3,4,5,6,7]
+                        }
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        className:'btn btn-danger',
+                        exportOptions: {
+                            columns: [1,2,3,4,5,6,7]
+                        }
+                    },
+        
+        ],
+        "columnDefs": [
+        {
+            orderable: false,
+            targets: [0,8,9,10]
+        },
+                ]
     });
 
     $("#appove_multiple_btn").click(function(){

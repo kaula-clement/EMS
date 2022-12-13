@@ -8,6 +8,9 @@ EAD Home Page
 <div class="container-fluid">
           <!-- Small boxes (Stat box) -->
           {#Examiners Dashbord ROW#}
+          <div class=" container">
+          <p style="font-size:20px;">DASHBORD |</p>
+          </div>
           <div class="row">
             <div class="col-lg-3 col-6">
               <!-- small box -->
@@ -15,7 +18,7 @@ EAD Home Page
                 <div class="inner">
                   <h3>{{ examiners_count }}</h3>
 
-                  <p><h4>Total Examiners</h4></p>
+                  <p>TOTAL EXAMINERS</p>
                   
                 </div>
                 <div class="icon">
@@ -31,7 +34,7 @@ EAD Home Page
                 <div class="inner">
                   <h3>{{ not_available.count }}</h3>
 
-                  <p><h5>NOT AVAILABLE</h5></p>
+                  <p>NOT AVAILABLE</p>
                 </div>
                 <div class="icon">
                   <i class="ion ion-stats-bars"></i>
@@ -61,7 +64,7 @@ EAD Home Page
               <div class="small-box bg-success">
                 <div class="inner">
                   <h3>{{ available_examiners}}</h3>
-                  <p><h5>AVAILABLE</h5></p>
+                  <p>AVAILABLE</p>
                 </div>
                 <div class="icon">
                   <i class="ion ion-stats-bars"></i>
@@ -81,7 +84,7 @@ EAD Home Page
       <div class="inner">
         <h3>{{ subject_count }}</h3>
 
-        <p><h4>Total SUBJECTS</h4></p>
+        <p>TOTAL SUBJECTS</p>
       </div>
       <div class="icon">
         <i class="ion ion-stats-bars"></i>
@@ -112,9 +115,9 @@ EAD Home Page
               <!-- small box -->
               <div class="small-box bg-info">
                 <div class="inner">
-                  <h3>{{ examiners_count }}</h3>
+                  <h3>{{ users.count }}</h3>
 
-                  <p><h4>USERS</h4></p>
+                  <p>TOTAL ACCOUNTS</p>
                   
                 </div>
                 <div class="icon">
@@ -128,9 +131,10 @@ EAD Home Page
               <!-- small box -->
               <div class="small-box bg-danger">
                 <div class="inner">
-                  <h3>{{ staffs_count }}</h3>
+                  
+                  <h3>{{ inactive.count }}</h3>
 
-                  <p>Staff Users</p>
+                  <p>Inactivate accounts</p>
                 </div>
                 <div class="icon">
                   <i class="ion ion-stats-bars"></i>
@@ -144,9 +148,9 @@ EAD Home Page
               <!-- small box -->
               <div class="small-box bg-warning">
                 <div class="inner">
-                  <h3>{{ approved_examiners }}</h3>
+                  <h3>{{ examiner_users.count }}</h3>
 
-                  <p>Examiner accounts</p>
+                  <p>Examiner Users</p>
                 </div>
                 <div class="icon">
                   <i class="ion ion-stats-bars"></i>
@@ -159,9 +163,9 @@ EAD Home Page
               <!-- small box -->
               <div class="small-box bg-success">
                 <div class="inner">
-                  <h3>{{ subject_count }}</h3>
+                  <h3>{{ staffs_count }}</h3>
 
-                  <p>deactivate accounts</p>
+                  <p>Staff Users</p>
                 </div>
                 <div class="icon">
                   <i class="ion ion-stats-bars"></i>
@@ -179,41 +183,8 @@ EAD Home Page
     </div>
     {% endif %}
     <!-- /.row -->
-    <div class="row">
-      <div class="col-lg-12">
-        <!-- BAR CHART -->
-        <div class="card card-success">
-          <div class="card-header">
-            <h3 class="card-title">Empty card pallet</h3>
-
-            <div class="card-tools">
-              <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
-              </button>
-              <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-times"></i></button>
-            </div>
-          </div>
-          <div class="card-body">
-            <div class="chart">
-              <canvas id="myChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
-            </div>
-          </div>
-          <!-- /.card-body -->
-        </div>
-        <!-- /.card -->
-      </div>
-
-
-      <div class="col-lg-6">
-        
-      </div>
-    
-    </div>
+   
   </div>
-
- 
-<hr>
-
-<h1>{{request.user.user_type}}</h1>
 
 {%endblock content%}
 

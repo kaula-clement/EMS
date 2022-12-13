@@ -301,12 +301,12 @@ def get_topics_ajax(request):
     
 
     
-class BankListView(ListView):
+class BankListView(LoginRequiredMixin,ListView):
     model=BankBranch
     context_object_name='branches'
     template_name='registration/banks.html'
 
-class BankCreateView(CreateView):
+class BankCreateView(LoginRequiredMixin,CreateView):
     model= BankBranch
     fields='__all__'
     context_object_name='branches'

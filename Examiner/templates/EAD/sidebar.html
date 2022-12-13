@@ -1,23 +1,26 @@
 {% load static%}
 
-<aside class="main-sidebar sidebar-dark-primary  elevation-4">
-    <!-- Brand Logo -->
-    <a href="{% url 'ead-home'%}" class="brand-link">
-      <img src="{% static '/img/ECZ-Logo2.jpg'%}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-      <span class="brand-text font-weight-heavy"><strong>ECZ</strong></span>
-    </a>
+<aside class="main-sidebar sidebar-dark-primary  ">
+   <!-- Brand Logo -->
+   
+   <a href="{% url 'staff-home'%}" class="brand-link">
+    <img src="{% static '/img/logo.jpg'%}" alt="AdminLTE Logo" class="brand-image img-circle" style="opacity: 1.0">{#include class 'img-circle '#}
+    <span class="brand-text font-weight-heavy"><strong>ECZ</strong></span></br>
+    <span class="brand-text font-weight-light float-bottom"><p>Examiner Register</p></span>
+  </a>
 
-    <!-- Sidebar -->
-    <div class="sidebar">
-      <!-- Sidebar user panel (optional) -->
-      <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-        <div class="image">
-          <img src="{% static 'dist/img/user.png'%}" class="img-circle elevation-2" alt="User Image">
-        </div>
-        <div class="info" id="user">
-          <a href="#" class="d-block">{{ request.user.username}}</a>
-        </div>
+  
+  <!-- Sidebar -->
+  <div class="sidebar ">
+    <!-- Sidebar user panel (optional) -->
+    <div class="user-panel mt-1 pb-2 mb-1 d-flex">
+      <div class="image">
+        <img src="{% static 'dist/img/user.png'%}" class="img-circle nav-icon" alt="User Image">
       </div>
+      <div class="info">
+        <a href="#" class="d-block">{{ request.user}}</a>
+      </div>
+    </div>
 
      
       <!-- Sidebar Menu -->
@@ -28,7 +31,7 @@
 
           <li class="nav-item has-submenu">
             <a href="#" class="nav-link">
-              <i class='nav-icon fas fa-book-reader' style='font-size:24px'></i>
+              <i class='nav-icon fas fa-book-reader' ></i>
               <p>
                 Manage Examiners
               </p>
@@ -55,7 +58,7 @@
           
           <li class="nav-item">
             <a href="{%url 'bank-list'%}" class="nav-link">
-              <i class='nav-icon far fa-building' style='font-size:24px'></i
+              <i class='nav-icon far fa-building' ></i>
               <p>
               Banks  
               </p>
@@ -64,7 +67,7 @@
           
             <li class="nav-item">
             <a href="{%url 'mail-list'%}" class="nav-link">
-              <i class='nav-icon fas fa-mail-bulk' style='font-size:24px'></i>
+              <i class='nav-icon fas fa-mail-bulk' ></i>
               <p>
               Mail List 
               </p>
@@ -74,16 +77,16 @@
           
           <li class="nav-item has-submenu">
             <a href="#" class="nav-link">
-              <i class='nav-icon far fa-address-book' style='font-size:24px'></i>
+              <i class='nav-icon far fa-address-book' ></i>
               <p>
                 subjects
                
               </p>
             </a>
             <ul class="submenu collapse">
-              <li><a class="nav-link" href="{%url 'add-subject'%}"><p>Add New </p></a></li>
+              <li><a class="nav-link" href="{%url 'add-subject'%}"><p>Add New Subject </p></a></li>
               <li><a href="{%url 'subject-list'%}" class="nav-link">
-                <i class='fas fa-list-ol' style='font-size:24px'></i>
+                <i class='fas fa-list-ol'></i>
                 <p>
                   subjects list
                 
@@ -94,7 +97,7 @@
           </li>
           <li class="nav-item">
             <a href="{%url 'marking-center'%}" class="nav-link">
-              <i class='nav-icon far fa-building' style='font-size:24px'></i
+              <i class='nav-icon far fa-building' ></i>
               <p>
               Marking Center  
               </p>
@@ -102,15 +105,15 @@
           </li>
           <li class="nav-item has-submenu">
             <a href="#" class="nav-link">
-              <i class='nav-icon far fa-address-book' style='font-size:24px'></i>
+              <i class='nav-icon far fa-address-book' ></i>
               <p>
-                Schedule
+                Pay Schedule
                
               </p>
             </a>
             <ul class="submenu collapse">
-              <li><a class="nav-link" href="{%url 'schedule_table'%}"><p>Schedule Table</p></a></li>
-              <li><a class="nav-link" href="{%url 'schedule'%}"> <p>Examiners Schedule</p></a> </li>
+              <li><a class="nav-link" href="{%url 'schedule_table'%}"><p>Pay Schedule Table</p></a></li>
+              <li><a class="nav-link" href="{%url 'schedule'%}"> <p>Examiners Pay Schedule</p></a> </li>
 
             </ul>
           </li>
@@ -130,7 +133,7 @@
         {% if request.user.is_admin == True %}
         <li class="nav-item has-submenu">
           <a href="" class="nav-link">
-            <i class='nav-icon fas fa-users' style='font-size:24px'></i>
+            <i class='nav-icon fas fa-users'></i>
             <p>
               Users
               
@@ -138,13 +141,13 @@
           </a>
           <ul class="submenu collapse">
             <li><a class="nav-link" href="{%url 'add-user'%}"><p>Add New User </p></a></li>
-            <li><a class="nav-link" href="{%url 'userlist'%}"> <p>List</p></a> </li>
+            <li><a class="nav-link" href="{%url 'userlist'%}"> <p>Users List</p></a> </li>
             
           </ul>
         </li>
         <li class="nav-item">
           <a href="{%url 'log-entries'%}" class="nav-link">
-            <i class="fa fa-clock-o" style="font-size:24px"></i>
+            <i class="nav-icon fa fa-clock-o" ></i>
             <p>
             Audit Logs 
             </p>
@@ -154,13 +157,13 @@
 
         <li class="nav-item has-submenu">
           <a href="{%url 'ECZStaff-create'%}" class="nav-link">
-            <i class="fa fa-user-o" style="font-size:24px"></i>
+            <i class="nav-icon fa fa-user-o" ></i>
             <p>
-              Manage Data Entry Cord..
+              Data Entry Cordinators
             </p>
           </a>
           <ul class="submenu collapse">
-            <li > <a class="nav-link"  href="{%url 'station-admin-list'%}">D.E Cordinators</a></li>
+            <li > <a class="nav-link"  href="{%url 'station-admin-list'%}">Manage Cordinator stations</a></li>
             
           </ul>
         </li>

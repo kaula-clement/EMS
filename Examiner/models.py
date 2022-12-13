@@ -1,4 +1,5 @@
 from email.policy import default
+from django.core.validators import RegexValidator
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from datetime import date
@@ -125,7 +126,7 @@ class Examiner(models.Model):
     subject=models.ForeignKey(Subject,to_field="subjectCode",db_column="Subject_Code", on_delete=models.SET_NULL,null=True,blank=True)
     paper=models.ForeignKey(Paper,db_column="Paper_Number", on_delete=models.SET_NULL,null=True)
     position=models.ForeignKey(Position,on_delete=models.SET_NULL,null=True)
-    middle_name=models.CharField(max_length=50,null=True,blank=True)
+    #middle_name=models.CharField(max_length=50,null=True,blank=True)
     first_name=models.CharField(max_length=50,null=True) 
     last_name=models.CharField(max_length=50,null=True)
     ExaminerCode=models.CharField(max_length=11,unique=True)
@@ -137,9 +138,15 @@ class Examiner(models.Model):
     branch=models.ForeignKey(BankBranch,on_delete=models.SET_NULL,null=True,blank=True)
     AccountDetails=models.CharField(max_length=150,null=True)
     #payment=models.ForeignKey("Payment", verbose_name=("payment"), on_delete=models.SET_NULL,null=True,blank=True)
-    NRC=models.CharField(max_length=11,null=True)
-    TPIN=models.CharField(max_length=10,null=True)
-    cell_Number=models.CharField(max_length=10,null=True)
+    nrc_regex=RegexValidator(regex=r'([0-9]{6})\/([0-9]{2})\/([0-9]{1})', message="Enter a valid NRC Number")
+    NRC=models.CharField(max_length=11,null=True,validators=[nrc_regex])
+    
+    t_pin_regex=RegexValidator(regex=r'([0-9]{10})', message="Enter a valid T-Pin Number [0~9 10 digits]")
+    TPIN=models.CharField(max_length=10,null=True,validators=[t_pin_regex])
+    
+    phone_regex=RegexValidator(regex=r'0([1-9]{9})', message="Enter a valid Phone Number starting: 0")
+    cell_Number=models.CharField(max_length=10,null=True,validators=[phone_regex])
+    
     email=models.EmailField(null=True,unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -150,6 +157,11 @@ class Examiner(models.Model):
     objects = models.Manager()
     def __str__(self):
         return self.first_name +' '+ self.last_name
+    def save(self, force_insert=False, force_update=False):
+        self.first_name= self.first_name.upper()
+        self.last_name= self.last_name.upper()
+        super(Examiner, self).save(force_insert, force_update)
+        
       
 class ECZStaff(models.Model):
     user=models.OneToOneField(CustomUser,

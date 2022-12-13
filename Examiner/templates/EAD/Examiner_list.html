@@ -9,7 +9,7 @@ Approved Examiners List
 <div class="container">
 
 <h3>Approved Examiners</h3>
-<div id="preload" style="color:blue; width:100%; height:100%; position:absolute; display:none;"  >
+<div id="preload" style=" width:100%; height:100%; position:absolute;z-index: 1; display:none;"  >
     <img src="{% static '/img/preloaders/mailloader.gif' %}" style="margin-right:25%; margin-left:25%; margin-top:10%;">
 </div>
 
@@ -31,7 +31,7 @@ Approved Examiners List
         <th><input type="checkbox"  id="checkAll" ></th>
         <th>Examiner Number</th>
         <th>First Name</th>
-        <th>Middle Name</th>
+        
         <th>Last Name</th>
         <th>Email</th>
         <th>position</th>
@@ -52,7 +52,7 @@ Approved Examiners List
    <!-- <td>{{item.id}}</td> -->
     <td>{{item.ExaminerCode}}</td>
     <td>{{item.first_name}}</td>
-    <td>{{item.middle_name}}</td>
+    
     <td>{{item.last_name}}</td>
     <td>{{item.email}}</td>
     <td>{{item.position.name}}</td>
@@ -107,9 +107,10 @@ Approved Examiners List
             $('input:checkbox').not(this).prop('checked', this.checked);
          });
      $("#examinersTable").dataTable({
-        "scrollY": "55vh",
+        "scrollY":"300px",
+        "scrollX":true,
         "scrollCollapse": true,
-        "paging": false
+        "paging": false,
 
         });
        
@@ -142,6 +143,12 @@ Approved Examiners List
             }
         });
     
+       
+    })
+
+    
+    </script>
+    <script>
         $("#batchmail-btn").click(function(){
             if (confirm('are you sure you whant to Email the selected Examiners?'))
             var id=[];
@@ -163,22 +170,22 @@ Approved Examiners List
     
                     },
                     done:function(response){
+                            location.reload()
                         $('#preload').css('display','none')
                     },
                     success:function(response){
+                        location.reload()
                         $('#preload').css('display','none');
                         Swal.fire(
                             'Done!',
                             'Batch Email sent!',
                             'success'
                           )
+
                     }
-                })
+                });
             }
         });
-    })
-    
     </script>
-    
     </div>
 {% endblock script %}

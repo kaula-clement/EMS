@@ -4,7 +4,7 @@
 <h2>Examiner Creation Form</h2>
 <div class="card">
     <div class="card-body">
-        <form method="POST" action="" >
+        <form method="POST" action="">
             {% csrf_token %}
 
             {{field.errors}}
@@ -12,88 +12,87 @@
             <div class="form-group col-md-4">
                 <label for="inputText">First Name</label>
              {{form.first_name}}
+             <div class="valid-feedback">
+                Looks good!
+              </div>
                <!-- <input type="text" class="form-control" id="id_name" name="name"  placeholder="First Name" > -->
             </div>
         
-            <div class="form-group col-md-4">
-                <label for="inputText">Middle Name</label>
-                    {{form.middle_name}}
-               <!-- <input type="text" class="form-control" id="name"  placeholder="Middle Name" > -->
-            </div>
             <div class="form-group col-md-4">
                 <label for="inputText">Last Name</label>
                 {{form.last_name}}
                <!-- <input type="text" class="form-control" id="name" placeholder="Last Name" > -->
             </div>
             
-
+            <div class="form-group col-md-4">
+                <label for="inputText">NRC</label>
+                {{form.NRC}}
+               <!-- <input type="text" class="form-control" id="id_NRC" name="NRC" maxlength="11"  placeholder="NRC Number" > -->
+            </div>
         </div>
         <div class="row">
 
-                <div class="form-group col-md-6">
-                    <label for="inputText">NRC</label>
-                    {{form.NRC}}
-                   <!-- <input type="text" class="form-control" id="id_NRC" name="NRC" maxlength="11"  placeholder="NRC Number" > -->
-                </div>
+                
 
 
-                <div class="form-group col-md-6">
+                <div class="form-group col-md-4">
                     <label for="inputText">Cell Phone</label>
                     {{form.cell_Number}}
                    <!-- <input type="text" class="form-control" id="id_cell_Number" name="cell_Number" maxlength="10"  placeholder="10 digit Cell Phone Number" >-->
                 </div>
-                <div class="form-group col-md-6">
+                <div class="form-group col-md-4">
                     <label for="inputText">Gender</label>
                     {{form.gender}}
                    <!-- <input type="text" class="form-control" id="id_cell_Number" name="cell_Number" maxlength="10"  placeholder="10 digit Cell Phone Number" >-->
                 </div>
+                <div class="form-group col-md-4">
+                    <label for="inputEmail4">Email</label>
+                    {{form.email}}
+                    <!--<input type="email" name="email" class="form-control" placeholder="email@abc.abc" maxlength="254" required="" id="id_email"> -->
+                </div>
+                <div class="form-group col-md-4 ">
+                    <label for="inputEmail4">Address</label>
+                    {{form.Address}}
+                    <!--<input type="text" name="Address" class="form-control" placeholder="Address" maxlength="500" required="" id="id_Address"> -->
+                </div>
 
-                <div class="form-group col-md-6">
+                <div class="form-group col-md-4">
                     <label for="inputText">Session</label>
                     {{form.session}}
                    <!-- <input type="text" class="form-control" id="id_cell_Number" name="cell_Number" maxlength="10"  placeholder="10 digit Cell Phone Number" >-->
                 </div>
         </div>
         <div class="row">
-            <div class="col ">
-                <label for="inputEmail4">Email</label>
-                {{form.email}}
-                <!--<input type="email" name="email" class="form-control" placeholder="email@abc.abc" maxlength="254" required="" id="id_email"> -->
-            </div>
-            <div class="col ">
-                <label for="inputEmail4">Address</label>
-                {{form.Address}}
-                <!--<input type="text" name="Address" class="form-control" placeholder="Address" maxlength="500" required="" id="id_Address"> -->
-            </div>
+           
             
         </div>
             <div class="form-row">                
 
-                <div class="col">
+                <div class="form-group col-md-4">
                     <label for="subject">Subject</label>
                     {{form.subject}}
-                    
+                    {{form.field.error}}
                 </div>
-                <div class="col">
+                <div class="form-group col-md-4">
                     <label for="subject">Paper Number</label>
                     {{form.paper}}
                     
                 </div>
-                <div class "col">
-                    <label for "posision">Position</label>
+                <div class "form-group col-md-4">
+                    <label for "posision">Role</label>
                     {{form.position}}
                   
                 </div>
                 
             </div>
         <div class="form-row">
-            <div class="col">
-                <label for="Province">From Province</label>
+            <div class="form-group col-md-4">
+                <label for="Province">Province</label>
                 {{form.province}}
                 
             </div>
-            <div class="col">
-                <label for="inputState">From District/Station</label>
+            <div class="form-group col-md-4">
+                <label for="inputState">District/Station</label>
                 {{form.district}}
                 
             </div>
@@ -140,6 +139,7 @@
             </div>
             </div>
             <button type="submit" class="btn btn-primary">Submit</button>
+
         {{form.errors}}
         </form>
     </div>
@@ -210,27 +210,7 @@
       });
   });
 </script>
+
+
+
 {%endblock content%}
-
-
-
-
-
-
-
-<ul class="nav nav-tabs" id="myTab" role="tablist">
-    <li class="nav-item" role="presentation">
-      <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Home</button>
-    </li>
-    <li class="nav-item" role="presentation">
-      <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">Profile</button>
-    </li>
-    <li class="nav-item" role="presentation">
-      <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact" type="button" role="tab" aria-controls="contact" aria-selected="false">Contact</button>
-    </li>
-  </ul>
-  <div class="tab-content" id="myTabContent">
-    <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">...</div>
-    <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">...</div>
-    <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">...</div>
-  </div>

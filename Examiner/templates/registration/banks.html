@@ -2,9 +2,11 @@
 
 {% block content %}
 <a href="{% url 'upload_csv'%}">Upload bank branches from csv</a>
+<div class="card card-body">
 <table class="table table-sm" id="banksTable">
     <thead>
         <tr>
+            <th>S.NO </th>
             <th>Bank </th>
             <th>Bank Branch</th>
             <th>sort code</th>
@@ -13,6 +15,7 @@
     <tbody>
         {% for branch in branches %}
         <tr>
+            <td>{{forloop.counter}}</td>
             <td>{{branch.bank.name}}</td>
             <td>{{branch.name}}</td>
             <td><input value="'" hidden>{{branch.sortcode|add:"0"|stringformat:"06d"}}</td>
@@ -20,8 +23,9 @@
         {% endfor %}
 
     </tbody> 
-</table>
 
+</table>
+</div>
 
 
 {% endblock content %}

@@ -32,13 +32,13 @@ Attendance table
         <td>{{item.examiner.subject.subjectName}}</td>
         
         {% if item.status == 1 %}
-        <td>Pending..</td>
+        <td><span class="badge badge-pill badge-warning" >Pending..</span> </td>
         {% endif %}
         {% if item.status == 2 %}
-        <td>Present</td>
+        <td> <span class="badge badge-pill badge-success" >Present</span></td>
         {% endif %}
         {% if item.status == 3 %}
-        <td>Absent</td>
+        <td><span class="badge badge-pill badge-danger" >Absent</span></td>
         {% endif %}
     </tr>
     {% endfor %}

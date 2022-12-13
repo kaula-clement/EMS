@@ -63,7 +63,7 @@ def CustomUserUpdate(request,pk):
     user=CustomUser.objects.get(id=pk)
     userT=user.user_type
     print("===========")
-    print("TYPE",userT)
+    print("TYPEeee",userT)
     form=UserForm(instance=user)
     context={
         'form':form,

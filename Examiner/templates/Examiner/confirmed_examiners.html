@@ -9,6 +9,11 @@ Confirmed Examiners
 <div class="container">
 EXAMINERS THAT HAVE CONFIRMED AVAILABILITY FOR THE YEAR'S MARKING SESSION
 <hr>
+{% comment %}
+    <a href="{%url 'add-examiner'%}" class="btn btn-primary btn-sm">ADD EXAMINER</a>
+<input type="submit" class="btn btn-danger btn-sm" value="Delete selected" id="delete_multiple_btn">
+{% endcomment %}
+
 
 <div class="table-responsive overflow-auto card card-body">
 <table class="table table-hover text-nowrap table-sm" id="examinersTable">
@@ -16,33 +21,28 @@ EXAMINERS THAT HAVE CONFIRMED AVAILABILITY FOR THE YEAR'S MARKING SESSION
  <thead>
     <tr>
       <!--  <th>id</th> -->
-      <th></th>
         <th><input type="checkbox"  id="checkAll" ></th>
+        <th>S.NO</th>
         <th>Examiner Number</th>
         <th>First Name</th>
-        <th>Middle Name</th>
         <th>Last Name</th>
-        <th>Email</th>
         <th>position</th>
-        <th>Subject</th>
-        
-        <th></th>
-        <th></th>
-        <th></th>
+        <th>Subject</th>  
+        <th>View</th>
+        <th>Edit</th>
+        <th>Delete</th>
     </tr>
 </thead>
 <tbody>
     {%for item in examiners %} 
 <tr>
-    <td></td>
     <td> <input type="checkbox" name="examiner_id[]" value="{{item.id}}" id="examiner_item">
     </td>
    <!-- <td>{{item.id}}</td> -->
+   <td>{{forloop.counter}}</td>
     <td>{{item.ExaminerCode}}</td>
     <td>{{item.first_name}}</td>
-    <td>{{item.middle_name}}</td>
     <td>{{item.last_name}}</td>
-    <td>{{item.email}}</td>
     <td>{{item.position.name}}</td>
     <td>
         
@@ -68,11 +68,7 @@ EXAMINERS THAT HAVE CONFIRMED AVAILABILITY FOR THE YEAR'S MARKING SESSION
 </table>
 </div>
 
-<a href="{%url 'add-examiner'%}">ADD New</a>
 
-
-
-<input type="submit" value="Delete selected" id="delete_multiple_btn">
 
 </div>
 {%endblock content%}
@@ -84,14 +80,46 @@ EXAMINERS THAT HAVE CONFIRMED AVAILABILITY FOR THE YEAR'S MARKING SESSION
         $("#checkAll").click(function(){
             $('input:checkbox').not(this).prop('checked', this.checked);
          });
-    $("#examinersTable").dataTable({
-        "scrollY": "70vh",
+
+       //  var buttonConfig = [];
+       //  var exportTitle = "ExportTableData"
+       //  buttonConfig.push({extend:'copyHtml5',title: exportTitle,className: 'btn-primary btn-sm'});
+       //  buttonConfig.push({extend:'copyHtml5',title: exportTitle,className: 'btn-success btn-sm'});
+       //  buttonConfig.push({extend:'copyHtml5',title: exportTitle,className: 'btn-warning btn-sm'});
+       //  buttonConfig.push({extend:'copyHtml5',title: exportTitle,className: 'btn-danger btn-sm'});		
+         
+
+
+
+    $("#examinersTable").DataTable({
+        "scrollY":'50vh',
         "scrollX":true,
+        "fixedHeader": true,
         "scrollCollapse": true,
-        "paging": false
+        "paging": false,
+        dom:'Bfrtip',
+        "buttons":[
+            {
+                extend: 'excelHtml5',
+                exportOptions: {
+                    columns: [2,3,4,5,6,7]
+                }
+            },
+            {
+                extend: 'pdfHtml5',
+                exportOptions: {
+                    columns: [2, 3,4,5,6,]
+                }
+            },
+        ],
+        "columnDefs": [
+                {
+                    orderable: false,
+                    targets: [0,7,8,9]
+                },
+                        ]
        
         });
-    
        
         $("#delete_multiple_btn").click(function(){
             if (confirm('are you sure you whant to delete these items?'))

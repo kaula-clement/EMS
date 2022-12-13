@@ -10,7 +10,7 @@
             <form method="POST" action="" >
                 {% csrf_token %}
                 <div class="form-row">
-                <div class="form-group col-md-6">
+                <div class="form-group col-md-4">
                     <label for="inputText">UserName</label>
                     
                     <input type="text" class="form-control" id="UserName" value="{{request.user.username}}" placeholder="UserName" disabled>
@@ -20,21 +20,22 @@
                 -->
                     <span><a href="{%url 'updatepassword'%}"  >change password</a></span>
                 </div>
+                <div class="form-group col-md-4 ">
+                    <label for="inputEmail4">Email</label>
+                    {{form.email}}
+    
+                </div>
             </div>
 
                 <div class="row">
-                    <div class="col ">
+                    <div class="form-group col-md-4">
                         <label for="inputText">First Name</label>
                         {{form.first_name}}
                        <!-- <input type="text" class="form-control" id="id_name" name="name"  placeholder="First Name" > -->
                     </div>
                 
-                    <div class="col ">
-                        <label for="inputText">Middle Name</label>
-                            {{form.middle_name}}
-                       <!-- <input type="text" class="form-control" id="name"  placeholder="Middle Name" > -->
-                    </div>
-                    <div class="col">
+                    
+                    <div class="form-group col-md-4">
                         <label for="inputText">Last Name</label>
                         {{form.last_name}}
                        <!-- <input type="text" class="form-control" id="name" placeholder="Last Name" > -->
@@ -44,40 +45,31 @@
                 </div>
                 <div class="row">
         
-                        <div class="form-group col-md-6">
+                        <div class="form-group col-md-4">
                             <label for="inputText">NRC</label>
                             {{form.NRC}}
                            <!-- <input type="text" class="form-control" id="id_NRC" name="NRC" maxlength="11"  placeholder="NRC Number" > -->
                         </div>
         
         
-                        <div class="form-group col-md-6">
+                        <div class="form-group col-md-4">
                             <label for="inputText">Cell Phone</label>
                             {{form.cell_Number}}
                            <!-- <input type="text" class="form-control" id="id_cell_Number" name="cell_Number" maxlength="10"  placeholder="10 digit Cell Phone Number" >-->
                         </div>
-                    </div>
-               
-                    <div class="row">
-                        <div class="col">
+                        <div class="form-group col-md-4">
                             <label for="inputEmail4">Gender</label>
                             {{form.gender}}
                         </div>
-                    <div class="col ">
-                        <label for="inputEmail4">Email</label>
-                        {{form.email}}
-        
                     </div>
-                </div>
-                    <div class="form-group ">
-                        <label for="inputEmail4">Address</label>
-                      {{form.Address}}
-                       
-                    </div>
-               
-
+ 
                     <div class="form-row">
-                        <div class="form-group col-md-6">
+                        <div class="form-group col-md-4 ">
+                            <label for="inputEmail4">Address</label>
+                          {{form.Address}}
+                           
+                        </div>
+                        <div class="form-group col-md-4">
                             <label for="province">Province</label>
                             {{form.province}}
                          
@@ -114,19 +106,12 @@
                             <div class="form-group col-md-4">
                                 <label for="bank">Bank</label>
                                 {{form.bank}}
-                               <!-- <select id="id_bank" name="bank" class="form-control">
-                                <option selected disabled>Choose a Bank</option>
-                                {% for bank in bank_list %}
-                                <option value="{{bank.id}}">{{bank.name}}</option>
-                                {% endfor %}
-                                </select> -->
+                              
                             </div>
                             <div class="form-group col-md-4">
                                 <label for="branch">Bank Branch</label>
                                 {{form.branch}}
-                                <!--<select name="branch" class="form-control" placeholder="bankbranch" required="" id="id_branch">
-                                <option selected disabled>Choose a branch</option>
-                                </select> -->
+                               
                             </div>
                         
                             <div class="form-group col-md-4">
@@ -144,20 +129,13 @@
                             <div class="form-group col-md-9">
                                 <label for="TPIN">Availability</label>
                                 {{form.availability}}
-                                <p class="text-danger">Check this box if you are available for this marking session</p>
+                                <p class="text-danger"><strong>Check this box if you are available for this marking session</strong></p>
                             <!--    <input type="text" name="TPIN" class="form-control" placeholder="T Pin" maxlength="10" required="" id="id_TPIN"> -->
                             </div>
                         </div>
                 
-                
+                {{form.errors}}
                 <button type="submit" class="btn btn-primary">Update</button>
-                {% if messages %}
-                <ul class="messages">
-                    {% for message in messages %}
-                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }} :{{form.field.error}}</li>
-                    {% endfor %}
-                </ul>
-                {% endif %}
         
             </form>
         </div>

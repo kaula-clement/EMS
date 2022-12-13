@@ -12,14 +12,12 @@ Logs
 <table class="table table-sm" id="usersTable">
     <thead>
         <tr>
-            
-            <th >object_id</th>
-            
+            <th></th>
             <th>object_repr</th>
             <th>action</th>
             <th>changes</th>
-            <th>actor_id</th>
-            <th>content_type_id</th>
+            <th>USER(ACTOR)</th>
+            <th>content_type</th>
             <th>remote_addr</th>
             {#<th>additional_data</th>#}
             <th>timestamp</th>
@@ -35,13 +33,12 @@ Logs
     <tr>
         
         
-        <td>{{item.object_id}}</td>
-        
+        <td></td>
         <td>{{item.object_repr}}</td>
-        <td>{{item.action}}</td>
+        <td>{{item.action_flag}}</td>
         <td>{{item.changes}}</td>
-        <td>{{item.actor_id}}</td>
-        <td>{{item.content_type_id}}</td>
+        <td>{{item.actor}}</td>
+        <td>{{item.content_type}}</td>
         <td>{{item.remote_addr}}</td>
         {#<td>{{item.additional_data}}</td>#}
         <td>{{item.timestamp}}</td>

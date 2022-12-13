@@ -269,6 +269,8 @@ def calculatePay(request):
 @login_required()
 def upload_schedule_csv(request): 
     data = {}
+    good=0
+    bad=0
     if "GET" == request.method:
         return render(request, "Staff/upload_schedule_csv .html", data)
     # if not GET, then proceed
@@ -312,17 +314,19 @@ def upload_schedule_csv(request):
                 print("data_dict:",data_dict)
                 if form.is_valid():
                     form.save()
-                    messages.success(request,"successifully uploaded ")
+                    #messages.success(request,"successifully uploaded ")
+                    good+=1
                 else:
-
+                    bad+=1
                     logging.getLogger("error_logger").error(
                        form.errors.as_json())
-                    messages.error(request, '{}'.format(form.errors,line))
+                    #messages.error(request, '{}'.format(form.errors,line))
                    
             except Exception as e:
                 logging.getLogger("error_logger").error(repr(e))
-                
-
+        text="UPLOAD DONE.success:"+str(good)+" failed:"+str(bad)
+        messages.info(request,text)        
+        return redirect('upload_schedule_csv')
     except Exception as e:
         logging.getLogger("error_logger").error(
             "Unable to upload file. "+repr(e))

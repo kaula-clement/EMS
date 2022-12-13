@@ -200,3 +200,42 @@ body a {
   -webkit-transform: scale(1);
           transform: scale(1);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  .form-control{
+    -webkit-border-radius: 0;
+       -moz-border-radius: 0;
+            border-radius: 0;
+  }
+  .form-select{
+    -webkit-border-radius: 0;
+       -moz-border-radius: 0;
+            border-radius: 0;
+  }
+  .input-group-text{
+    -webkit-border-radius: 0;
+       -moz-border-radius: 0;
+            border-radius: 0;
+  }
+  
+  .btn{
+    -webkit-border-radius: 0;
+       -moz-border-radius: 0;
+            border-radius: 0;
+  }
+  
+  
+  

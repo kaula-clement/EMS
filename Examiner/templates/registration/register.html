@@ -1,23 +1,12 @@
-{%load static%}
-<!DOCTYPE html>
-<html lang="en" >
-<head>
-  <meta charset="UTF-8">
-  <title>Examiner Sign Up</title>
-  <link href="https://fonts.googleapis.com/css?family=Poppins:400,600&display=swap" rel="stylesheet">
-  <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css'>
-<link rel="stylesheet" href="{% static 'style.css'%}">
-</head>
-<style>
-    body {
-        min-height: 100vh;
-        background: linear-gradient(154deg, rgba(255,255,255,0.8463760504201681) 0%, rgba(8,159,73,1) 81%);
-        background-repeat: no-repeat;
-      }
-</style>
-<body >
-<!-- partial:index.partial.html -->
+{% extends 'registration/login.html' %}
 
+{%load static%}
+
+
+{% block styles %}
+<link rel="stylesheet" href="{% static 'style.css'%}">
+{% endblock styles %}
+{% block content %}
 <!--PEN HEADER-->
 <header class="header">
   <h2 class="header__title">Examiner Registration</h2>
@@ -79,28 +68,26 @@
                 <h3 class="multisteps-form__title">Your User Info</h3>
                 <div class="multisteps-form__content">
                   <div class="form-row mt-4">
-                    <div class="col">
+                    <div class="form-group col-md-4">
                       {{form.first_name}}
                     </div>
-                    <div class="col">
-                        {{form.middle_name}}
-                    </div>
-                    <div class="col">
+                    <div class="form-group col-md-4">
                         {{form.last_name}}
                     </div>
+                    
                   </div>
                   
                   <div class="form-row mt-4">
-                    <div class="col">
+                    <div class="form-group col-md-4">
                      {{form.NRC}}
                     </div>
-                    <div class="col">
+                    <div class="form-group col-md-4">
                       {{form.gender}}
                     </div>
                     
                   </div>
                   <div class="row">
-                  <div class="col-12 col-lg-4 m-auto">
+                  <div class="form-group col-md-4">
                     <h5>Select Session</h5>
                     {{form.session}}
                     {{form.errors}}
@@ -118,28 +105,28 @@
                 <h3 class="multisteps-form__title">Your Address/Contact</h3>
                 <div class="multisteps-form__content">
                     <div class="form-row mt-4">
-                        <div class="col-12 col-sm-6">
+                        <div class="form-group col-md-4">
                             {{form.email}}
                          {#  <input class="multisteps-form__input form-control" type="text" placeholder="Login"/> #}
                         </div>
-                        <div class="col-12 col-sm-6">
+                        <div class="form-group col-md-4">
                             {{form.cell_Number}}
                          {#  <input class="multisteps-form__input form-control" type="text" placeholder="Login"/> #}
                         </div>
                       </div>
                       
                   <div class="form-row mt-4">
-                    <div class="col">
+                    <div class="form-group col-md-4">
                      {{form.Address}}
                     </div>
                   </div>
                  
                   <div class="form-row mt-4">
-                    <div class="col">
+                    <div class="form-group col-md-4">
                     {{form.province.label}}
                       {{form.province}}
                     </div>
-                    <div class="col">
+                    <div class="form-group col-md-4">
                         {{form.district.label}}
                         {{form.district}}
                     </div>
@@ -155,15 +142,15 @@
                 <h3 class="multisteps-form__title">Subject Choice</h3>
                 <div class="multisteps-form__content">
                   <div class="row">
-                    <div class="col">
+                    <div class="form-group col-md-4">
                         {{form.subject.label}}
                         {{form.subject}}
                     </div>
-                    <div class="col">
+                    <div class="form-group col-md-4">
                       {{form.paper.label}}
                         {{form.paper}}
                     </div>
-                    <div class="col">
+                    <div class="form-group col-md-4">
                       {{form.position.label}}
                       {{form.position}}
                   </div>
@@ -184,15 +171,15 @@
                 <div class="multisteps-form__content">
                   <div class="form-row mt-4">
                     <div class="form-row mt-4">
-                        <div class="col-12 col-sm-6">
+                        <div class="form-group col-md-4">
                         {{form.bank.label}}
                           {{form.bank}}
                         </div>
-                        <div class="col-6 col-sm-3 mt-4 mt-sm-0">
+                        <div class="form-group col-md-4">
                             {{form.branch.label}}
                             {{form.branch}}
                         </div>
-                        <div class="col-6 col-sm-3 mt-4 mt-sm-0">
+                        <div class="form-group col-md-4">
                             {{form.TPIN.label}}
                           {{form.TPIN}}
                         </div>
@@ -215,7 +202,7 @@
                     <div class="col">
                     
                     </div>
-                    <div class="col">
+                    <div class="form-group col-md-4">
                    check(mark) this: {{form.availability}}
                     </div>
                   </div>
@@ -260,11 +247,13 @@
 </div>
 
 <!-- partial -->
+
+
+{% endblock content %}
+
+{% block scripts %}
 <script  src="{%static 'script.js'%}"></script>
-<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
 <script>
     $("#id_province").change(function () {
         const provinceID = $(this).val();  // get the selected subject ID from the HTML dropdown list 
@@ -344,7 +333,4 @@
     })
 
 </script>
-
-
-</body>
-</html>
+  {% endblock scripts %}

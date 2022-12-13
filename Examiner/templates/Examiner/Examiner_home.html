@@ -1,4 +1,5 @@
 {% extends 'base.html'%}
+{% load static %}
 
 {% block title %}
 Examiner Register Home
@@ -7,79 +8,63 @@ Examiner Register Home
 {%block content%}
 
 <div class="container-fluid">
-  <div class="col-lg-12">
-    <!-- BAR CHART -->
-    <div class="card card-success collapsed-card">
-    <div class="card-header">
-        <h3 class="card-title">Password change</h3>
 
-        <div class="card-tools">
-        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
-        </button>
-       
-        </div>
+<div class="row">
+<div class="col-md-6 pt-5">
+  <div class="card">
+    <div class="card-header">
+      USER PROFILE
     </div>
     <div class="card-body">
-      
-    <p>Wellcome {{request.user.first_name}}.</p>
-    <p>You can change the password of your examiner portal account.To do this, Click on the </p>
-    <p>top right corner icon displaying a settings icon.A pop up will display of which you will click on "Update profile".</p>
-      <p>This will direct you to a page where you can change your personal information.On the page,you will see a link in blue,just beneath your </p>
-    <p>examiner number.The link will direct you to the password change page.You will enter the old password, then the new password twice.</p>
-    <p>a success message will appear. And thats it</p>
+      <a href="profile?"><img src="https://membership.ictaz.org.zm/assets/img/profile_img.png" alt="My Profile" width="130" style="border: 2px solid #333; border-radius: 25px;" border="0"></a>
     </div>
+  </div>
+</div>
+
+<div class="col-md-6 pt-5">
+  <div class="card">
+    <div class="card-header">
+      DETAILS
+    </div>
+    <div class="card-body">
+      <div class="row">
+      <div class="col-md-5">
+        <a href="profile?"><img src="{% static 'dist/img/user.png'%}" class="img-circle " alt="User Image"  width="130" style="border: 2px solid #333; border-radius: 25px;" border="0">
+          
+        </a>
+      </div>
+      <div class="col-md-7">
+      <p> <span class="text-l text-bold">FULL NAMES:</span> {{request.user.first_name}} {{request.user.last_name}}</p>
+      <p>  <span class="text-l text-bold">ID:</span> {{request.user.username}}</p>
+      <p>  <span class="text-l text-bold">SUBJECT:</span> {{examiner.subject}}</p>
+      </div>
+    </div>
+      
+      
+    </div>
+  </div>
+</div>
+</div>
+
+
+
+<div class="col-md-6">
+  <div class="box">
+    <div class="card-body">
+      
+    </div>
+  </div>
+</div>
+
+
+
+
     <!-- /.card-body -->
   </div>
     </div>
-    <div class="col-lg-12">
-      <!-- BAR CHART -->
-      <div class="card card-success collapsed-card">
-      <div class="card-header">
-          <h3 class="card-title">Acceptance notification</h3>
-
-          <div class="card-tools">
-          <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
-          </button>
-         
-          </div>
-      </div>
-      <div class="card-body">
-        
-      <p>Wellcome {{request.user.first_name}}.</p>
-      <p>We are pleased to inform you that you have been shortlisted to take part in the forth comming</p>
-      <p>marking session scheduled to begin on the 31st of August 2022</p>
-      <p>Be informed that changes to the dates,or any other details will be communicated in due time</p>
-      <p>Thank you</p>
-      </div>
       <!-- /.card-body -->
     </div>
       </div>
-      <div class="col-lg-12">
-        <!-- BAR CHART -->
-        <div class="card card-success collapsed-card" >
-        <div class="card-header">
-            <h3 class="card-title">Details Verification / Updates</h3>
-  
-            <div class="card-tools">
-            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
-            </button>
-           
-            </div>
-        </div>
-        <div class="card-body">
-          
-        <p>Wellcome {{request.user.first_name}}.</p>
-        <p>Please be advised to check your details as entered during the application process.</p>
-        <p>You are adviced to make your changes/updates to your details before the commencement of the </p>
-        <p>marking session.</p>
-        <p>Thank you</p>
-        </div>
-        <!-- /.card-body -->
-      </div>
-        </div>
-
-
-
         
     <!-- /.row -->
   </div>

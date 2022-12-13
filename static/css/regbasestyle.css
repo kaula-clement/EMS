@@ -8,12 +8,14 @@ html {
 }
 
 /*Background color*/
-#grad1 {
-   /* background-color:  rgb(255,255,255)   
-    background-image: linear-gradient(120deg, #FF4081, #81D4FA); */
+.grad1 {
     background: rgb(255,255,255);
-    background: linear-gradient(154deg, rgba(255,255,255,0.8463760504201681) 0%, rgba(8,159,73,1) 81%);
+    background: linear-gradient(117deg, rgba(255,255,255,0.9136029411764706) 1%, rgba(4,171,92,0.41780462184873945) 54%, rgba(4,171,92,0.8687850140056023) 93%);
 }
+
+
+
+
 
 /*form styles*/
 #msform {

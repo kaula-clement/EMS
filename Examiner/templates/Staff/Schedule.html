@@ -21,22 +21,22 @@ Schedule
 <table class="table table-sm" id="table2excel" >
     <thead>
         <th>ID</th>
-        <th>First Name</th>
-        <th>Middle Name</th>
-        <th>Last Name</th>
+        <th>Number</th>
+        <th>First_Name</th>
+        <th>Last_Name</th>
         <th>NRC</th>
         <th>CELLPHONE</th>
-        <th>RESIDENTIAL ADDRESS</th>
-        <th>FROM PROVINCE</th>
-        <th>FROM Station/District</th>
-        <th>TO STATION</th>
+        <th>RESIDENTIAL_ADDRESS</th>
+        <th>FROM_PROVINCE</th>
+        <th>FROM_Station/District</th>
+        <th>TO_STATION</th>
         <th>TRANSPORT</th>
         <th>SUBJECT</th>
         <th>POSITION</th>
         <th>BANK</th>
         <th>BRANCH</th>
         <th>SORT CODE</th>
-        <th>ACCOUNT NUMBER</th>
+        <th>ACCOUNT_NUMBER</th>
         <th>T-PIN</th>
 
     </thead>
@@ -45,8 +45,8 @@ Schedule
             {% for item in payments %}
             <tr>
                 <td>{{forloop.counter}}</td>
+                <td>{{item.examiner.ExaminerCode}}</td>
                 <td>{{item.examiner.first_name}}</td>
-                <td>{{item.examiner.middle_name}}</td>
                 <td>{{item.examiner.last_name}}</td>
                 <td>{{item.examiner.NRC}}</td>
                 <td>{{item.examiner.cell_Number}}</td>

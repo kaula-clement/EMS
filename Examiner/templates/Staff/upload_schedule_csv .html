@@ -3,7 +3,7 @@
 
 
 {%block content%}
-<div id="preload" style=" color:blue; width:100%; height:100%; position:absolute; display:none;"  >
+<div id="preload" style=" color:blue; width:100%; height:100%; z-index: 1; position:absolute; display:none;"  >
     <img src="{% static '/img/preloader.gif' %}" style="margin-right:25%; margin-left:25%; margin-top:10%;">
 </div>
 <form action= "{%url 'upload_schedule_csv'%}" method="POST" enctype="multipart/form-data" class="form-horizontal"> 
@@ -28,6 +28,7 @@
 <table class="table table-sm">
     <thead>
         <tr>
+          <th>S.NO</th> 
           <th>FromDistrict</th>  
           <th>LUSAKA</th>
           <th>COPPERBELT</th>
@@ -44,7 +45,8 @@
         </tr>
     </thead>
     <tbody>
-        <td>name</td>
+        <td>Number</td>
+        <td>Name</td>
         <td>Amount</td>
         <td>Amount</td>
         <td>Amount</td>
@@ -67,9 +69,17 @@
 <script>
 $("#upload_btn").click(function(){
     $('#preload').css('display','block')
-    .done(function(response){
-        $('#preload').css('display','none')
+
+    done(function(response){
+        $('#preload').css('display','none'),
+        Swal.fire(
+            'Done!',
+            'Batch Email sent!',
+            'success'
+          )
+        
     })
+    
 })
 </script>
 {% endblock script %}
