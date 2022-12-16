@@ -73,8 +73,9 @@ urlpatterns = [
    path('Examiner/attendance/',StaffViews.attendanceView,name='attendance'),
    path('Examiner/take-attendance/',StaffViews.takeattendance,name='take-attendance'),
    path('Examiner/present/<int:pk>',StaffViews.present,name='present-link'),
-    path('Examiner/absent/<int:pk>',StaffViews.absent,name='absent-link'),
-    path('reset/attendance/<int:pk>',StaffViews.resetAttendance,name="reset-link"),
+   path('Examiner/absent/<int:pk>',StaffViews.absent,name='absent-link'),
+   path('reset/attendance/<int:pk>',StaffViews.resetAttendance,name="reset-link"),
+   path('delete-schedule-data/',StaffViews.deletescheduledata,name="delete-schedule-data"),
    
    path('Examiner/schedule/',StaffViews.schedule,name='schedule'),
    path('schedule/',StaffViews.ScheduleTableList.as_view(), name='schedule_table'),

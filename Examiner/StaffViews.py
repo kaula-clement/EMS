@@ -241,6 +241,13 @@ class ScheduleTableList(LoginRequiredMixin,ListView):
     template_name='Staff/ScheduleTable.html'
 
 @login_required()
+def deletescheduledata(request):
+    if request.method=="POST":
+        SchedulePay.objects.get('id[]').delete
+        return true
+    return redirect('')
+
+@login_required()
 def schedule(request):
     present_examiners=Attendance.objects.filter(status=2)
     examiners=Examiner.objects.filter(attendance_examiner__in=present_examiners)

@@ -6,12 +6,12 @@
 <hr>
 <a href="{%url 'upload_schedule_csv'%}" class="btn btn-primary btn-sm">Upload Schedule data</a> 
 <div class="table-responsive overflow-auto">
-<table class="table table-hover text-wrap" id="ScheduleTable">
+<table class="table table-hover text-wrap table-striped table-sm" id="ScheduleTable">
  {% csrf_token %}
  <thead>
     <tr>
       <!--  <th>id</th> -->
-        
+        <th><input type="checkbox" id="checkAll"></td>
         <th>DISTRICT</th>
         <th>LUSAKA</th>
         <th>C/BELT</th>
@@ -32,6 +32,7 @@
     {%for item in schedule %} 
 <tr id="{{item.id}}">
    <!-- <td>{{item.id}}</td> -->
+   <td><input type="checkbox" value="{{item.id}}"></td>
    <td><b>{{item.FromDistrict}}</b></td>
     <td>{{item.LUSAKA}}Nights</td>
     <td>{{item.COPPERBELT}}Nights</td>
@@ -66,6 +67,39 @@
         "scrollX":true,
         "paging":false,
     })
+</script>
+<script>
+    $("#checkAll").click(function(){
+        $('input:checkbox').not(this).prop('checked', this.checked);
+     });
+     $("#delete_multiple_btn").click(function(){
+        if (confirm('are you sure you whant to delete these items?'))
+        var id=[];
+        var csrf=$('input[name=csrfmiddlewaretoken]').val();
+        $(':checkbox:checked').each(function(i){
+            id[i]=$(this).val()
+        })
+        if (id.length==0){
+            alert("No items checked!")
+        }else{
+            console.log(id)
+            $.ajax({
+                url:'',
+                method:"POST",
+                data:{
+                    id,
+                    csrfmiddlewaretoken:csrf
+
+                },
+                success:function(response){
+                    for(var i =0; i<= id.length; i++){
+                        $('tr#'+id[i]+'').css('background-color','#ccc');
+                        $('tr#'+id[i]+'').fadeOut('slow');
+                    }
+                }
+            })
+        }
+    });
 </script>
 {% endblock script %}
 
