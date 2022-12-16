@@ -11,7 +11,7 @@ Subject Marking Center
 
 <div class="card">
     <div class="card-body">
-        <table class="table" id ="venueTable">
+        <table class="table table-striped table-sm" id ="venueTable">
             <thead>
                 <tr>
                 <th hidden></th>
@@ -19,7 +19,8 @@ Subject Marking Center
                 <th>SUBJECT</th>
                 <th>PAPER</th>
                 <th>VENUE</th>
-                <th>Edit</th>
+                <th>NO. DAYS</th>
+                <th>UPDATE</td>
                 </tr>
             </thead>
             <tbody>
@@ -32,13 +33,16 @@ Subject Marking Center
                 <td>{{item.paper}}</td>
                 <td>
                     {% if item.center|length > 1 %}
-                    {{item.center}}
+                    {{item.center}} 
                     {%else%}
               <span class="badge badge-pill badge-danger" >NOT SET</span>
               </button></span>     
                     {% endif %}
                 </td>
-                <td><span class="badge badge-pill badge-info setVenue" data-toggle="modal" id="{{item.id}}" data-target="#venueModal" >EDIT/SET</span></td>
+                
+            
+            <td>{{item.dayscount}} </td>
+            <td><span class="badge badge-pill badge-info setVenue" data-toggle="modal" id="{{item.id}}" data-target="#venueModal" ><i class="fa fa-refresh" aria-hidden="true"></i></span></td>
             </tr>
                 {% endfor %}
             
@@ -71,7 +75,7 @@ Subject Marking Center
                             </div>
                             <div class="row">
                             
-                            <div class="col">
+                            <div class="col-md-4">
                                 <label>VENUE </label>
                                 <select class="form-control" id="venue" required>
                                     <option id="myVenue"></option>
@@ -80,6 +84,10 @@ Subject Marking Center
                                     
                                     {% endfor %}
                                 </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label>Days </label>
+                                <input type="number" class="form-control" id="Days_set" name="Days_set">
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -137,12 +145,13 @@ Subject Marking Center
         var id = $(this).parents("tr").children("td:eq(0)").text();
         var subject = $(this).parents("tr").children("td:eq(2)").text();
         var paper = $(this).parents("tr").children("td:eq(3)").text();
+        var days1=$(this).parents("tr").children("td:eq(5)").text();
         var venue1=$(this).parents("tr").children("td:eq(4)").text();
         var no_val="-"
         console.log(venue1)
         // console.log(name)
         let html_data='<option value="">Choose a paper number</option>';
-        
+        var days=parseInt(days1)
         if ($.trim(venue1) == 'NOT SET') {
             html_data =`<option value="${no_val}">select venue</option>`
           } else {
@@ -155,6 +164,7 @@ Subject Marking Center
 
         $("#Subject_set").val(subject)
         $("#Paper_set").val(paper)
+        $("#Days_set").val(days)
         
     })
 </script>
@@ -167,6 +177,7 @@ Subject Marking Center
 
         var marking_venue_id=$(".marking_venue").val()
         var venue=$("#venue").val()
+        var days=$("#Days_set").val()
 
         
         console.log(venue)
@@ -179,6 +190,7 @@ Subject Marking Center
                 marking_venue_id:marking_venue_id ,
                 'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val(),
                 venue:venue,
+                days:days,
             }
         })
         .done(function(response){

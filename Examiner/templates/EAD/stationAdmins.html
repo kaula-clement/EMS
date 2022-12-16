@@ -5,9 +5,12 @@ Data Entry Co-ordinators
 {% endblock title %}
 
 {% block content %}
-Station Admins list
+<span style="font-size:20px; margin:5px;">Data Entry Cordinators</span>
+</br>
+
+</br>
 <div class="table table-responsive">
-    <table class="table table-bordered">
+    <table class="table  table-striped table-sm" id="DECTable">
         <thead>
             <tr>
                 <th>ID</th>
@@ -16,8 +19,7 @@ Station Admins list
                 <th>Last Name</th>
                 <th>Email</th>
                 <th>Marking Center</th>
-                
-                <th>Update<th>
+                <th>Update</th>
             </tr>
         </thead>
         <tbody>
@@ -28,20 +30,21 @@ Station Admins list
             <td>{{item.first_name}}</td>
             <td>{{item.last_name}}</td>
             <td>{{item.email}}</td>
-            {% if item.center%}
-            <td>{{item.center}}</td>
-            {%else%}
-            <td><span class="badge badge-pill badge-danger" >NOT SET</span></td>
-            {% endif %}
+            <td>
+                {% if item.center%}
+                {{item.center}}
+                {%else%}
+                <span class="badge badge-pill badge-danger" >NOT SET</span>
+                {% endif %}
+            </td>
             <td><span class="badge badge-pill badge-info setVenue" data-toggle="modal" data-target="#setcenter" >EDIT/SET</span></td>
-            
-            
+                 
         </tr>
         {% endfor %}
         
         </tbody>
     </table>
-
+</div>
     <div class="modal fade" id="setcenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
           <div class="modal-content">
@@ -105,6 +108,13 @@ Station Admins list
 {% endblock content %}
 
 {% block script %}
+<script>
+    $("#DECTable").dataTable({
+        "scrollY":250,
+        "scrollX":True,
+        "paging":false,
+    })
+</script>
 <script>
     $(".setVenue").click(function(){
         var id = $(this).parents("tr").children("td:eq(0)").text();

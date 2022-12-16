@@ -87,6 +87,7 @@ class Paper(models.Model):
 class MarkingVenue(models.Model):
     paper=models.ForeignKey(Paper,on_delete=models.CASCADE)
     center=models.CharField(max_length=50,choices=regions,null=True,blank=True)
+    dayscount=models.IntegerField(default=0)
     
    
     
@@ -122,6 +123,7 @@ class Examiner(models.Model):
     user=models.OneToOneField(CustomUser,
         on_delete=models.CASCADE,null=True,blank=True)
     gender_data = ((0,"SELECT GENDER"),(1, "MALE"), (2, "FEMALE"))
+    D_O_B=models.DateField(null=False)
     gender = models.IntegerField(default=0, choices=gender_data)
     subject=models.ForeignKey(Subject,to_field="subjectCode",db_column="Subject_Code", on_delete=models.SET_NULL,null=True,blank=True)
     paper=models.ForeignKey(Paper,db_column="Paper_Number", on_delete=models.SET_NULL,null=True)
@@ -144,7 +146,7 @@ class Examiner(models.Model):
     t_pin_regex=RegexValidator(regex=r'([0-9]{10})', message="Enter a valid T-Pin Number [0~9 10 digits]")
     TPIN=models.CharField(max_length=10,null=True,validators=[t_pin_regex])
     
-    phone_regex=RegexValidator(regex=r'0([1-9]{9})', message="Enter a valid Phone Number starting: 0")
+    phone_regex=RegexValidator(regex=r'0([0-9]{9})', message="Enter a valid Phone Number starting: 0")
     cell_Number=models.CharField(max_length=10,null=True,validators=[phone_regex])
     
     email=models.EmailField(null=True,unique=True)

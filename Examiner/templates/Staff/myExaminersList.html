@@ -1,0 +1,115 @@
+{%extends 'index.html' %}
+
+
+{%block content%}
+<h3>My list </h3>
+<div class="card card-body">
+    <form method="POST" action="">
+        {% csrf_token %}
+
+    <div class="row">
+    <div class="col-md-4">
+        <label for="subject">Subject</label>
+        <select name="subject" id="id_subject" class="form-select">
+        <option value="" selected>-------------</option>
+        {% for item in subjects %}
+        <option value={{item.subjectCode}}>{{item.subjectName}}</option>
+        {% endfor %}
+        </select>
+    </div>
+    <div class="col-md-4">
+        <label for="paper" >Subject</label>
+        <select id="id_paper" class="form-select" name="paper">
+        <option value=" ">-------------</option>
+        </select>
+    </div>
+    <div class="col-md-2 mt-4">
+        <div class="mt-2">
+        <input type="submit" value="Go">
+        </div>
+    </div>
+    
+</div>
+    
+    {% comment %}
+         search by paper code:<input type="text" id="papercode" name="papercode" placeholder="Enter full paper code" maxlength=6> 
+        <input type="submit" value="Go">
+    {% endcomment %}
+       
+    </form>
+<div class="table-responsive">
+    <table class="table table-sm table-bordered" id="myTable" >
+        <thead>
+        <tr>
+        <!--  <th>id</th> -->
+            <th>Examiner Number</th>
+            <th>Other_Name</th>
+            <th>Surname</th>
+            <th>Role</th>
+            <th>Subject</th>
+            <th>Province</th>
+            <th>District</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {%for item in examiners %} 
+        <tr>
+        <!-- <td>{{item.id}}</td> -->
+            <td>{{item.ExaminerCode}}</td>
+            <td>{{item.first_name}}</td>
+            <td>{{item.last_name}}</td>
+            <td>{{item.position.name}}</td>
+            <td>{{item.subject.subjectName}} ({{item.paper}})</td>
+            <td>{{item.province}}</td>
+            <td>{{item.district}}</td>
+            <td></td>
+
+        </tr>
+    
+    {%empty%}
+    
+        {%endfor%}
+    </tbody>
+    </table>
+</div>
+</div>
+
+{%endblock content%}
+
+{% block script %}
+<script>
+$(document).ready(function() {
+    $("#papercode").mask("9999/9");
+
+    $("#myTable").dataTable({
+        "scrollY":200,
+        "paging":false,
+        
+    });
+
+});
+    
+</script>
+<script>
+    $("#id_subject").change(function () {
+        const subjectID = $(this).val();  // get the selected subject ID from the HTML dropdown list 
+        $.ajax({                       // initialize an AJAX request
+            type: "POST",
+            url: '{% url "get_papernumber_ajax" %}',
+            data: {
+                'subject_id': subjectID,       // add the country id to the POST parameters
+                'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val(),
+            },
+            success: function (data) {   // `data` is from `get_topics_ajax` view function
+                let html_data = '<option value="">Choose a paper number</option>';
+                data.forEach(function (data) {
+                    html_data += `<option value="${data.paper_number}">${data.paper_name}</option>`
+                });
+                $("#id_paper").html(html_data); // replace the contents of the topic input with the data that came from the server
+            }
+        });
+    });
+    </script>
+
+{% endblock script %}

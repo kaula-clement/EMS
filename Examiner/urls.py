@@ -55,7 +55,7 @@ urlpatterns = [
    path('staff/create',StaffViews.StaffCreate.as_view(),name='staff-create'),
    path('staff/list',StaffViews.StaffListView.as_view(),name='staff-list'),
    path('stationadmins/',StaffViews.stationAdminUpdate,name='station-admin-list'),
-   
+   path('reports/',EADViews.reports,name='reports'),
    
    
    path('create-staff',EADViews.ECZStaffCreateView.as_view(),name='ECZStaff-create'),
@@ -81,6 +81,7 @@ urlpatterns = [
    path('paycalc/',StaffViews.calculatePay, name='calculate-pay'),
    path('Upload/stations/',StaffViews.upload_stations_csv,name='upload_stations'),
    path('update/examiner/<int:pk>',StaffViews.updateExaminer,name='update-examiner-SAD'),
+   path('myexaminers/',StaffViews.myList,name='mylist'),
    
       
    #=====================================Examiner menu

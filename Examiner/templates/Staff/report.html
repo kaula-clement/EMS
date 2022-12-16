@@ -1,0 +1,225 @@
+{% extends 'base.html' %}
+
+{% block title %}
+{{filterCode}} examiner reports
+{% endblock title %}
+
+{% block content %}
+
+<h5>{{filterCode}} EXAMINERS REPORT </h5>
+{#<a href="#" class="btn btn-success float-right">Export Excel</a>#}
+
+{% comment %}
+  <span><button class="btn btn-success float-right" id="exportToExcel">Export to XLS</button></span>
+<span><button class="btn btn-warning float-right" onclick="javascript:demoFromHTML()">Export to pdf</button></span>  
+{% endcomment %}
+
+
+<div class="card card-body">
+    <form method="POST" action="">
+        {% csrf_token %}
+
+    <div class="row">
+    <div class="col-md-3">
+        <label for="subject">Subject</label>
+        <select name="subject" id="id_subject" class="form-select">
+        <option value="" selected>-------------</option>
+        {% for item in subjects %}
+        <option value={{item.subjectCode}}>{{item.subjectDescription}}</option>
+        {% endfor %}
+        </select>
+    </div>
+    <div class="col-md-3">
+        <label for="paper" >Subject</label>
+        <select id="id_paper" class="form-select" name="paper">
+        <option value=" ">-------------</option>
+        </select>
+    </div>
+    <div class="col-md-2 mt-4">
+        <div class="mt-2">
+        <input type="submit" value="Go">
+        </div>
+    </div>
+    
+</div>
+    
+    {% comment %}
+         search by paper code:<input type="text" id="papercode" name="papercode" placeholder="Enter full paper code" maxlength=6> 
+        <input type="submit" value="Go">
+    {% endcomment %}
+       
+    </form>
+<div class="table-responsive" id="tableE">
+<table class="table table-sm text-nowrap table-striped" id="table2excel" >
+    <thead>
+        <th>NUMBER</th>
+        <th>OTHER_NAME</th>
+        <th>SURNAME</th>
+        <th>NRC</th>
+        <th>CELLPHONE</th>
+        <th>EMAIL</th>
+        <th>PHYSICAL_ADDRESS</th>
+        <th>PROVINCE</th>
+        <th>Station/District</th>
+        <th>TO_STATION</th>
+        <th>SUBJECT</th>
+        <th>ROLE</th>
+        <th>BANK</th>
+        <th>BRANCH</th>
+        <th>SORT CODE</th>
+        <th>ACCOUNT_NUMBER</th>
+        <th>T-PIN</th>
+        <th>APPROVED</th>
+        <th>AVAILABLE</th>
+        <th>PRESENT</th>
+    </thead>
+    <tbody>
+            
+            {% for item in examiners %}
+            <tr>
+                <td>{{item.ExaminerCode}}</td>
+                <td>{{item.first_name}}</td>
+                <td>{{item.last_name}}</td>
+                <td>{{item.NRC}}</td>
+                <td>{{item.cell_Number}}</td>
+                <td>{{item.email}}</td>
+                <td>{{item.Address}}</td>
+                <td>{{item.province}}</td>
+                <td>{{item.district}}</td>
+                <td>{{item.to_province}}</td>
+                <td>{{item.subject.subjectName}} ({{item.paper}})</td>
+                <td>{{item.position}}</td>
+                <td>{{item.bank}}</td>
+                <td>{{item.branch}}</td>
+                <td><input type="hidden" value="'">{{item.branch.sortcode|add:"0"|stringformat:"06d"}}</td>
+                <td>{{item.AccountDetails}}</td>
+                <td>{{item.TPIN}}</td>
+
+                <td>{{item.approved}}</td>
+                <td>
+                    {% if item.availability == True %}
+                    YES
+                    {% else %}
+                    NO
+                    {% endif %}
+                </td>
+             
+                <td> {#{{item.attendance_examiner.all}}#}   
+                {% for a in item.attendance_examiner.all %}
+                   {% if a.status  %}
+                        {% if a.status == 2 %}
+                        <button class="btn btn-success btn-sm" disabled="disabled">YES</button>
+                        {% elif a.status == 3 %}
+                        <button class="btn btn-danger btn-sm" disabled="disabled">NO</button>
+                        {% elif a.status == 1 %}
+                        <button class="btn btn-info btn-sm" disabled="disabled">Not marked</button>
+                        {% else %}
+                         NOT APPLICABLE
+                        {% endif %}
+                   {% else %}
+                    NOT APPLICABLE
+                   {% endif %} 
+                {% endfor %}
+
+                </td>
+             
+                
+            </tr>
+            {% endfor %}
+
+
+    </tbody>
+</table>
+</div>
+</div>
+{% endblock content %}
+
+{% block script %}
+<script>
+    $(document).ready(function(){
+$("#table2excel").dataTable({
+    "scrollY": 300,
+    "scrollX":true,
+    "paging": false,
+    dom:"Bfrtip",
+    buttons:[
+        'excel','pdf',
+        ],
+});
+    });
+</script>
+<script>
+    $("#exportToExcel").click(function(){
+        $("#table2excel").table2excel({
+          // exclude CSS class
+          exclude: ".noExl",
+          name: "Worksheet Name",
+          filename: "ExaminerSchedule" + new Date().toISOString().replace(/[\-\:\.]/g, ""), //do not include extension
+          fileext: ".xls" // file extension
+        }); 
+      });
+    
+</script>
+<script>
+    function demoFromHTML() {
+        var pdf = new jsPDF('l', 'pt', 'letter');
+        // source can be HTML-formatted string, or a reference
+        // to an actual DOM element from which the text will be scraped.
+        source = $('#tableE')[0];
+
+        // we support special element handlers. Register them with jQuery-style 
+        // ID selector for either ID or node name. ("#iAmID", "div", "span" etc.)
+        // There is no support for any other type of selectors 
+        // (class, of compound) at this time.
+        specialElementHandlers = {
+            // element with id of "bypass" - jQuery style selector
+            '#bypassme': function(element, renderer) {
+                // true = "handled elsewhere, bypass text extraction"
+                return true
+            }
+        };
+        margins = {
+       //     top: 80,
+        //    bottom: 60,
+            left: 40,
+        //    width: 100
+        };
+        // all coords and widths are in jsPDF instance's declared units
+        // 'inches' in this case
+        pdf.fromHTML(
+                source, // HTML string or DOM elem ref.
+                margins.left, // x coord
+                margins.top, {// y coord
+                    'width': margins.width, // max width of content on PDF
+                    'elementHandlers': specialElementHandlers
+                },
+        function(dispose) {
+            // dispose: object with X, Y of the last line add to the PDF 
+            //          this allow the insertion of new lines after html
+            pdf.save('Test.pdf');
+        }
+        , margins);
+    }
+</script>
+<script>
+    $("#id_subject").change(function () {
+        const subjectID = $(this).val();  // get the selected subject ID from the HTML dropdown list 
+        $.ajax({                       // initialize an AJAX request
+            type: "POST",
+            url: '{% url "get_papernumber_ajax" %}',
+            data: {
+                'subject_id': subjectID,       // add the country id to the POST parameters
+                'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val(),
+            },
+            success: function (data) {   // `data` is from `get_topics_ajax` view function
+                let html_data = '<option value="">Choose a paper number</option>';
+                data.forEach(function (data) {
+                    html_data += `<option value="${data.paper_number}">${data.paper_name}</option>`
+                });
+                $("#id_paper").html(html_data); // replace the contents of the topic input with the data that came from the server
+            }
+        });
+    });
+    </script>
+{% endblock script %}
+

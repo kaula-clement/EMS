@@ -1,6 +1,10 @@
 {% extends 'base.html'%}
+{% load static %}
 
 {%block content%}
+<div id="preload" style=" color:blue; width:100%; height:100%; position:absolute; display:none; z-index:1;"  >
+    <img src="{% static '/img/preloader.gif' %}" style="margin-right:25%; margin-left:25%; margin-top:10%;">
+</div>
 <form action= "{%url 'examiner_upload_csv'%}" method="POST" enctype="multipart/form-data" class="form-horizontal"> 
     {% csrf_token %}
     <div class="form-group">
@@ -11,10 +15,10 @@
     </div>
     <div class="form-group">                    
         <div class="col-md-3 col-sm-3 col-xs-12 col-md-offset-3" style="margin-bottom:10px;">
-             <button class="btn btn-primary"> <span class="glyphicon glyphicon-upload" style="margin-right:5px;"></span>Upload </button>
+             <button class="btn btn-primary btn-sm" id="upload-btn"> <span class="glyphicon glyphicon-upload" style="margin-right:5px;" ></span>Upload </button>
         </div> 
     </div>
-{{errors}}
+{{form.errors}}
     {% if form.errors %}
        {% for field in form %}
            {% for error in field.errors %} 
@@ -25,11 +29,7 @@
        {% endfor %}
     {% endif %}
 {% if messages %}
-<ul class="messages">
-    {% for message in messages %}
-    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }} :{{form.field.error}}</li>
-    {% endfor %}
-</ul>
+
 {% endif %}
     </form>
 
@@ -45,3 +45,17 @@
 </tr>
     </table>
 {%endblock%}
+
+{% block script %}
+<script>
+$("#upload-btn").click(function(){
+    if ($('#csv_file').get(0).files.length === 0) {
+        console.log("No files selected.");
+    }
+     else {
+        $('#preload').css('display','block')
+     }
+    
+})
+</script>
+{% endblock script %}

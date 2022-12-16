@@ -39,6 +39,22 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
     <!-- overlayScrollbars -->
 <link rel="stylesheet" href="{% static "overlayScrollbars/css/OverlayScrollbars.min.css" %}">
+<style>
+  .form-select{
+    margin-bottom:4px;
+    font-size:13px;
+    height:30px;
+  }
+  .form-control{
+    font-size:13px;
+    margin-bottom:4px;
+    font-size:13px;
+    height:30px;
+  }
+  select.form-control:not([size]):not([multiple]){
+    height:30px;
+  }
+</style>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
 <div class="wrapper">
@@ -148,6 +164,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <script src="{%static "js/datatables.min.js"%}"></script>
 <script src="{%static 'js/dataTables.select.min.js'%}"></script>
 <script src="{% static '/dist/js/adminlte.min.js'%}"></script>
+<script src="{%static '/jqueryvalidator/jquery.maskedinput.js'%}"></script>
 <script>
   document.addEventListener("DOMContentLoaded", function(){
     document.querySelectorAll('.sidebar .nav-link').forEach(function(element){

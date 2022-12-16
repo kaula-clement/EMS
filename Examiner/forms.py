@@ -12,16 +12,13 @@ class ExaminerUploadForm(forms.ModelForm):
 class ExaminerUpdateForm(forms.ModelForm):
     class Meta:
         model=Examiner
-        fields=('last_name','first_name','gender','subject','paper','position','Address','province','district',
-                'AccountDetails','NRC','TPIN','cell_Number','email','bank','branch',)
+        fields=('last_name','first_name','gender','Address','province','district',
+                'AccountDetails','NRC','TPIN','cell_Number','email','bank','branch','availability')
         widgets = {
         #'middle_name':forms.TextInput(attrs={'class':'form-control','placeholder':'Middle Name'}),
         'last_name':forms.TextInput(attrs={'class':'form-control','placeholder':'Last Name'}),
         'first_name': forms.TextInput(attrs={'class':'form-control','placeholder':'First Name'}),
         'gender':forms.Select(attrs={'class':'form-control '}),
-        'subject': forms.Select(attrs={'class':'form-control '}),
-        'paper': forms.Select(attrs={'class':'form-control '}),
-        'position': forms.Select(attrs={'class':'form-control','placeholder':'Select Position'}),
         'Address': forms.TextInput(attrs={'class':'form-control','placeholder':'Address'}),
         'province': forms.Select(attrs={'class':'form-control','placeholder':'Province'}),
         'district': forms.Select(attrs={'class':'form-control','placeholder':'District'}),
@@ -32,6 +29,7 @@ class ExaminerUpdateForm(forms.ModelForm):
         'email': forms.EmailInput(attrs={'class':'form-control','placeholder':'email@abc.abc'}),
         'bank':forms.Select(attrs={'class':'form-control','placeholder':'Province'}),
         'branch':forms.Select(attrs={'class':'form-control','placeholder':'Province'}),
+        'availability':forms.CheckboxInput(attrs={'class':'largerCheckbox'}),
         
     }
 
@@ -44,26 +42,26 @@ class ExaminerForm(forms.ModelForm):
         
         widgets = {
             'middle_name':forms.TextInput(attrs={'class':'form-control','placeholder':'Middle Name'}),
-            'last_name':forms.TextInput(attrs={'class':'form-control','placeholder':'Last Name'}),
-            'first_name': forms.TextInput(attrs={'class':'form-control','placeholder':'First Name'}),
-            'gender':forms.Select(attrs={'class':'form-select '}),
-            'subject': forms.Select(attrs={'class':'form-select'}),
-            'paper': forms.Select(attrs={'class':'form-select'}),
-            'position': forms.Select(attrs={'class':'form-select','placeholder':'Select Position'}),
-            'Address': forms.TextInput(attrs={'class':'form-control','placeholder':'Address'}),
-            'province': forms.Select(attrs={'class':'form-select','placeholder':'Province'}),
-            'district': forms.Select(attrs={'class':'form-select','placeholder':'District'}),
+            'last_name':forms.TextInput(attrs={'class':'form-control inputclass pageRequired','placeholder':'Last Name'}),
+            'first_name': forms.TextInput(attrs={'class':'form-control inputclass pageRequired','placeholder':'First Name'}),
+            'gender':forms.Select(attrs={'class':'form-control '}),
+            'subject': forms.Select(attrs={'class':'form-control'}),
+            'paper': forms.Select(attrs={'class':'form-control'}),
+            'position': forms.Select(attrs={'class':'form-control','placeholder':'Select Position'}),
+            'Address': forms.TextInput(attrs={'class':'form-control','placeholder':'Residential address'}),
+            'province': forms.Select(attrs={'class':'form-control','placeholder':'Province'}),
+            'district': forms.Select(attrs={'class':'form-control inputclass pageRequired','placeholder':'District'}),
             'AccountDetails': forms.TextInput(attrs={'class':'form-control','placeholder':'Account Number'}),
             'NRC': forms.TextInput(attrs={'class':'form-control','placeholder':'NRC Number'}),
             'TPIN': forms.TextInput(attrs={'class':'form-control','placeholder':'T Pin'}),
-            'cell_Number': forms.TextInput(attrs={'class':'form-control','placeholder':'cell phone number is-valid'}),
+            'cell_Number': forms.TextInput(attrs={'class':'form-control','placeholder':'cell phone number '}),
             'email': forms.EmailInput(attrs={'class':'form-control','placeholder':'email@abc.abc'}),
-            'bank':forms.Select(attrs={'class':'form-select','placeholder':'Province'}),
-            'branch':forms.Select(attrs={'class':'form-select','placeholder':'Province'}),
+            'bank':forms.Select(attrs={'class':'form-control inputclass pageRequired','placeholder':'Province'}),
+            'branch':forms.Select(attrs={'class':'form-control inputclass pageRequired','placeholder':'Province'}),
             
             'approved':forms.CheckboxInput(attrs={'class':'largerCheckbox'}),
             'availability':forms.CheckboxInput(attrs={'class':'largerCheckbox'}),
-            'session':forms.Select(attrs={'class':'form-control'}),
+            'session':forms.Select(attrs={'class':'inputclass pageRequired'}),
             
         }
     def __init__(self, *args, **kargs):

@@ -9,7 +9,7 @@ from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView,UpdateView,DeleteView
 from django.urls import reverse_lazy
-from . forms import CommentForm,UpdateUserForm,ExaminerForm
+from . forms import CommentForm,UpdateUserForm,ExaminerForm,ExaminerUpdateForm
 #======================================
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.models import User
@@ -68,12 +68,13 @@ def examinerProfileUpdate(request,pk):
 def examinerDetailsUpdate(request,pk):
     user=request.user
     examiner=Examiner.objects.get(user=user)
-    form=ExaminerForm(instance=examiner)
+    form=ExaminerUpdateForm(instance=examiner)
     context={
+        'examiner':examiner,
         "form":form,
     }
     if request.method=="POST":
-        form=ExaminerForm(request.POST,instance=examiner)
+        form=ExaminerUpdateForm(request.POST,instance=examiner)
         if form.is_valid():
             form.save()
             messages.success(request, "Your profile was successfully updated!")

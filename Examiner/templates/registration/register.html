@@ -1,336 +1,408 @@
-{% extends 'registration/login.html' %}
-
 {%load static%}
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	
+	<!--Fav icon-->
+    <link rel="icon" type="image/x-icon" href="{%static 'img/icon.ico'%}">
+	<title>Examiner registration </title>
+	<!--Bootstrap5-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+	
+	<link rel="stylesheet" media="screen" href="{%static 'jqueryvalidator/style.css'%}">
+	
 
-{% block styles %}
-<link rel="stylesheet" href="{% static 'style.css'%}">
-{% endblock styles %}
-{% block content %}
-<!--PEN HEADER-->
-<header class="header">
-  <h2 class="header__title">Examiner Registration</h2>
-  <a class="btn btn-success" href="{%url 'login'%}">Login ?</a>
-</header>
-<!--PEN CONTENT     -->
-<div class="content">
-  <!--content inner-->
-  <div class="content__inner">
-    <div class="container">
+	<script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
+  	<script src="{%static '/jqueryvalidator/jquery.validate.js'%}"></script>
+	<script src="{%static '/jqueryvalidator/jquery.maskedinput.js'%}"></script>
+	<script src="https://code.jquery.com/ui/1.10.4/jquery-ui.min.js"></script>
+	
+	
+	<style>
+		.form-control{
+			
+			height:29px;
+			font-size:13px;
+			-webkit-border-radius: 0;
+			   -moz-border-radius: 0;
+					border-radius: 0;
+		  }
+		  .form-group{
+			margin-bottom:4px;
+		}
+		.center {
+			display: block;
+			margin-left: auto;
+			margin-right: auto;
+		  }
+		input.largerCheckbox {
+			width: 20px;
+			height: 20px;
+		}
+	</style>
+  <!--fonts-->
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+<div id="wrap">
+	<div id="main">
+		
+		<span class="float-right"><a  class="btn btn-success btn-sm" href="{%url 'login'%}">Already registered?</a></span>
+		<img class="float-left" src="{%static '/img/eczlogo_tr.png' %}" alt="Girl in a jacket" width="5%" height="5%">
+		<h1 class="top bottom">
+		<span class="ml-1">EXAMINER</span> REGISTRATION</h1>
+		
+		<span style="color:#04AB5C; margin-left:20px;" class="float-center">Fill out this form to complete your registration</span>
+		
+		{#This form is quick &amp; easy to complete - in only 3 steps!#}
+		<form name="cmaForm" id="cmaForm" method="post" action="" >
+      {% csrf_token %}
+			<input type="hidden" name="recordRequestPrimaryServiceID" id="recordRequestPrimaryServiceID" value="100">
+			<input type="hidden" name="recordClientServices" id="recordClientServices" value="1,3">
+			<ul id="stepForm" class="ui-accordion-container">
+	<li id="sf1">
+		<a href='#' class="ui-accordion-link"></a>
+		<div>
+			<fieldset>
+				<legend>Step 1 of 3</legend>
+				<div class="requiredNotice">*Required Field</div>
 
 
+              {# Personal information #}
 
-        {% comment %}
-      <!--content title-->
-      <h2 class="content__title content__title--m-sm">Pick animation type</h2>
-      <!--animations form-->
-      
-        <form class="pick-animation my-4">
-          <div class="form-row">
-            <div class="col-5 m-auto">
-              <select class="pick-animation__select form-control">
-                <option value="scaleIn" selected="selected">ScaleIn</option>
-                <option value="scaleOut">ScaleOut</option>
-                <option value="slideHorz">SlideHorz</option>
-                <option value="slideVert">SlideVert</option>
-                <option value="fadeIn">FadeIn</option>
-              </select>
+	<h3 class="stepHeader">Personal information</h3>
+
+	<div class="errormsg">
+		{{form.errors}}
+	</div>
+	<div class="form-group row">
+		<label for="id_last_name" class="col-md-4 col-form-label input required">Surname:</label>
+		<div class="col-md-4">
+			{{form.last_name}}
+		</div>
+	</div>
+	
+	<div class="form-group row">
+		<label for="id_first_name" class="col-md-4 col-form-label input required">Other Name:</label>
+		<div class="col-md-4">
+			{{form.first_name}}
+		</div>
+	</div>
+
+	<div class="form-group row">
+		<label for="id_gender" class="col-md-4 col-form-label input required">Gender:</label>
+		<div class="col-md-4">
+			{{form.gender}}
+		</div>
+	</div>
+
+	<div class="form-group row">
+		<label for="id_NRC" class="col-md-4 col-form-label input required">NRC Number:</label>
+		<div class="col-md-4">
+			{{form.NRC}}
+		</div>
+	</div>
+
+	<div class="form-group row">
+		<label for="id_bank" class="col-md-4 col-form-label input required">Bank Name:</label>
+		<div class="col-md-4">
+			{{form.bank}}
+		</div>
+	</div>
+
+	<div class="form-group row">
+		<label for="id_branch" class="col-md-4 col-form-label input required">Bank Branch:</label>
+		<div class="col-md-4">
+			{{form.branch}}
+		</div>
+	</div>
+
+	<div class="form-group row">
+		<label for="id_AccountDetails" class="col-md-4 col-form-label input required">Account Number:</label>
+		<div class="col-md-4">
+			{{form.AccountDetails}}
+		</div>
+	</div>
+
+	<div class="form-group row">
+		<label for="id_TPIN" class="col-md-4 col-form-label input required">T-PIN Number:</label>
+		<div class="col-md-4">
+			{{form.TPIN}}
+		</div>
+	</div>
+	
+    	
+			<div class="buttonWrapper">
+				<input name="formNext1" type="button" class="open1 nextbutton btn btn-success btn-sm" value="Next" alt="Next" title="Next">
+			</div>
+		</fieldset>
+	</div>
+	</li>
+
+	{# ===============STEP 2================================#}
+				<li id="sf2">
+					<a href='#' class="ui-accordion-link">
+					</a>
+					<div>
+		<fieldset>
+			<legend>Step 2 of 3</legend>
+			<div class="requiredNotice">*Required Field</div>
+			<h3 class="stepHeader">Contact Details</h3>
+			
+			
+			<div class="form-group row">
+				<label for="id_email" class="col-md-4 col-form-label input required">Email Adrress:</label>
+				<div class="col-md-4">
+					{{form.email}}
+				</div>
+			</div>
+			
+
+			<div class="form-group row">
+				<label for="id_cell_Number" class="col-md-4 col-form-label input required">Cell Phone Number:</label>
+				<div class="col-md-4">
+					{{form.cell_Number}}
+				</div>
+			</div>
+			
+			<div class="form-group row">
+				<label for="id_province" class="col-md-4 col-form-label input required">Province:</label>
+				<div class="col-md-4">
+					{{form.province}}
+				</div>
+			</div>
+			
+
+			<div class="form-group row">
+				<label for="id_district" class="col-md-4 col-form-label input required">District:</label>
+				<div class="col-md-4">
+					{{form.district}}
+				</div>
+			</div>
+			
+             
+			<div class="form-group row">
+				<label for="id_Address" class="col-md-4 col-form-label input required">Physical Address:</label>
+				<div class="col-md-4">
+					{{form.Address}}
+				</div>
+			</div>
+			
+				
+		
+			<div class="buttonWrapper">
+				<input name="formBack0" type="button" class="open0 prevbutton btn btn-success btn-sm" value="Back" alt="Back" title="Back">
+				<input name="formNext2" type="button" class="open2 nextbutton btn btn-success btn-sm" value="Next" alt="Next" title="Next">
+			</div>
+		</fieldset>
+		</div>
+	</li>
+
+	{#===============================STEP 3 ===============================#}
+				<li id="sf3">
+					<a href='#' class="ui-accordion-link">
+					</a>
+					<div>
+						<fieldset>
+							<legend>Step 3 of 3</legend>
+							<div class="requiredNotice">*Required Field</div>
+							<h3 class="stepHeader">Subject / Availability Details</h3>
+			
+			<div class="form-group row">
+				<label for="id_subject" class="col-md-4 col-form-label input required">Subject Name:</label>
+				<div class="col-md-4">
+					{{form.subject}}
+				</div>
+			</div>
+
+			<div class="form-group row">
+				<label for="id_paper" class="col-md-4 col-form-label input required">Paper:</label>
+				<div class="col-md-4">
+					{{form.paper}}
+				</div>
+			</div>
+
+			<div class="form-group row">
+				<label for="id_position" class="col-md-4 col-form-label input required">Role:</label>
+				<div class="col-md-4">
+					{{form.position}}
+				</div>
+			</div>
+
+			<div class="form-group row">
+				<label for="id_availability" class="col-md-4 col-form-label">Available for the marking session ?:</label>
+				<div class="col-md-4">
+					{{form.availability}}
+				</div>
+			</div>
+			
+			<p class="formDisclaimer">By checking the box above,you accept  the invitation</p>
+			<div class="buttonWrapper">
+				<input name="formBack1" type="button" class="open1 prevbutton btn btn-success btn-sm" value="Back" alt="Back" title="Back">
+				{#<input name="submit" type="submit" id="submit" value="Submit" class="submitbutton" alt="Submit" title="Submit">#}
+				<input name="submit" type="Submit" value="Submit" id="register" class="submitbutton btn btn-success btn-sm" >
+
+			</div>
+		</fieldset>
+	</div>
+</li>
+        <li id="sf4">
+          <a href='#' class="ui-accordion-link">
+          </a>
+            <div>
+              <fieldset>
+                last fieldset
+              </fieldset>
             </div>
-          </div>
-        </form>
-     
-      <!--content title-->
-      <h2 class="content__title">Click on steps or 'Prev' and 'Next' buttons</h2>
-       {% endcomment %}
-    </div>
-    <div class="container overflow-hidden">
-      <!--multisteps-form-->
-      <div class="multisteps-form">
-        <!--progress bar-->
-        <div class="row">
-          <div class="col-12 col-lg-8 ml-auto mr-auto mb-4">
-            <div class="multisteps-form__progress">
-              <button class="multisteps-form__progress-btn js-active" type="button" title="User Info">User Info</button>
-              <button class="multisteps-form__progress-btn" type="button" title="Address">Address/ Contact</button>
-              <button class="multisteps-form__progress-btn" type="button" title="Order Info">Subject Details</button>
-              <button class="multisteps-form__progress-btn" type="button" title="Comments">Bank Details        </button>
-              <button class="multisteps-form__progress-btn" type="button" title="Comments">New tag        </button>
-            </div>
-          </div>
-        </div>
-        <!--form panels-->
-        <div class="row">
-          <div class="col-12 col-lg-12 m-auto">
-            <form class="multisteps-form__form" method="post" action="">
-              <!--single form panel-->
-              {% csrf_token%}
-              <div class="multisteps-form__panel shadow p-4 rounded bg-white js-active" data-animation="scaleIn">
-                <h3 class="multisteps-form__title">Your User Info</h3>
-                <div class="multisteps-form__content">
-                  <div class="form-row mt-4">
-                    <div class="form-group col-md-4">
-                      {{form.first_name}}
-                    </div>
-                    <div class="form-group col-md-4">
-                        {{form.last_name}}
-                    </div>
-                    
-                  </div>
-                  
-                  <div class="form-row mt-4">
-                    <div class="form-group col-md-4">
-                     {{form.NRC}}
-                    </div>
-                    <div class="form-group col-md-4">
-                      {{form.gender}}
-                    </div>
-                    
-                  </div>
-                  <div class="row">
-                  <div class="form-group col-md-4">
-                    <h5>Select Session</h5>
-                    {{form.session}}
-                    {{form.errors}}
-                   {# <input class="multisteps-form__input form-control" type="text" placeholder="Zip"/>#}
-                  </div>
-                </div>
-
-                  <div class="button-row d-flex mt-4">
-                    <button class="btn btn-primary ml-auto js-btn-next" type="button" title="Next">Next</button>
-                  </div>
-                </div>
-              </div>
-              <!--single form panel-->
-              <div class="multisteps-form__panel shadow p-4 rounded bg-white" data-animation="scaleIn">
-                <h3 class="multisteps-form__title">Your Address/Contact</h3>
-                <div class="multisteps-form__content">
-                    <div class="form-row mt-4">
-                        <div class="form-group col-md-4">
-                            {{form.email}}
-                         {#  <input class="multisteps-form__input form-control" type="text" placeholder="Login"/> #}
-                        </div>
-                        <div class="form-group col-md-4">
-                            {{form.cell_Number}}
-                         {#  <input class="multisteps-form__input form-control" type="text" placeholder="Login"/> #}
-                        </div>
-                      </div>
-                      
-                  <div class="form-row mt-4">
-                    <div class="form-group col-md-4">
-                     {{form.Address}}
-                    </div>
-                  </div>
-                 
-                  <div class="form-row mt-4">
-                    <div class="form-group col-md-4">
-                    {{form.province.label}}
-                      {{form.province}}
-                    </div>
-                    <div class="form-group col-md-4">
-                        {{form.district.label}}
-                        {{form.district}}
-                    </div>
-                  </div>
-                  <div class="button-row d-flex mt-4">
-                    <button class="btn btn-primary js-btn-prev" type="button" title="Prev">Prev</button>
-                    <button class="btn btn-primary ml-auto js-btn-next" type="button" title="Next">Next</button>
-                  </div>
-                </div>
-              </div>
-              <!--single form panel-->
-              <div class="multisteps-form__panel shadow p-4 rounded bg-white" data-animation="scaleIn">
-                <h3 class="multisteps-form__title">Subject Choice</h3>
-                <div class="multisteps-form__content">
-                  <div class="row">
-                    <div class="form-group col-md-4">
-                        {{form.subject.label}}
-                        {{form.subject}}
-                    </div>
-                    <div class="form-group col-md-4">
-                      {{form.paper.label}}
-                        {{form.paper}}
-                    </div>
-                    <div class="form-group col-md-4">
-                      {{form.position.label}}
-                      {{form.position}}
-                  </div>
-                    
-
-                  </div>
-                  <div class="row">
-                    <div class="button-row d-flex mt-4 col-12">
-                      <button class="btn btn-primary js-btn-prev" type="button" title="Prev">Prev</button>
-                      <button class="btn btn-primary ml-auto js-btn-next" type="button" title="Next">Next</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <!--single form panel-->
-              <div class="multisteps-form__panel shadow p-4 rounded bg-white" data-animation="scaleIn">
-                <h3 class="multisteps-form__title">Bank Information</h3>
-                <div class="multisteps-form__content">
-                  <div class="form-row mt-4">
-                    <div class="form-row mt-4">
-                        <div class="form-group col-md-4">
-                        {{form.bank.label}}
-                          {{form.bank}}
-                        </div>
-                        <div class="form-group col-md-4">
-                            {{form.branch.label}}
-                            {{form.branch}}
-                        </div>
-                        <div class="form-group col-md-4">
-                            {{form.TPIN.label}}
-                          {{form.TPIN}}
-                        </div>
-                      </div>
-                      <div class="form-row mt-4">
-                        {{form.AccountDetails}}
-                      </div>
-                  </div>
-                  <div class="button-row d-flex mt-4">
-                    <button class="btn btn-primary js-btn-prev" type="button" title="Prev">Prev</button>
-                    <button class="btn btn-primary ml-auto js-btn-next" type="button" title="Next">Next</button>
-                  </div>
-                </div>
-              </div>
-               <!--single form panel-->
-               <div class="multisteps-form__panel shadow p-4 rounded bg-white" data-animation="scaleIn">
-                <h4 class="multisteps-form__title">Check the box below if you are available for the 2022 marking session</h4>
-                <div class="multisteps-form__content">
-                  <div class="form-row mt-4">
-                    <div class="col">
-                    
-                    </div>
-                    <div class="form-group col-md-4">
-                   check(mark) this: {{form.availability}}
-                    </div>
-                  </div>
-                  <div class="button-row d-flex mt-4">
-                    <button class="btn btn-primary js-btn-prev" type="button" title="Prev">Prev</button>
-               {#     <button id="send" class="btn btn-success ml-auto" type="button" title="Send" data-toggle="modal" data-target="#exampleModal">Done</button>#}
-                    <button  class="btn btn-success ml-auto" type="submit" >Done</button>
-                  </div>
-                </div>
-              </div>
-              {% comment %}
-                
-                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                      <div class="modal-content">
-                        <div class="modal-header">
-                          <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                          </button>
-                        </div>
-                        <div class="modal-body">
-                          {{form}}
-                        </div>
-                        <div class="modal-footer">
-                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Don't submit</button>
-                          <button  type="button" class="btn btn-primary">Submit</button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-        
-              {% endcomment %}
-              
-            </form>
-            
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+        </li>
+			</ul>
+		</form>
+	</div>
 </div>
-
-<!-- partial -->
-
-
-{% endblock content %}
-
-{% block scripts %}
-<script  src="{%static 'script.js'%}"></script>
-
+</body>
 <script>
-    $("#id_province").change(function () {
-        const provinceID = $(this).val();  // get the selected subject ID from the HTML dropdown list 
-        $.ajax({                       // initialize an AJAX request
-            type: "POST",
-            url: '{% url "load-districts" %}',
-            data: {
-                'province_id': provinceID,       // add the country id to the POST parameters
-                'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val(),
-            },
-            success: function (data) {   // `data` is from `get_topics_ajax` view function
-                let html_data = '<option value="">Choose a district</option>';
-                data.forEach(function (data) {
-                    html_data += `<option value="${data.id}">${data.name}</option>`
-                });
-                $("#id_district").html(html_data); // replace the contents of the topic input with the data that came from the server
-            }
-        });
-    });
-</script>
+	$(document).ready(function() {
+		$("#id_NRC").mask("999999/99/9");
+		$("#id_cell_Number").mask("9999999999");
+		$("#id_TPIN").mask("9999999999");
+		//$("#recordClientPhoneAlt").mask("(999) 999-9999");
+		//$("#recordClientZip").mask("99999");
+		//$("#recordPropertyZip").mask("99999");
+		//$("#recordPurchaseZip").mask("99999");
+
+		// add * to required field labels
+		$('label.required').append('&nbsp;<strong>*</strong>&nbsp;');
+
+		// accordion functions
+		var accordion = $("#stepForm").accordion();
+		var current = 0;
+
+		$.validator.addMethod("pageRequired", function(value, element) {
+			var $element = $(element)
+
+				function match(index) {
+					return current == index && $(element).parents("#sf" + (index + 1)).length;
+				}
+			if (match(0) || match(1) || match(2)) {
+				return !this.optional(element);
+			}
+			return "dependency-mismatch";
+		}, $.validator.messages.required)
+
+		var v = $("#cmaForm").validate({
+			errorClass: "warning",
+			onkeyup: false,
+			onfocusout: false,
+		});
+
+		// back buttons do not need to run validation
+		$("#sf2 .prevbutton").click(function() {
+			accordion.accordion("option", "active", 0);
+			current = 0;
+		});
+		$("#sf3 .prevbutton").click(function() {
+			accordion.accordion("option", "active", 1);
+			current = 1;
+		});
+		// these buttons all run the validation, overridden by specific targets above
+		$(".open2").click(function() {
+			if (v.form()) {
+				accordion.accordion("option", "active", 2);
+				current = 2;
+			}
+		});
+		$(".open1").click(function() {
+			if (v.form()) {
+				accordion.accordion("option", "active", 1);
+				current = 1;
+			}
+		});
+		$(".open0").click(function() {
+			if (v.form()) {
+				accordion.accordion("option", "active", 0);
+				current = 0;
+			}
+		});
+	});
+	</script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
 <script>
-  $("#id_subject").change(function () {
-      const subjectID = $(this).val();  // get the selected subject ID from the HTML dropdown list 
+  $("#id_province").change(function () {
+      const provinceID = $(this).val();  // get the selected subject ID from the HTML dropdown list 
       $.ajax({                       // initialize an AJAX request
           type: "POST",
-          url: '{% url "get_papernumber_ajax" %}',
+          url: '{% url "load-districts" %}',
           data: {
-              'subject_id': subjectID,       // add the country id to the POST parameters
+              'province_id': provinceID,       // add the country id to the POST parameters
               'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val(),
           },
           success: function (data) {   // `data` is from `get_topics_ajax` view function
-              let html_data = '<option value="">Choose a paper number</option>';
-              data.forEach(function (data) {
-                  html_data += `<option value="${data.paper_number}">${data.paper_name}</option>`
-              });
-              $("#id_paper").html(html_data); // replace the contents of the topic input with the data that came from the server
-          }
-      });
-  });
-</script>
-
-<script>
-  $("#id_bank").change(function () {
-      const bankID = $(this).val();  // get the selected  ID from the HTML dropdown list 
-      $.ajax({                       // initialize an AJAX request
-          type: "POST",
-          url: '{% url "load-bank-branches" %}',
-          data: {
-              'bank_id': bankID,       // add the  id to the POST parameters
-              'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val(),
-          },
-          success: function (data) {   // `data` is from `load-bank-branches` view function
-              let html_data = '<option value="">Choose a bank branch</option>';
+              let html_data = '<option value="">Choose a district</option>';
               data.forEach(function (data) {
                   html_data += `<option value="${data.id}">${data.name}</option>`
               });
-              $("#id_branch").html(html_data); // replace the contents  with the data that came from the server
+              $("#id_district").html(html_data); // replace the contents of the topic input with the data that came from the server
           }
       });
   });
 </script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 <script>
-  $(document).ready(function(){
-    $("#send").click(function(){
-      var csrf=$('input[name=csrfmiddlewaretoken]').val();
-          $.ajax({
-            url:'',
-            method:"POST",
-            data:{
-                csrfmiddlewaretoken:csrf
-
-            },
-            
-            })
-          })
-    })
-
+$("#id_subject").change(function () {
+    const subjectID = $(this).val();  // get the selected subject ID from the HTML dropdown list 
+    $.ajax({                       // initialize an AJAX request
+        type: "POST",
+        url: '{% url "get_papernumber_ajax" %}',
+        data: {
+            'subject_id': subjectID,       // add the country id to the POST parameters
+            'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val(),
+        },
+        success: function (data) {   // `data` is from `get_topics_ajax` view function
+            let html_data = '<option value="">Choose a paper number</option>';
+            data.forEach(function (data) {
+                html_data += `<option value="${data.paper_number}">${data.paper_name}</option>`
+            });
+            $("#id_paper").html(html_data); // replace the contents of the topic input with the data that came from the server
+        }
+    });
+});
 </script>
-  {% endblock scripts %}
+
+<script>
+$("#id_bank").change(function () {
+    const bankID = $(this).val();  // get the selected  ID from the HTML dropdown list 
+    $.ajax({                       // initialize an AJAX request
+        type: "POST",
+        url: '{% url "load-bank-branches" %}',
+        data: {
+            'bank_id': bankID,       // add the  id to the POST parameters
+            'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val(),
+        },
+        success: function (data) {   // `data` is from `load-bank-branches` view function
+            let html_data = '<option value="">Choose a bank branch</option>';
+            data.forEach(function (data) {
+                html_data += `<option value="${data.id}">${data.name}</option>`
+            });
+            $("#id_branch").html(html_data); // replace the contents  with the data that came from the server
+        }
+    });
+});
+</script>
+<script>
+$('#register').click(function(){
+	var csrf=$('input[name=csrfmiddlewaretoken]').val();
+	$.ajax({
+		url:'',
+		method:"POST",
+		data:{
+			csrfmiddlewaretoken:csrf
+
+		},
+		
+		})
+})
+</script>
+
+</html>

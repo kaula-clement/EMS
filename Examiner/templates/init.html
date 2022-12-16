@@ -5,3 +5,470 @@ registration out files
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+
+
+jquery validator
+
+// Document is ready
+$(document).ready(function () {
+// Validate Username
+$("#usercheck").hide();
+let usernameError = true;
+$("#usernames").keyup(function () {
+	validateUsername();
+});
+
+function validateUsername() {
+	let usernameValue = $("#usernames").val();
+	if (usernameValue.length == "") {
+	$("#usercheck").show();
+	usernameError = false;
+	return false;
+	} else if (usernameValue.length < 3 || usernameValue.length > 10) {
+	$("#usercheck").show();
+	$("#usercheck").html("**length of username must be between 3 and 10");
+	usernameError = false;
+	return false;
+	} else {
+	$("#usercheck").hide();
+	}
+}
+
+// Validate Email
+const email = document.getElementById("email");
+email.addEventListener("blur", () => {
+	let regex = /^([_\-\.0-9a-zA-Z]+)@([_\-\.0-9a-zA-Z]+)\.([a-zA-Z]){2,7}$/;
+	let s = email.value;
+	if (regex.test(s)) {
+	email.classList.remove("is-invalid");
+	emailError = true;
+	} else {
+	email.classList.add("is-invalid");
+	emailError = false;
+	}
+});
+
+// Validate Password
+$("#passcheck").hide();
+let passwordError = true;
+$("#password").keyup(function () {
+	validatePassword();
+});
+function validatePassword() {
+	let passwordValue = $("#password").val();
+	if (passwordValue.length == "") {
+	$("#passcheck").show();
+	passwordError = false;
+	return false;
+	}
+	if (passwordValue.length < 3 || passwordValue.length > 10) {
+	$("#passcheck").show();
+	$("#passcheck").html(
+		"**length of your password must be between 3 and 10"
+	);
+	$("#passcheck").css("color", "red");
+	passwordError = false;
+	return false;
+	} else {
+	$("#passcheck").hide();
+	}
+}
+
+// Validate Confirm Password
+$("#conpasscheck").hide();
+let confirmPasswordError = true;
+$("#conpassword").keyup(function () {
+	validateConfirmPassword();
+});
+function validateConfirmPassword() {
+	let confirmPasswordValue = $("#conpassword").val();
+	let passwordValue = $("#password").val();
+	if (passwordValue != confirmPasswordValue) {
+	$("#conpasscheck").show();
+	$("#conpasscheck").html("**Password didn't Match");
+	$("#conpasscheck").css("color", "red");
+	confirmPasswordError = false;
+	return false;
+	} else {
+	$("#conpasscheck").hide();
+	}
+}
+
+// Submit button
+$("#submitbtn").click(function () {
+	validateUsername();
+	validatePassword();
+	validateConfirmPassword();
+	validateEmail();
+	if (
+	usernameError == true &&
+	passwordError == true &&
+	confirmPasswordError == true &&
+	emailError == true
+	) {
+	return true;
+	} else {
+	return false;
+	}
+});
+});
+
+
+
+
+
+
+
+
+
+regex
+
+
+{% block styles %}
+<link rel="stylesheet" href="{% static 'style.css'%}">
+{% endblock styles %}
+ {% block content %}
+<!--PEN HEADER-->
+<header class="header mt-1">
+  <h2 class="header__title">Examiner Registration</h2>
+  <a class="btn btn-success btn-sm" href="{%url 'login'%}">Login ?</a>
+</header>
+<!--PEN CONTENT     -->
+<div class="content">
+  <!--content inner-->
+  <div class="content__inner">
+    <div class="container">
+
+
+
+        {% comment %}
+      <!--content title-->
+      <h2 class="content__title content__title--m-sm">Pick animation type</h2>
+      <!--animations form-->
+      
+        <form class="pick-animation my-4">
+          <div class="form-row">
+            <div class="col-5 m-auto">
+              <select class="pick-animation__select form-control">
+                <option value="scaleIn" selected="selected">ScaleIn</option>
+                <option value="scaleOut">ScaleOut</option>
+                <option value="slideHorz">SlideHorz</option>
+                <option value="slideVert">SlideVert</option>
+                <option value="fadeIn">FadeIn</option>
+              </select>
+            </div>
+          </div>
+        </form>
+     
+      <!--content title-->
+      <h2 class="content__title">Click on steps or 'Prev' and 'Next' buttons</h2>
+       {% endcomment %}
+    </div>
+    <div class="container overflow-hidden">
+      <!--multisteps-form-->
+      <div class="multisteps-form">
+        <!--progress bar-->
+        <div class="row">
+          <div class="col-12 col-lg-8 ml-auto mr-auto mb-4">
+            <div class="multisteps-form__progress">
+              <button class="multisteps-form__progress-btn js-active" type="button" title="User Info">User Info</button>
+              <button class="multisteps-form__progress-btn" type="button" title="Address">Address/ Contact</button>
+              <button class="multisteps-form__progress-btn" type="button" title="Order Info">Subject Details</button>
+              <button class="multisteps-form__progress-btn" type="button" title="Comments">Bank Details        </button>
+              <button class="multisteps-form__progress-btn" type="button" title="Comments">New tag        </button>
+            </div>
+          </div>
+        </div>
+        <!--form panels-->
+        <div class="row">
+          <div class="col-12 col-lg-12 m-auto">
+            <form class="multisteps-form__form " method="post" action="">
+              <!--single form panel-->
+              {% csrf_token%}
+              <div class="multisteps-form__panel shadow p-4 rounded bg-white js-active" data-animation="scaleIn">
+                <h3 class="multisteps-form__title">Your User Info</h3>
+                <div class="multisteps-form__content">
+                  <div class="form-row mt-4">
+                    <div class="form-group col-md-4">
+                      {{form.first_name}}
+                    </div>
+                    <div class="form-group col-md-4">
+                        {{form.last_name}}
+                    </div>
+                    <div class="form-group col-md-4">
+                      {{form.NRC}}
+                  </div>
+                  </div>
+                  
+                  <div class="form-row mt-4">
+                    <div class="form-group col-md-4">
+                      {{form.gender}}
+                    </div>
+                    <div class="form-group col-md-4">
+                      <span style="white-space:nowrap">
+                      <label for="id_session">Select Session:</lable>
+                        {{form.session}}
+                      </span>
+                    {{form.errors}}
+                     {# <input class="multisteps-form__input form-control" type="text" placeholder="Zip"/>#}
+                    </div>
+            
+                  </div>
+                  <div class="row">
+
+                  </div>
+
+                  <div class="button-row d-flex mt-4">
+                    <button class="btn btn-primary ml-auto js-btn-next btn-sm" type="button" title="Next">Next</button>
+                  </div>
+                </div>
+              </div>
+              <!--single form panel-->
+              <div class="multisteps-form__panel shadow p-4 rounded bg-white" data-animation="scaleIn">
+                <h3 class="multisteps-form__title">Your Address/Contact</h3>
+                <div class="multisteps-form__content">
+                    <div class="form-row mt-4">
+                        <div class="form-group col-md-4">
+                            {{form.email}}
+                         {#  <input class="multisteps-form__input form-control" type="text" placeholder="Login"/> #}
+                        </div>
+                        <div class="form-group col-md-4">
+                            {{form.cell_Number}}
+                         {#  <input class="multisteps-form__input form-control" type="text" placeholder="Login"/> #}
+                        </div>
+                      </div>
+                      
+                  <div class="form-row mt-4">
+                    <div class="form-group col-md-4">
+                     {{form.Address}}
+                    </div>
+                  </div>
+                 
+                  <div class="form-row mt-4">
+                    <div class="form-group col-md-4">
+                    {{form.province.label}}
+                      {{form.province}}
+                    </div>
+                    <div class="form-group col-md-4">
+                        {{form.district.label}}
+                        {{form.district}}
+                    </div>
+                  </div>
+                  <div class="button-row d-flex mt-4">
+                    <button class="btn btn-primary js-btn-prev btn-sm" type="button" title="Prev">Prev</button>
+                    <button class="btn btn-primary ml-auto js-btn-next btn-sm" type="button" title="Next">Next</button>
+                  </div>
+                </div>
+              </div>
+              <!--single form panel-->
+              <div class="multisteps-form__panel shadow p-4 rounded bg-white" data-animation="scaleIn">
+                <h3 class="multisteps-form__title">Subject Choice</h3>
+                <div class="multisteps-form__content">
+                  <div class="row">
+                    <div class="form-group col-md-4">
+                        {{form.subject.label}}
+                        {{form.subject}}
+                    </div>
+                    <div class="form-group col-md-4">
+                      {{form.paper.label}}
+                        {{form.paper}}
+                    </div>
+                    <div class="form-group col-md-4">
+                      {{form.position.label}}
+                      {{form.position}}
+                  </div>
+                    
+
+                  </div>
+                  <div class="row">
+                    <div class="button-row d-flex mt-4 col-12">
+                      <button class="btn btn-primary js-btn-prev btn-sm" type="button" title="Prev">Prev</button>
+                      <button class="btn btn-primary ml-auto js-btn-next btn-sm" type="button" title="Next">Next</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!--single form panel-->
+              <div class="multisteps-form__panel shadow p-4 rounded bg-white" data-animation="scaleIn">
+                <h3 class="multisteps-form__title">Bank Information</h3>
+                <div class="multisteps-form__content">
+                  <div class="form-row mt-4">
+                    <div class="form-row mt-4">
+                        <div class="form-group col-md-4">
+                        {{form.bank.label}}
+                          {{form.bank}}
+                        </div>
+                        <div class="form-group col-md-4">
+                            {{form.branch.label}}
+                            {{form.branch}}
+                        </div>
+                        <div class="form-group col-md-4">
+                            {{form.TPIN.label}}
+                          {{form.TPIN}}
+                        </div>
+                      </div>
+                      <div class="form-row mt-4">
+                        {{form.AccountDetails}}
+                      </div>
+                  </div>
+                  <div class="button-row d-flex mt-4">
+                    <button class="btn btn-primary js-btn-prev btn-sm" type="button" title="Prev">Prev</button>
+                    <button class="btn btn-primary ml-auto js-btn-next btn-sm" type="button" title="Next">Next</button>
+                  </div>
+                </div>
+              </div>
+               <!--single form panel-->
+               <div class="multisteps-form__panel shadow p-4 rounded bg-white" data-animation="scaleIn">
+                <h4 class="multisteps-form__title">Check the box below if you are available for the 2022 marking session</h4>
+                <div class="multisteps-form__content">
+                  <div class="form-row mt-4">
+                    <div class="col">
+                    
+                    </div>
+                    <div class="form-group col-md-4">
+                   check(mark) this: {{form.availability}}
+                    </div>
+                  </div>
+                  <div class="button-row d-flex mt-4">
+                    <button class="btn btn-primary js-btn-prev btn-sm btn-sm" type="button" title="Prev">Prev</button>
+               {#     <button id="send" class="btn btn-success ml-auto" type="button" title="Send" data-toggle="modal" data-target="#exampleModal">Done</button>#}
+                    <button  class="btn btn-success ml-auto btn-sm" type="submit" >Done</button>
+                  </div>
+                </div>
+              </div>
+              {% comment %}
+                
+                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <div class="modal-body">
+                          {{form}}
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Don't submit</button>
+                          <button  type="button" class="btn btn-primary">Submit</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+        
+              {% endcomment %}
+              
+            </form>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- partial -->
+
+
+{% endblock content %}
+
+{% block scripts %}
+<script  src="{%static 'script.js'%}"></script>
+{#<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.js"></script>#}
+<script src="{%static 'jqueryvalidator/jquery.maskedinput.js' %}"></script>
+
+<script src="{%static 'jqueryvalidator/jquery.validate.js'%}"></script>
+<script>
+
+$(document).ready(function($){
+    $("#id_cell_Number").mask("9999999999");
+    $("#id_NRC").mask("999999/99/9");
+	//	$("#recordClientPhoneAlt").mask("(999) 999-9999");
+	//	$("#recordClientZip").mask("99999");
+	//	$("#recordPropertyZip").mask("99999");
+	//	$("#recordPurchaseZip").mask("99999");
+})
+</script>
+<script>
+    $("#id_province").change(function () {
+        const provinceID = $(this).val();  // get the selected subject ID from the HTML dropdown list 
+        $.ajax({                       // initialize an AJAX request
+            type: "POST",
+            url: '{% url "load-districts" %}',
+            data: {
+                'province_id': provinceID,       // add the country id to the POST parameters
+                'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val(),
+            },
+            success: function (data) {   // `data` is from `get_topics_ajax` view function
+                let html_data = '<option value="">Choose a district</option>';
+                data.forEach(function (data) {
+                    html_data += `<option value="${data.id}">${data.name}</option>`
+                });
+                $("#id_district").html(html_data); // replace the contents of the topic input with the data that came from the server
+            }
+        });
+    });
+</script>
+<script>
+  $("#id_subject").change(function () {
+      const subjectID = $(this).val();  // get the selected subject ID from the HTML dropdown list 
+      $.ajax({                       // initialize an AJAX request
+          type: "POST",
+          url: '{% url "get_papernumber_ajax" %}',
+          data: {
+              'subject_id': subjectID,       // add the country id to the POST parameters
+              'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val(),
+          },
+          success: function (data) {   // `data` is from `get_topics_ajax` view function
+              let html_data = '<option value="">Choose a paper number</option>';
+              data.forEach(function (data) {
+                  html_data += `<option value="${data.paper_number}">${data.paper_name}</option>`
+              });
+              $("#id_paper").html(html_data); // replace the contents of the topic input with the data that came from the server
+          }
+      });
+  });
+</script>
+
+<script>
+  $("#id_bank").change(function () {
+      const bankID = $(this).val();  // get the selected  ID from the HTML dropdown list 
+      $.ajax({                       // initialize an AJAX request
+          type: "POST",
+          url: '{% url "load-bank-branches" %}',
+          data: {
+              'bank_id': bankID,       // add the  id to the POST parameters
+              'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val(),
+          },
+          success: function (data) {   // `data` is from `load-bank-branches` view function
+              let html_data = '<option value="">Choose a bank branch</option>';
+              data.forEach(function (data) {
+                  html_data += `<option value="${data.id}">${data.name}</option>`
+              });
+              $("#id_branch").html(html_data); // replace the contents  with the data that came from the server
+          }
+      });
+  });
+</script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script>
+  $(document).ready(function(){
+    $("#send").click(function(){
+      var csrf=$('input[name=csrfmiddlewaretoken]').val();
+          $.ajax({
+            url:'',
+            method:"POST",
+            data:{
+                csrfmiddlewaretoken:csrf
+
+            },
+            
+            })
+          })
+    })
+
+</script>
+  {% endblock scripts %}

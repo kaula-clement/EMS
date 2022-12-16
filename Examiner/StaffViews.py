@@ -1,7 +1,7 @@
 from django.shortcuts import render,HttpResponseRedirect,redirect
 from django.urls import reverse
 from django.db.models import Q
-from .models import Examiner,Invitation,CustomUser,Staff,Bank,BankBranch,SchedulePay,Province,District,Payment,Attendance,ECZStaff,Subject,MarkingVenue
+from .models import Examiner,Invitation,CustomUser,Staff,Bank,BankBranch,SchedulePay,Province,District,Payment,Attendance,ECZStaff,Subject,MarkingVenue,Paper
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView,UpdateView,DeleteView
@@ -113,11 +113,49 @@ class StaffExaminerList(LoginRequiredMixin,ListView):
     queryset= Examiner.objects.filter(approved=True)
     template_name='Staff/Examiner_list.html'
     context_object_name='examiners' 
-
+ 
+@login_required()   
+def myList(request):
+    
+    user=ECZStaff.objects.get(user=request.user)
+    examiners=Examiner.objects.filter(Q(to_province=user.center) & Q(availability=True))
+    
+    subjectList=[]
+    paper_ids=list(MarkingVenue.objects.filter(center = user.center).values('paper'))
+    print('Papers at station:',paper_ids)
+    for item in paper_ids:
+        subcode=Paper.objects.get(id=item['paper'])
+        #print("Paper:",subcode.subject.subjectCode)
+        if subcode.subject.subjectCode not in subjectList:
+            subjectList.append(subcode.subject.subjectCode)
+        print(subjectList)
+        
+    subjects=Subject.objects.filter(subjectCode__in=subjectList )
+    print("=========USER=========")
+    print(user)
+    print(user.center)
+    context={
+        'examiners':examiners,
+        'subjects':subjects
+    }
+    if request.method=="POST":
+        
+        subject=request.POST.get('subject')
+        paper=request.POST.get('paper')
+        if paper ==' ':
+            return redirect('mylist')
+    
+        context['examiners']=Examiner.objects.filter(Q(subject=subject) & Q(paper=paper) & Q(approved=True) & Q(availability=True))
+                        # print("=========CODE=========")
+                        # print(code)
+                        # print('SUB:',sub)
+                        # print('Paper:',paper)
+        return render(request, 'Staff/myExaminersList.html',context)
+    return render(request, 'Staff/myExaminersList.html',context)
 def attendanceView(request):
     user=ECZStaff.objects.get(username=request.user.username)
     examiners=Examiner.objects.filter(Q(approved=True)&
-                                      Q(to_province=user.center) & ~Q(to_province=None) )
+                                      Q(to_province=user.center) & ~Q(to_province=None) & Q(availability=True))
     for item in examiners:
         attendance=Attendance.objects.get_or_create(examiner=item)
         attendance[0].save()
@@ -133,7 +171,7 @@ def attendanceView(request):
 def takeattendance(request):
     user=ECZStaff.objects.get(user=request.user)
     subjects=Subject.objects.all()
-    examiners=Examiner.objects.filter(Q(to_province=user.center) & ~Q(to_province=None))#,
+    examiners=Examiner.objects.filter(Q(to_province=user.center) & ~Q(to_province=None) & Q(approved=True) & Q(availability=True))#,
     myStation=user.center
                                         #paper=user.paper)
     attendance=Attendance.objects.filter(examiner__in=examiners)
@@ -206,9 +244,12 @@ class ScheduleTableList(LoginRequiredMixin,ListView):
 def schedule(request):
     present_examiners=Attendance.objects.filter(status=2)
     examiners=Examiner.objects.filter(attendance_examiner__in=present_examiners)
+    ratePerDay=150
     ratePerNight=1000
+    
     for item in examiners:
-        
+        paper=Paper.objects.get(id=item.paper.id)
+        days=MarkingVenue.objects.get(paper=paper)
         fromStation=item.district
         toStation=item.to_province
         payment=Payment.objects.get_or_create(examiner=item)
@@ -225,12 +266,15 @@ def schedule(request):
             nights=getattr(nights,toStation)
             #print("Nights2",nights)
             payment[0].transport=int(nights)*ratePerNight
+            payment[0].daily_allowance=ratePerDay*(days.dayscount)
             payment[0].save()
             #print("Pay:",payment[0].transport)
         except Exception as e:
             logging.getLogger("error_logger").error(repr(e))
         
     context={
+        'days':days.dayscount,
+        'ratePerDay':ratePerDay,
         'examiners':examiners,
         'payments':Payment.objects.all(),
     }

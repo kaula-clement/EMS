@@ -31,6 +31,9 @@ Schedule
         <th>FROM_Station/District</th>
         <th>TO_STATION</th>
         <th>TRANSPORT</th>
+        <th>DAILY ALLOWANCE</td>
+        <th>DAILY RATE</th>
+        <th>No.DAYS</th>
         <th>SUBJECT</th>
         <th>POSITION</th>
         <th>BANK</th>
@@ -58,8 +61,10 @@ Schedule
 
                     {{item.transport|stringformat:".2f"}}
                 </td>
-
-                <td>{{item.examiner.subject.subjectName}}</td>
+                <td>{{item.daily_allowance|stringformat:".2f"}}</td>
+                <td>{{ratePerDay}}</td>
+                <td> {% widthratio item.daily_allowance ratePerDay 1 %}</td>
+                <td>{{item.examiner.subject.subjectName}} ({{item.examiner.paper}})</td>
                 <td>{{item.examiner.position}}</td>
                 <td>{{item.examiner.bank}}</td>
                 <td>{{item.examiner.branch}}</td>

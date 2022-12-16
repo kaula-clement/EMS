@@ -112,7 +112,7 @@ def selectMarkingVenue(request):
     papers=Paper.objects.all()
     centers=['LUSAKA','COPPERBELT','MONZE','KAPIRI','LIVINGSTONE','CHOMA',
      'MWANDI','LUNTE','MWENSE','KASENENGWA','CHISAMBA',
-     'CHIBOMBO']
+     'CHIBOMBO'] 
     
     for item in papers:
         venue=MarkingVenue.objects.get_or_create(paper=item)
@@ -135,12 +135,14 @@ def selectMarkingVenue(request):
     if request.method=="POST":
         marking_venueid=request.POST.get('marking_venue_id')
         venue_name=request.POST.get('venue')
+        days=request.POST.get('days')
         
         print("ID IS:",marking_venueid)
         print("SET TO:",venue_name)
         
         marking_venue=MarkingVenue.objects.get(id=marking_venueid)
         marking_venue.center=venue_name
+        marking_venue.dayscount=days
         marking_venue.save()
         
         paper=marking_venue.paper
@@ -233,8 +235,9 @@ def batchmailExaminer(request):
                     examiner=Examiner.objects.get(pk=item)
                     maillist.append(examiner.email)
                     username=examiner.ExaminerCode
+                    subject=str(examiner.subject)+' '+str(examiner.paper)
                     name=str(examiner.first_name)+' '+str(examiner.last_name)
-                    msg="Hello "+name+". You have been invited to the forthcoming marking session.Please use credentials username:"+str(username)+" and password: password3 to confirm availability. Please remember to reset your password and update your details on the portal.Thank you"
+                    msg="Hello "+name+". You have been invited to the forthcoming marking session for"+subject+".Please use credentials username:"+str(username)+" and password: password3 to confirm availability. Please remember to reset your password and update your details on the portal.Thank you"
                     send_mail(
                         'ECZ Examiner Invitation',
                         msg,
@@ -490,6 +493,25 @@ class invitationResponse(LoginRequiredMixin,UpdateView):
     success_url=reverse_lazy('home')
 
 @login_required()
+def reports(request):
+    subjects=Subject.objects.all()
+    examiners=Examiner.objects.filter( Q(approved=True) & Q(availability=True))
+    context={
+        'filterCode':'ALL',
+        'examiners':examiners,
+        'subjects':subjects,
+    }
+    if request.method == 'POST':
+        subject=request.POST.get('subject')
+        paper=request.POST.get('paper')
+        if paper ==' ':
+            return redirect('reports')
+        context['examiners']=Examiner.objects.filter(Q(subject=subject) & Q(paper=paper)& Q(approved=True) & Q(availability=True))
+        paper_obj=Paper.objects.get(id=paper)
+        context['filterCode']= str(paper_obj.paper_description)
+    return render(request, 'Staff/report.html',context)
+
+@login_required()
 def invitation_approve(request, inv_id):
     invitation = Invitation.objects.get(id=inv_id)
     invitation.StatusConfirm = 1
@@ -507,6 +529,9 @@ def invitation_reject(request, inv_id):
 #Upload Examiner (while creating Users)
 @login_required()
 def upload_csv(request): 
+    bad=0
+    good=0
+    dispaly_error={}
     data = {}
     if "GET" == request.method:
         return render(request, "registration/upload_csv.html", data)
@@ -532,28 +557,29 @@ def upload_csv(request):
             print("=======Line: ",line)
             fields = line.split(",")
             data_dict = {}
-            data_dict["first_name"] =fields[1]  # field=uploaded file column
-            data_dict["last_name"] = fields[2]
-            sub=Subject.objects.get(subjectCode=fields[3])
+            data_dict["first_name"] =fields[0]  # field=uploaded file column
+            data_dict["last_name"] = fields[1]
+            sub=Subject.objects.get(subjectCode=fields[2])
             data_dict["subject"] = sub.subjectCode   # field=uploaded file column
-            paper=Paper.objects.get(Q(paper_number=fields[4]),
+            paper=Paper.objects.get(Q(paper_number=fields[3]),
                                     Q(subject=sub)
                                     ) #& (Paper.objects.filter(subject=sub)))
             data_dict["paper"] = paper.paper_number 
-            data_dict["email"] = fields[5]
-            obj=Position.objects.get(name=fields[6].rstrip())
+            data_dict["email"] = fields[4]
+            obj=Position.objects.get(name=fields[5].rstrip())
             
             #print("Position:======",obj)
             data_dict["position"] =obj.id
-            data_dict["availability"] = True 
+            data_dict["availability"] = False 
             data_dict["approved"] = True
             
             try: 
                 form = ExaminerUploadForm(data_dict)
                 print("data_dict:",data_dict)
                 if form.is_valid():
+            
                     form.save()
-                    #td=str(date.today().year)
+                    td=str(date.today().year)
                     code=form.instance.subject.subjectCode+'/'+ str(form.instance.paper.paper_number)+str(form.instance.pk).zfill(5)
                     #code=td[-2:]+'-'+form.instance.subject.subjectCode+str(form.instance.pk)
                     print("CODE:",code)
@@ -569,23 +595,30 @@ def upload_csv(request):
                                                     user_type=3,
                                                     password='password3')
                     form.save()
-                    messages.success(request,"successifully Uploaded")
+                    good+=1
+                    #messages.success(request,"successifully Uploaded")
                 else:
 
                     logging.getLogger("error_logger").error(
                        form.errors.as_json())
-                    messages.error(request, '{}'.format(form.errors,line))
+                    bad+=1
+                    errordict={'error':form.errors}
+                    dispaly_error.update(errordict)
+                    #messages.error(request, '{}'.format(form.errors,line))
              
             except Exception as e:
                 logging.getLogger("error_logger").error(repr(e))
-                messages.error(request, '{}'.format(form.errors,line))
+                #messages.error(request, '{}'.format(form.errors,line))
         
         
     except Exception as e:
         logging.getLogger("error_logger").error(
             "Unable to upload file. "+repr(e))
         messages.error(request, "Unable to upload file. "+repr(e))
+   
     
+    text="Upload Done. Records Uploaded:"+str(good)+" Filed:"+str(bad)
+    messages.info(request,text)
     return HttpResponseRedirect(reverse("examiner_upload_csv"))
 
    
