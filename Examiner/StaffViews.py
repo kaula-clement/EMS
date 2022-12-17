@@ -242,10 +242,12 @@ class ScheduleTableList(LoginRequiredMixin,ListView):
 
 @login_required()
 def deletescheduledata(request):
+    
     if request.method=="POST":
-        SchedulePay.objects.get('id[]').delete
-        return true
-    return redirect('')
+        SchedulePay.objects.filter(id__in=request.POST.getlist('id[]')).delete()
+        messages.success(request,"Deleted")   
+        return redirect('schedule_table')
+    return redirect('schedule_table')
 
 @login_required()
 def schedule(request):

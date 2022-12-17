@@ -79,6 +79,7 @@ urlpatterns = [
    
    path('Examiner/schedule/',StaffViews.schedule,name='schedule'),
    path('schedule/',StaffViews.ScheduleTableList.as_view(), name='schedule_table'),
+   path('schedule-delete/',StaffViews.deletescheduledata, name='delete-data'),
    path('paycalc/',StaffViews.calculatePay, name='calculate-pay'),
    path('Upload/stations/',StaffViews.upload_stations_csv,name='upload_stations'),
    path('update/examiner/<int:pk>',StaffViews.updateExaminer,name='update-examiner-SAD'),

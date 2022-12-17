@@ -4,7 +4,8 @@
 {%block content%}
 <h4>PAY SCHEDULE TABLE</h4>
 <hr>
-<a href="{%url 'upload_schedule_csv'%}" class="btn btn-primary btn-sm">Upload Schedule data</a> 
+<a href="{%url 'upload_schedule_csv'%}" class="btn btn-primary btn-sm">Upload Schedule data</a>
+<span><input type="button" id="delete_multiple_btn" value="Delete"></span> 
 <div class="table-responsive overflow-auto">
 <table class="table table-hover text-wrap table-striped table-sm" id="ScheduleTable">
  {% csrf_token %}
@@ -84,7 +85,7 @@
         }else{
             console.log(id)
             $.ajax({
-                url:'',
+                url:"{%url 'delete-data'%}",
                 method:"POST",
                 data:{
                     id,
